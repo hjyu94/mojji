@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title th:if="${title != null}" th:text="${title}"></title>
+    <title th:if="${title == null}">Jeong's portfollio</title>
+
+    <link rel="stylesheet" href="node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js"></script>
+</head>
+
+<nav th:fragment="main-nav" class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand" href="index">Jeong's portfolio</a>
+    <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ml-auto ml-md-0">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">Settings</a><a class="dropdown-item" href="#">Activity Log</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="login" th:href="@{/login}">Logout</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+
+
+
+
+<div th:fragment="layoutSidenav_nav" id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+
+                <div class="sb-sidenav-menu-heading">Jeong</div>
+                <a class="nav-link" href="index"><div class="sb-nav-link-icon"><i class="fas fa-id-card-alt"></i></div>Who is she?</a>
+                <a class="nav-link" href="tables"><div class="sb-nav-link-icon"><i class="fas fa-mail-bulk"></i></i></div>Contact</a>
+
+
+                <div class="sb-sidenav-menu-heading">Project</div>
+                <!-- Web -->
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWeb" aria-expanded="false" aria-controls="collapseWeb">
+                    <div class="sb-nav-link-icon"><i class="fab fa-android"></i></div>
+                    Web
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+
+                <div class="collapse" id="collapseWeb" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="layout-static">Portfolio Application</a>
+                        <a class="nav-link" href="layout-static">RESTful API</a>
+                    </nav>
+                </div>
+
+                <!-- Android -->
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMobile" aria-expanded="false" aria-controls="collapseMobile">
+                    <div class="sb-nav-link-icon"><i class="fab fa-android"></i></div>
+                    Android
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+
+                <div class="collapse" id="collapseMobile" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="layout-static">Chat Application</a>
+                    </nav>
+                </div>
+
+                <!-- Game -->
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGame" aria-expanded="false" aria-controls="collapseGame">
+                    <div class="sb-nav-link-icon"><i class="fab fa-steam"></i></div>
+                    Game
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse" id="collapseGame" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="layout-static">LionKing</a>
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#gameCollapseTalesweaver" aria-expanded="false" aria-controls="gameCollapseTalesweaver">
+                            TalesWeaver
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="gameCollapseTalesweaver" aria-labelledby="headingOne" data-parent="#sidenavAccordionPages">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="401">MFC Tool</a>
+                                <a class="nav-link" href="500">Application</a>
+                            </nav>
+                        </div>
+                    </nav>
+                </div>
+
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Logged in as:</div>
+            HyoJeong
+        </div>
+    </nav>
+</div>
+
+
+<div th:fragment="normal-footer">
+    <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between small">
+                <div class="text-muted">
+                    <span><i class="fas fa-map-marker-alt"></i> Seoul, Pyeongchon</span>
+                    <span><i class="fas fa-envelope"></i> hjeong.you@gmail.com</span>
+                    <span><i class="fab fa-github"></i> https://github.com/hjyu94</span>
+                </div>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    &middot;
+                    <a href="#">Terms &amp; Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div th:fragment="auth-footer" id="layoutAuthentication_footer">
+    <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between small">
+                <div class="text-muted">Copyright &copy; Your Website 2019</div>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    &middot;
+                    <a href="#">Terms &amp; Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div th:fragment="error-footer" id="layoutError_footer">
+    <footer class="py-4 bg-light mt-auto">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between small">
+                <div class="text-muted">Copyright &copy; Your Website 2019</div>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    &middot;
+                    <a href="#">Terms &amp; Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<div th:fragment="basic-script">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
+</div>
+
+<div th:fragment="chart-script">
+    <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+    <script src="assets/demo/chart-area-demo.js"></script>
+    <script src="assets/demo/chart-bar-demo.js"></script>
+</div>
+
+<div th:fragment="datatable-script">
+    <script src="node_modules/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="assets/demo/datatables-demo.js"></script>
+</div>
+
+
+</html>

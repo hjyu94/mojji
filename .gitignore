@@ -29,3 +29,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### NPM ###
+src/main/resources/static/node_modules
+
+### Bootstrap Template Reference ###
+src/main/resources/static/startbootstrap-sb-admin-gh-pages
