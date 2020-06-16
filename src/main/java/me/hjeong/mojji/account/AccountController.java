@@ -18,22 +18,22 @@ public class AccountController {
     private final AccountService accountService;
     private final ModelMapper modelMapper;
 
-    @GetMapping("/")
-    public String home() {
-        return "index";
+    @GetMapping("/login")
+    public String login() {
+        return "/account/login";
     }
 
-    @GetMapping("/sign-up")
+    @GetMapping("/register")
     public String signUpForm(Model model) {
         model.addAttribute(new SignUpForm());
-        return "sign-up";
+        return "/account/register";
     }
 
-    @PostMapping("/sign-up")
+    @PostMapping("/register")
     public String signUp(@Valid SignUpForm signUpForm, Errors errors, Model model) {
         if(errors.hasErrors()) {
             model.addAttribute(signUpForm);
-            return "sign-up";
+            return "/account/register";
         }
         accountService.createNewAccount(signUpForm);
         return "redirect:/";
