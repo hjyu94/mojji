@@ -9,8 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -21,24 +19,29 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
 
-    public void createNewAccount(SignUpForm signUpForm) {
-        String password = passwordEncoder.encode(signUpForm.getPassword());
-        signUpForm.setPassword(password);
-        Account account = modelMapper.map(signUpForm, Account.class);
+    public void createNewAccount(RegisterForm registerForm) {
+        String password = passwordEncoder.encode(registerForm.getPassword());
+        registerForm.setPassword(password);
+        Account account = modelMapper.map(registerForm, Account.class);
         Account newAccount = accountRepository.save(account);
-        this.sendSignupEmail(newAccount);
+        this.sendRegisterEmail(newAccount);
     }
 
-    private void sendSignupEmail(Account account) {
+    private void sendRegisterEmail(Account account) {
         account.generateEmailCheckToken();
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(account.getEmail());
         mailMessage.setSubject("스터디올래, 회원 가입 인증");
         mailMessage.setText(
-                "/check-email-token?"
+                "/confirmed-account-by-email?"
                         + "token=" + account.getEmailCheckToken()
                         + "&email=" + account.getEmail()
         );
         javaMailSender.send(mailMessage);
     }
+
+    public boolean validateRegisterEmailToken(String token, Account account) {
+        return account != null && token.equals(account.getEmailCheckToken());
+    }
+
 }
