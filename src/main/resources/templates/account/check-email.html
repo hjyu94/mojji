@@ -6,22 +6,18 @@
 <body class="my-login-page">
 <section class="h-100">
     <div class="container h-100">
-        <div class="row justify-content-md-center align-items-center h-100">
+        <div class="row justify-content-md-center h-100">
             <div class="w-50 card-wrapper">
-
                 <div th:replace="fragments.html :: auth-banner"></div>
                 <div class="card fat">
-
                     <div class="card-body">
                         <h4 class="card-title">Check Email</h4>
-
                         <div class="py-5 text-center" th:if="${error != null}">
                             <div class="alert alert-danger" role="alert" th:text="${error}"></div>
                             <p th:text="${email}">XXX@email.com</p>
                         </div>
-
                         <div class="text-center" th:if="${error == null}">
-                            <p class="lead">모찌 서비스를 사용하려면 인증 이메일을 확인하세요.</p>
+                            <p class="lead">가입에 사용한 이메일입니다.</p>
                             <div>
                                 <p class="lead" th:text="${email}">XXX@email.com</p>
                                 <form method="POST" th:action="@{/account/confirm-email}">

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -50,23 +51,35 @@ public class AccountController {
     }
 
     @GetMapping("/confirmed-account-by-email")
-    public String confirmRegisterEmail(@RequestParam String token, @RequestParam String email, Model model) {
+    public String confirmRegisterEmail(@RequestParam String token
+            , @RequestParam String email
+            , Model model
+            , RedirectAttributes attributes)
+    {
         Account account = accountRepository.findByEmail(email);
-        model.addAttribute("title", "Verify Email");
+
+        String title = "";
+        String message = "";
 
         // 토큰이 일치하지 않다면
         if(!accountService.validateRegisterEmailToken(token, account)) {
-            model.addAttribute("error", "올바르지 않은 접근입니다");
+            title = "Error";
+            message = "올바르지 않은 접근입니다";
         }
         else {
             account.confirmRegisterEmail();
-            model.addAttribute("messaege", "가입이 완료되었습니다.");
+            title = "Let's Start";
+            message = "가입이 완료되었습니다.";
         }
-        return "account/message";
+
+        attributes.addFlashAttribute("title", title);
+        attributes.addFlashAttribute("message", message);
+        return "redirect:/account/message";
     }
 
+    // 홈에서 메일 인증 확인 메세지를 클릭한 경우
     @GetMapping("/account/confirm-email")
-    public String checkEmail(@CurrentAccount Account account, Model model) {
+    public String checkConfirmEmail(@CurrentAccount Account account, Model model) {
         if(account.isEmailVerified()) { // 이미 메일 인증을 마친 상태라면 홈으로 이동
             return "redirect:/";
         }
@@ -74,4 +87,28 @@ public class AccountController {
         return "account/check-email";
     }
 
+    @PostMapping("/account/confirm-email")
+    public String resendConfirmEmail(@CurrentAccount Account account, Model model, RedirectAttributes attributes) {
+        if(account.isEmailVerified()) { // 이미 메일 인증을 마친 유저라면
+            return "redirect:/";
+        }
+
+        String message = "";
+        if(!accountService.canResendRegisterEmail(account)) {
+            message = "한시간 이내에 메세지를 보냈습니다. 받은 메세지함을 다시 확인해 주세요.";
+        }
+        else {
+            message = "이메일을 다시 전송했습니다";
+        }
+
+        attributes.addFlashAttribute("title", "Check Email");
+        attributes.addFlashAttribute("message", message);
+        return "redirect:/account/message";
+    }
+
+    @GetMapping("/account/message")
+    public String message()
+    {
+        return "account/message";
+    }
 }

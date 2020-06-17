@@ -6,13 +6,12 @@
 <body class="my-login-page">
 <section class="h-100">
     <div class="container h-100">
-        <div class="row justify-content-md-center align-items-center h-100">
-            <div class="card-wrapper">
+        <div class="row justify-content-md-center h-100">
+            <div class="w-50 card-wrapper">
                 <div th:replace="fragments.html :: auth-banner"></div>
                 <div class="card fat">
                     <div class="card-body">
-                        <h4 class="card-title" th:text="${title}">Title</h4>
-                        <div th:if="${error != null}" th:text="${error}">error</div>
+                        <h4 class="card-title" th:if="${title != null}" th:text="${title}">Title</h4>
                         <div th:if="${message != null}" th:text="${message}">message</div>
                     </div>
                 </div>

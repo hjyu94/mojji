@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -47,7 +48,8 @@ public class AccountService implements UserDetailsService {
         return newAccount;
     }
 
-    private void sendRegisterEmail(Account account) {
+    public void sendRegisterEmail(Account account) {
+        account.setSendEmailAt(LocalDateTime.now());
         account.generateEmailCheckToken();
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
@@ -87,5 +89,9 @@ public class AccountService implements UserDetailsService {
         }
 
         return new UserAccount(account);
+    }
+
+    public boolean canResendRegisterEmail(Account account) {
+        return account.getSendEmailAt().isBefore(LocalDateTime.now().minusHours(1));
     }
 }

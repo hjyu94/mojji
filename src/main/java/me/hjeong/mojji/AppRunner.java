@@ -10,21 +10,21 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Component;
-
-@Component
-public class AppRunner implements ApplicationRunner {
-    @Autowired
-    AccountService accountService;
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        RegisterForm registerForm = new RegisterForm();
-        registerForm.setNickname("유효정");
-        registerForm.setPassword("12345678");
-        registerForm.setConfirmPassword("12345678");
-        registerForm.setEmail("hjeong.you@gmail.com");
-
-        Account account = accountService.createNewAccount(registerForm);
-        accountService.login(account);
-    }
-}
+//
+//@Component
+//public class AppRunner implements ApplicationRunner {
+//    @Autowired
+//    AccountService accountService;
+//
+//    @Override
+//    public void run(ApplicationArguments args) throws Exception {
+//        RegisterForm registerForm = new RegisterForm();
+//        registerForm.setNickname("유효정");
+//        registerForm.setPassword("12345678");
+//        registerForm.setConfirmPassword("12345678");
+//        registerForm.setEmail("hjeong.you@gmail.com");
+//
+//        Account account = accountService.createNewAccount(registerForm);
+//        accountService.login(account);
+//    }
+//}

@@ -3,6 +3,7 @@ package me.hjeong.mojji.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +28,8 @@ public class Account {
     private boolean emailVerified;
 
     private String emailCheckToken;
+
+    private LocalDateTime sendEmailAt;
 
     private LocalDateTime joinedAt;
 
