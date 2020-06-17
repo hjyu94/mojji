@@ -3,11 +3,15 @@ package me.hjeong.mojji.account;
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.domain.Account;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -25,6 +29,9 @@ public class AccountController {
         webDataBinder.addValidators(registerFormValidator);
     }
 
+    @GetMapping("/login")
+    public String loginForm() { return "login"; }
+
     @GetMapping("/new-account")
     public String registerForm(Model model) {
         model.addAttribute(new RegisterForm());
@@ -32,12 +39,13 @@ public class AccountController {
     }
 
     @PostMapping("/new-account")
-    public String registerUser(@Valid RegisterForm registerForm, Errors errors, Model model) {
+    public String registerUser(@Valid RegisterForm registerForm, Errors errors, Model model) throws Exception {
         if(errors.hasErrors()) {
             model.addAttribute(registerForm);
             return "/account/register";
         }
-        accountService.createNewAccount(registerForm);
+        Account account = accountService.createNewAccount(registerForm);
+        accountService.login(account);
         return "redirect:/";
     }
 
@@ -57,6 +65,13 @@ public class AccountController {
         return "account/message";
     }
 
-    @GetMapping("/reset")
-    public String reset() { return "account/reset"; }
+    @GetMapping("/account/confirm-email")
+    public String checkEmail(@AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : account") Account account, Model model) {
+        if(account.isEmailVerified()) { // 이미 메일 인증을 마친 상태라면 홈으로 이동
+            return "redirect:/";
+        }
+        model.addAttribute("email", account.getEmail());
+        return "account/check-email";
+    }
+
 }

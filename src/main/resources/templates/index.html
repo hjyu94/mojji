@@ -9,6 +9,10 @@
 
 <nav th:replace="fragments.html :: main-nav"></nav>
 
+<div style="margin-top: 56px; margin-bottom: 0px" class="alert alert-warning fixed-top" role="alert" th:if="${account != null && !account.emailVerified}">
+    모찌 가입을 완료하려면 <a href="#" th:href="@{/account/confirm-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
+</div>
+
 <header class="bg-primary text-white">
     <div class="container text-center">
         <h1>Welcome to Scrolling Nav</h1>
@@ -17,6 +21,7 @@
 </header>
 
 <section id="about">
+
     <div class="container">
         <div class="row">
             <div class="col-lg-8 mx-auto">
