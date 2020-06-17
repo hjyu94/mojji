@@ -66,7 +66,7 @@ public class AccountController {
     }
 
     @GetMapping("/account/confirm-email")
-    public String checkEmail(@AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : account") Account account, Model model) {
+    public String checkEmail(@CurrentAccount Account account, Model model) {
         if(account.isEmailVerified()) { // 이미 메일 인증을 마친 상태라면 홈으로 이동
             return "redirect:/";
         }
