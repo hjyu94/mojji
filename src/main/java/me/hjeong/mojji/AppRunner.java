@@ -22,7 +22,7 @@ public class AppRunner implements ApplicationRunner {
         registerForm.setNickname("유효정");
         registerForm.setPassword("12345678");
         registerForm.setConfirmPassword("12345678");
-        registerForm.setEmail("hj@email.com");
+        registerForm.setEmail("hjeong.you@gmail.com");
 
         Account account = accountService.createNewAccount(registerForm);
         accountService.login(account);

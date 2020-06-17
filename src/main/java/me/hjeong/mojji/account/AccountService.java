@@ -2,6 +2,8 @@ package me.hjeong.mojji.account;
 
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.domain.Account;
+import me.hjeong.mojji.mail.EmailMessage;
+import me.hjeong.mojji.mail.EmailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -30,7 +32,7 @@ public class AccountService implements UserDetailsService {
     private final ModelMapper modelMapper;
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender javaMailSender;
+    private final EmailService emailService;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -47,15 +49,14 @@ public class AccountService implements UserDetailsService {
 
     private void sendRegisterEmail(Account account) {
         account.generateEmailCheckToken();
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(account.getEmail());
-        mailMessage.setSubject("스터디올래, 회원 가입 인증");
-        mailMessage.setText(
-                "/confirmed-account-by-email?"
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(account.getEmail())
+                .subject("[Mojji] 회원 가입 인증")
+                .message("/confirmed-account-by-email?"
                         + "token=" + account.getEmailCheckToken()
-                        + "&email=" + account.getEmail()
-        );
-        javaMailSender.send(mailMessage);
+                        + "&email=" + account.getEmail())
+                .build();
+        emailService.sendEmail(emailMessage);
     }
 
     public boolean validateRegisterEmailToken(String token, Account account) {
