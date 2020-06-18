@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments.html :: head"></head>
+<body id="page-top">
+    <nav th:replace="fragments.html :: main-nav"></nav>
+    <section id="about">
+        <div class="container">
+            <div th:replace="fragments.html :: setting-title"></div>
+            <div class="row">
+                <div th:replace="fragments.html :: setting-menu(currentMenu = 'location')"></div>
+                <div class="col-sm-9">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form>
+                                        <div class="form-group row">
+                                            <label for="username" class="col-4 col-form-label">User Name*</label>
+                                            <div class="col-8">
+                                                <input id="username" name="username" placeholder="Username" class="form-control here" required="required" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="offset-4 col-8">
+                                                <button name="submit" type="submit" class="btn btn-primary">Update My Profile</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div th:replace="fragments.html :: normal-footer"></div>
+    <div th:replace="fragments.html :: normal-script"></div>
+</body>
+</html>
