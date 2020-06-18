@@ -9,7 +9,7 @@
 
 <nav th:replace="fragments.html :: main-nav"></nav>
 
-<div style="margin-top: 56px; margin-bottom: 0px" class="row justify-content-center align-self-center alert alert-warning fixed-top" th:if="${account != null && !account.emailVerified}">
+<div style="margin-top: 56px; margin-bottom: 0px" class="row justify-content-center align-self-center alert alert-warning" th:if="${account != null && !account.emailVerified}">
     모찌 가입을 완료하려면 <a href="#" th:href="@{/account/confirm-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
 </div>
 

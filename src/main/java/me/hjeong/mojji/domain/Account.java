@@ -40,10 +40,4 @@ public class Account {
     public void generateEmailCheckToken() {
         emailCheckToken = UUID.randomUUID().toString();
     }
-
-    public void confirmRegisterEmail() {
-        emailVerified = true;
-        joinedAt = LocalDateTime.now();
-        emailCheckToken = null;
-    }
 }

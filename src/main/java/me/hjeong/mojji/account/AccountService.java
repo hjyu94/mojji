@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -94,4 +95,23 @@ public class AccountService implements UserDetailsService {
     public boolean canResendRegisterEmail(Account account) {
         return account.getSendEmailAt().isBefore(LocalDateTime.now().minusHours(1));
     }
+
+    public void
+    sendResetPasswordEmail(Account account) {
+        String temppassword = UUID.randomUUID().toString();
+        account.setPassword(passwordEncoder.encode(temppassword));
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(account.getEmail())
+                .subject("[Mojji] 회원 가입 인증")
+                .message(temppassword)
+                .build();
+        emailService.sendEmail(emailMessage);
+    }
+
+    public void confirmRegisterEmail(Account account) {
+        account.setEmailVerified(true);
+        account.setJoinedAt(LocalDateTime.now());
+        account.setEmailCheckToken(null);
+    }
+
 }

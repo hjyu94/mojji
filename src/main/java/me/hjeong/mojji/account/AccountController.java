@@ -67,7 +67,7 @@ public class AccountController {
             message = "올바르지 않은 접근입니다";
         }
         else {
-            account.confirmRegisterEmail();
+            accountService.confirmRegisterEmail(account);
             title = "Let's Start";
             message = "가입이 완료되었습니다.";
         }
@@ -96,8 +96,7 @@ public class AccountController {
         String message = "";
         if(!accountService.canResendRegisterEmail(account)) {
             message = "한시간 이내에 메세지를 보냈습니다. 받은 메세지함을 다시 확인해 주세요.";
-        }
-        else {
+        } else {
             message = "이메일을 다시 전송했습니다";
         }
 
@@ -110,5 +109,27 @@ public class AccountController {
     public String message()
     {
         return "account/message";
+    }
+
+    @GetMapping("/account/password")
+    public String forgotPassword(@CurrentAccount Account account) {
+        return "account/forgot";
+    }
+
+    @PostMapping("/account/password")
+    public String sendForgotPassowordEmail(@RequestParam String email, RedirectAttributes attributes) {
+        String title = "", message = "";
+        Account account = accountRepository.findByEmail(email);
+        if(null == account) {
+            title = "Error";
+            message = "No that email account";
+        } else {
+            accountService.sendResetPasswordEmail(account);
+            title = "Reset Password";
+            message = "we send reset password to your email.";
+        }
+        attributes.addFlashAttribute("title", title);
+        attributes.addFlashAttribute("message", message);
+        return "redirect:/account/message";
     }
 }

@@ -17,6 +17,22 @@
 
     <link th:if="${mode == null}" rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
     <link th:if="${mode == 'auth'}" rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <style>
+        #main-nav-form {
+            /* This bit sets up the horizontal layout */
+            display:flex;
+            flex-direction:row;
+            /* I've used padding so you can see the edges of the elements. */
+            padding:2px;
+        }
+
+        #main-nav-search-input {
+            /* Tell the input to use all the available space */
+            flex-grow:2;
+            /* And hide the input's outline, so the form looks like the outline */
+            border:none;
+        }
+    </style>
 </head>
 
 <div th:fragment="auth-banner">
@@ -42,13 +58,24 @@
     </footer>
 </div>
 
-<nav th:fragment="main-nav" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+<nav th:fragment="main-nav" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav"> <!-- class=" navbar-expand-md > -->
     <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">Mojji</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
+        <!--Left-->
+        <div class="navbar-collapse collapse w-25 order-1 order-md-0 dual-collapse2">
+            <a class="navbar-brand js-scroll-trigger" href="#page-top">Mojji</a>
+        </div>
+        <!--Center-->
+        <div class="mx-auto order-0 w-100">
+            <form id="main-nav-form" class="form-inline" role="form" method="get" th:action="@{/search}">
+                <div class="form-group flex-grow-1">
+                    <label for="main-nav-search-input" class="sr-only">Email</label>
+                    <input type="text" id="main-nav-search-input" placeholder="지역, 상품 등을 검색해보세요." class="form-control" name="keywords"/>
+                </div>
+                <button type="submit" class="btn btn-success"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </form>
+        </div>
+        <!--Right-->
+        <div class="navbar-collapse collapse w-25 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
                 <!-- no authenticated user-->
                 <li class="nav-item" sec:authorize="!isAuthenticated()">
