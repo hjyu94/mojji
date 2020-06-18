@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 public class RegisterForm {
 
     @NotBlank
+    @Length(min = 1, max = 8)
     String nickname;
 
     @NotBlank
