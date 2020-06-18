@@ -7,11 +7,11 @@
 
 <body id="page-top">
 
-<nav th:replace="fragments.html :: main-nav"></nav>
-
-<div style="margin-top: 56px; margin-bottom: 0px" class="row justify-content-center align-self-center alert alert-warning" th:if="${account != null && !account.emailVerified}">
-    모찌 가입을 완료하려면 <a href="#" th:href="@{/account/confirm-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
+<div id="register-email-alert" style="margin-bottom: 0px" class="fixed-top row justify-content-center align-self-center alert alert-warning" th:if="${account != null && !account.emailVerified}">
+    모찌 가입을 완료하려면&nbsp;<a href="#" th:href="@{/account/confirm-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
 </div>
+
+<nav th:replace="fragments.html :: main-nav"></nav>
 
 <header class="bg-primary text-white">
     <div class="container text-center">
@@ -68,18 +68,13 @@
     </div>
 </section>
 
-<!-- Footer -->
-<footer class="py-5 bg-dark">
-    <div class="container">
-        <div class="m-0 text-center text-white"><i class="fas fa-map-marker-alt"></i> Seoul, Pyeongchon</div>
-        <div class="m-0 text-center text-white"><i class="fas fa-envelope"></i> hjeong.you@gmail.com</div>
-        <div class="m-0 text-center text-white"><i class="fab fa-github"></i> https://github.com/hjyu94</div>
-    </div>
-</footer>
-
-
-
+<div th:replace="fragments.html :: normal-footer"></div>
 <div th:replace="fragments.html :: normal-script"></div>
+<script>
+    window.onload = function(){
+        $('#register-email-alert').css('padding-top', parseInt($('#mainNav').css("height"))+10);
+    }
+</script>
 </body>
 
 </html>

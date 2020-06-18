@@ -17,22 +17,6 @@
 
     <link th:if="${mode == null}" rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
     <link th:if="${mode == 'auth'}" rel="stylesheet" type="text/css" href="/css/my-login.css">
-    <style>
-        #main-nav-form {
-            /* This bit sets up the horizontal layout */
-            display:flex;
-            flex-direction:row;
-            /* I've used padding so you can see the edges of the elements. */
-            padding:2px;
-        }
-
-        #main-nav-search-input {
-            /* Tell the input to use all the available space */
-            flex-grow:2;
-            /* And hide the input's outline, so the form looks like the outline */
-            border:none;
-        }
-    </style>
 </head>
 
 <div th:fragment="auth-banner">
@@ -44,20 +28,37 @@
 </div>
 
 <div th:fragment="normal-footer">
-    <footer class="py-5 bg-dark">
+    <footer class="py-5 bg-dark fixed-bottom">
         <div class="container">
-            <div class="m-0 text-center text-white"><i class="fas fa-map-marker-alt"></i> Seoul, Pyeongchon</div>
-            <div class="m-0 text-center text-white"><i class="fas fa-envelope"></i> hjeong.you@gmail.com</div>
-            <div class="m-0 text-center text-white"><i class="fab fa-github"></i> https://github.com/hjyu94</div>
+            <p class="m-0 text-center text-white">
+                <i class="fa fa-street-view" aria-hidden="true"></i>&nbsp;Gyeonggi-do&nbsp;&nbsp;
+                <i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp;hjeong.you@gmail.com&nbsp;&nbsp;
+                </i><i class="fa fa-github" aria-hidden="true"></i>&nbsp;https://github.com/hjyu94
+            </p>
         </div>
     </footer>
 </div>
 
 <nav th:fragment="main-nav" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav"> <!-- class=" navbar-expand-md > -->
+    <style>
+        #main-nav-form {
+            /* This bit sets up the horizontal layout */
+            display:flex;
+            flex-direction:row;
+            /* I've used padding so you can see the edges of the elements. */
+            padding:2px;
+        }
+        #main-nav-search-input {
+            /* Tell the input to use all the available space */
+            flex-grow:2;
+            /* And hide the input's outline, so the form looks like the outline */
+            border:none;
+        }
+    </style>
     <div class="container">
         <!--Left-->
         <div class="navbar-collapse collapse w-25 order-1 order-md-0 dual-collapse2">
-            <a class="navbar-brand js-scroll-trigger" href="/" th:href="@{/}">Mojji</a>
+            <a class="navbar-brand js-scroll-trigger" href="/" th:href="@{/}"><h2>Mojji</h2></a>
         </div>
         <!--Center-->
         <div class="mx-auto order-0 w-100">
@@ -102,7 +103,7 @@
                         <h6 class="dropdown-header">
                             <span sec:authentication="name">Username</span>
                         </h6>
-                        <a class="dropdown-item" th:href="@{'/profile/' + ${#authentication.name}}">프로필</a>
+                        <a class="dropdown-item" th:href="@{'/account/profile/' + ${#authentication.name}}">프로필</a>
                         <a class="dropdown-item" >내가 쓴 글</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" th:href="@{'/setting/profile'}">설정</a>

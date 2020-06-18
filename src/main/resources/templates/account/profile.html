@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments.html :: head"></head>
+<body id="page-top">
+<nav th:replace="fragments.html :: main-nav"></nav>
+<section id="about">
+    <div class="container">
+        <div class="row justify-content-center mt-3">
+            <div class="col-2">
+                <!-- profile image -->
+                <svg th:if="${#strings.isEmpty(account.profileImage)}" class="img-fluid float-left rounded img-thumbnail mt-4"
+                     th:data-jdenticon-value="${account.nickname}" width="200" height="200"></svg>
+                <img th:if="${!#strings.isEmpty(account.profileImage)}" class="img-fluid float-left rounded img-thumbnail mt-4"
+                     th:src="${account.profileImage}" width="200" height="200"/>
+                <!-- name -->
+                <h1 class="mt-4" th:text="${account.nickname}">nickname</h1>
+                <!-- zone -->
+                <p class="mt-4" th:if="${#strings.isEmpty(account.getZonesToString())}">Not yet</p>
+                <p class="mt-4" th:if="${!#strings.isEmpty(account.getZonesToString())}">zone1, zone2</p>
+            </div>
+            <div class="col-8 ml-5">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-selling"
+                           role="tab" aria-controls="nav-selling" aria-selected="true">Selling</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-sold" role="tab"
+                           aria-controls="nav-sold" aria-selected="false">Sold</a>
+                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-review"
+                           role="tab" aria-controls="nav-review" aria-selected="false">Review</a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-selling" role="tabpanel"
+                         aria-labelledby="nav-selling-tab">
+                        ddd
+                    </div>
+                    <div class="tab-pane fade" id="nav-sold" role="tabpanel" aria-labelledby="nav-sold-tab">
+                        sss
+                    </div>
+                    <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
+                        fff
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:replace="fragments.html :: normal-footer"></div>
+<div th:replace="fragments.html :: normal-script"></div>
+</body>
+</html>

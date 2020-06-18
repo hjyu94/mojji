@@ -3,15 +3,11 @@ package me.hjeong.mojji.account;
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.domain.Account;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -132,4 +128,15 @@ public class AccountController {
         attributes.addFlashAttribute("message", message);
         return "redirect:/account/message";
     }
+
+    @GetMapping("/account/profile/{nickname}")
+    public String showProfile(@PathVariable String nickname, Model model) {
+        Account account = accountRepository.findByNickname(nickname);
+        if(account == null) {
+            return "message";
+        }
+        model.addAttribute(account);
+        return "account/profile";
+    }
+
 }

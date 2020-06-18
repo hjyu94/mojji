@@ -5,8 +5,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter @Setter
@@ -33,11 +35,20 @@ public class Account {
 
     private LocalDateTime joinedAt;
 
+    @OneToMany
+    private Set<Zone> zones = new HashSet<>();
+
     @Lob
     @Basic(fetch = FetchType.EAGER)
     private String profileImage; // Varchar(255) -> Test, 기본적으로 LAZY Fetch
 
     public void generateEmailCheckToken() {
         emailCheckToken = UUID.randomUUID().toString();
+    }
+
+    public String getZonesToString() {
+        return zones.stream()
+                .map(Zone::toString)
+                .collect(Collectors.joining(", "));
     }
 }
