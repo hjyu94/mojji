@@ -112,6 +112,7 @@ public class AccountService implements UserDetailsService {
         account.setEmailVerified(true);
         account.setJoinedAt(LocalDateTime.now());
         account.setEmailCheckToken(null);
+        this.login(account); // update current login user
     }
 
 }
