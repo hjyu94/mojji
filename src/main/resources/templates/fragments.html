@@ -12,11 +12,17 @@
     <title>Mojji</title>
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
 
     <link th:if="${mode == null}" rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
     <link th:if="${mode == 'auth'}" rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <style>
+        body {
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+    </style>
 </head>
 
 <div th:fragment="auth-banner">
@@ -116,6 +122,12 @@
         </div>
     </div>
 </nav>
+
+<script th:fragment="tooltip" type="application/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 
 <!--Setting-->
 <div th:fragment="setting-title" class="row mb-5">

@@ -10,34 +10,75 @@
 </div>
 <nav th:replace="fragments.html :: main-nav"></nav>
 <main role="main">
-    <!-- Main jumbotron for a primary marketing message or call to action -->
+
     <div class="jumbotron">
         <div class="container">
-            <h1 class="display-3">Hello, world!</h1>
-            <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-            <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
+            <div class="row justify-content-center">
+                <div class="col-md-7 align-self-center text-center">
+                    <h4 class="h1 mb-4">편리한 중고 거래</h4>
+                    <p class="font-weight-normal">중고거래 시작은 모찌에서!<br/>동네 주민들과 가깝고 따뜻한 거래를 경험해보세요.</p>
+                    <div th:if="${account == null}" class="row justify-content-center my-2">
+                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
+                              title="회원 가입 후 모찌 서비스를 마음껏 이용하세요">
+                            <a class="mx-1 btn btn-primary text-white" th:href="@{/register}">회원 가입</a>
+                        </span>
+                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
+                              title="로그인 창으로 이동합니다.">
+                            <a class="mx-1 btn btn-danger text-white" th:href="@{/new-stock}">로그인</a>
+                        </span>
+                    </div>
+                    <div th:if="${account != null}" class="row justify-content-center my-2">
+                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
+                              title="판매를 시작해보세요!">
+                            <a class="mx-1 btn btn-primary text-white" th:href="@{/register}">판매글 등록하기</a>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-5 offset">
+                    <div class="view overlay">
+                        <img src="/images/shopping.png" style="max-width: 100%; height:auto;">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="container">
-        <!-- Example row of columns -->
+
+    <div th:if="${account == null}" class="container">
         <div class="row">
             <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+                <h2>지역 설정</h2>
+                <p>지역을 설정해두면 해당 지역의 중고 물건이 등록될 때 알림을 받으실 수 있습니다.      task-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+                    2020-06-22 11:48:09.032  INFO 30316 --- [         task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+                    2020-06-22 11:48:09.265  INFO 3031</p>
             </div>
             <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+                <h2>관심 물건 설정</h2>
+                <p>관심 물건을 설정해두면 해당 카테고리의 중고 물건이 등록될 때 알림을 받으실 수 있습니다.      task-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+                    2020-06-22 11:48:09.032  INFO 30316 --- [         task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+                    2020-06-22 11:48:09.265  INFO 3031</p>
             </div>
             <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+                <h2>기능3</h2>
+                <p>22  INFO 30316 --- [         task-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+                    2020-06-22 11:48:09.032  INFO 30316 --- [         task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+                    2020-06-22 11:48:09.265  INFO 30316 --- [         task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+                    2020-06-22</p>
             </div>
         </div>
-    </div> <!-- /container -->
+    </div>
+
+    <div th:if="${account != null}" class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>내가 관심있는 지역</h2>
+                <p>...</p>
+            </div>
+            <div class="col-md-6">
+                <h2>내가 관심있는 물건</h2>
+                <p>...</p>
+            </div>
+        </div>
+    </div>
 </main>
 <div th:replace="fragments.html :: normal-footer"></div>
 <div th:replace="fragments.html :: normal-script"></div>
@@ -61,5 +102,6 @@
         ele_main.css('padding-bottom', size_footer);
     }
 </script>
+<script th:replace="fragments.html :: tooltip"></script>
 </body>
 </html>
