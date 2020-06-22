@@ -20,17 +20,17 @@
                     <div th:if="${account == null}" class="row justify-content-center my-2">
                         <span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
                               title="회원 가입 후 모찌 서비스를 마음껏 이용하세요">
-                            <a class="mx-1 btn btn-primary text-white" th:href="@{/register}">회원 가입</a>
+                            <a class="mx-1 btn btn-primary text-white" th:href="@{/new-account}">회원 가입</a>
                         </span>
                         <span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
                               title="로그인 창으로 이동합니다.">
-                            <a class="mx-1 btn btn-danger text-white" th:href="@{/new-stock}">로그인</a>
+                            <a class="mx-1 btn btn-danger text-white" th:href="@{/login}">로그인</a>
                         </span>
                     </div>
                     <div th:if="${account != null}" class="row justify-content-center my-2">
                         <span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
                               title="판매를 시작해보세요!">
-                            <a class="mx-1 btn btn-primary text-white" th:href="@{/register}">판매글 등록하기</a>
+                            <a class="mx-1 btn btn-primary text-white" th:href="@{/new-stock}">판매글 등록하기</a>
                         </span>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                     2020-06-22 11:48:09.265  INFO 3031</p>
             </div>
             <div class="col-md-4">
-                <h2>기능3</h2>
+                <h2>반응형 웹 페이지</h2>
                 <p>22  INFO 30316 --- [         task-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
                     2020-06-22 11:48:09.032  INFO 30316 --- [         task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
                     2020-06-22 11:48:09.265  INFO 30316 --- [         task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
