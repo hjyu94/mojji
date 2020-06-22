@@ -28,7 +28,7 @@
 <div th:fragment="auth-banner">
     <a href="/" th:href="@{/}">
         <div class="brand">
-            <img src="/images/logo.jpg" alt="bootstrap 4 login page">
+            <img src="/images/logo.png" alt="bootstrap 4 login page">
         </div>
     </a>
 </div>
@@ -63,11 +63,16 @@
     </style>
     <div class="container">
         <!--Left-->
-        <div class="navbar-collapse collapse w-25 order-1 order-md-0 dual-collapse2">
-            <a class="navbar-brand js-scroll-trigger" href="/" th:href="@{/}"><h2>Mojji</h2></a>
+        <div class="navbar-collapse collapse w-25 order-1 order-md-0 dual-collapse2 row">
+            <a class="navbar-brand js-scroll-trigger mx-1" href="/" th:href="@{/}">
+                <img src="/images/logo.png" alt="banner img" style="width:auto; max-height:45px;">
+            </a>
+            <a class="navbar-brand js-scroll-trigger" href="/" th:href="@{/}">
+                <h3 style="margin: 0">모찌마켓</h3>
+            </a>
         </div>
         <!--Center-->
-        <div class="mx-auto order-0 w-100">
+        <div class="mx-auto order-0 w-50">
             <form id="main-nav-form" class="form-inline" role="form" method="get" th:action="@{/search}">
                 <div class="form-group flex-grow-1">
                     <label for="main-nav-search-input" class="sr-only">Email</label>
