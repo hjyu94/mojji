@@ -123,25 +123,37 @@
     })
 </script>
 
-<!--Setting-->
-<div th:fragment="setting-title" class="row mb-5">
-    <div class="col-sm-12">
-        <h3 sec:authentication="name">User name</h3>
+<!--Profile-->
+<div th:fragment="profile-header" class="row col-md-8">
+    <div class="col-md-3">
+        <svg th:if="${#strings.isEmpty(account.profileImage)}" class="img-fluid float-left rounded img-thumbnail mt-4"
+             th:data-jdenticon-value="${account.nickname}" width="150" height="150"></svg>
+        <img th:if="${!#strings.isEmpty(account.profileImage)}" class="img-fluid float-left rounded img-thumbnail mt-4"
+             th:src="${account.profileImage}" width="150" height="150"/>
+    </div>
+    <div class="col-md-9">
+        <h1 class="my-4" th:text="${account.nickname}">nickname</h1>
+        <p th:if="${#strings.isEmpty(account.getZonesToString())}">Not yet</p>
+        <p th:if="${!#strings.isEmpty(account.getZonesToString())}">zone1, zone2</p>
+        <p>전자제품, 맥북, 커피기구</p>
     </div>
 </div>
 
-<div th:fragment="setting-menu (currentMenu)" class="col-sm-3">
-    <div class="text-center">
-        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
-        <input type="file" class="text-center center-block file-upload">
-    </div>
-    <div class="list-group mt-5">
-        <a href="#" class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'profile'}? active" th:href="@{/setting/profile}">Profile</a>
-        <a href="#" class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'password'}? active" th:href="@{/setting/password}">Password</a>
-        <a href="#" class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'location'}? active" th:href="@{/setting/location}">Location</a>
-        <a href="#" class="list-group-item list-group-item-action list-group-item-danger" th:classappend="${currentMenu == 'exit'}? active" th:href="@{/setting/exit}">Exit</a>
+<!--Setting-->
+<div th:fragment="setting-title" class="row justify-content-center mb-5">
+    <div class="col-sm-12">
+        <h1 sec:authentication="name">User name</h1>
     </div>
 </div>
+
+<nav th:fragment="setting-menu (currentMenu)" class="col-md-8 mt-3">
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link" th:classappend="${currentMenu == 'profile'}? active" th:href="@{/setting/profile}">프로필</a>
+        <a class="nav-item nav-link" th:classappend="${currentMenu == 'password'}? active" th:href="@{/setting/password}">패스워드 변경</a>
+        <a class="nav-item nav-link" th:classappend="${currentMenu == 'location'}? active" th:href="@{/setting/location}">지역 설정</a>
+        <a class="nav-item nav-link" th:classappend="${currentMenu == 'quit'}? active" th:href="@{/setting/quit}">탈퇴하기</a>
+    </div>
+</nav>
 
 <div th:fragment="normal-script">
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
