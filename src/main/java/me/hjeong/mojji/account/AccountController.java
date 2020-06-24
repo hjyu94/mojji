@@ -32,14 +32,14 @@ public class AccountController {
     @GetMapping("/new-account")
     public String registerForm(Model model) {
         model.addAttribute(new RegisterForm());
-        return "/account/register";
+        return "account/register";
     }
 
     @PostMapping("/new-account")
     public String registerUser(@Valid RegisterForm registerForm, Errors errors, Model model) throws Exception {
         if(errors.hasErrors()) {
             model.addAttribute(registerForm);
-            return "/account/register";
+            return "account/register";
         }
         Account account = accountService.createNewAccount(registerForm);
         accountService.login(account);

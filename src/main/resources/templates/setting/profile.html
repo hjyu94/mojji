@@ -7,12 +7,42 @@
 <nav th:replace="fragments.html :: main-nav"></nav>
 <section>
     <div class="container">
-        <div class="row justify-content-center">
-            <div th:replace="fragments.html :: profile-header"></div>
-            <nav th:replace="fragments.html :: setting-menu(currentMenu = 'profile')"></nav>
-            <div class="col-md-8 mt-3 tab-content" id="nav-tabContent">
-                프로필 변경 폼
-            </div>
+        <div th:replace="fragments.html :: profile-header"></div>
+        <nav th:replace="fragments.html :: setting-menu(currentMenu = 'profile')"></nav>
+        <div class="row mt-3 tab-content">
+            <form class="form flex-grow-1">
+                <div class="form-group row justify-content-center">
+                    <label for="staticEmail" class="col-lg-2 col-2 col-form-label">Email</label>
+                    <div class="col-lg-5 col">
+                        <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="email@example.com">
+                    </div>
+                </div>
+                <div class="form-group row justify-content-center">
+                    <label for="nickname" class="col-form-label col-2">Nickname</label>
+                    <div class="col-lg-4 col">
+                        <input type="text" class="form-control" id="nickname" placeholder="nickname">
+                    </div>
+                    <button class="btn btn-primary col-1"><i class="fa fa-check" aria-hidden="true"></i></button>
+                </div>
+                <div class="form-group row justify-content-center">
+                    <div class="alert alert-light col-lg-5 col-12 text-center mb-0" role="alert">
+                        <a th:href="@{/settings/locations}">내 동네</a>에 <a th:href="@{/settings/keywords}">관심있는 물건</a>이 올라올 때 알림을 받습니다.
+                    </div>
+                    <div class="col-lg-4 col-12 text-center align-self-center">
+                        <div class="custom-control custom-switch custom-control-inline">
+<!--                            <input type="checkbox" th:field="*{studyCreatedByEmail}" class="custom-control-input" id="studyCreatedByEmail">-->
+                            <input type="checkbox" class="custom-control-input" id="studyCreatedByEmail">
+                            <label class="custom-control-label" for="studyCreatedByEmail">이메일로 받기</label>
+                        </div>
+                        <div class="custom-control custom-switch custom-control-inline">
+<!--                            <input type="checkbox" th:field="*{studyCreatedByWeb}" class="custom-control-input" id="studyCreatedByWeb">-->
+                            <input type="checkbox" class="custom-control-input" id="studyCreatedByWeb">
+                            <label class="custom-control-label" for="studyCreatedByWeb">웹으로 받기</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-block" type="submit" aria-describedby="submitHelp">수정하기</button>
+            </form>
         </div>
     </div>
 </section>
