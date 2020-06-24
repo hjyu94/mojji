@@ -6,17 +6,10 @@ import me.hjeong.mojji.domain.Account;
 import me.hjeong.mojji.mail.EmailMessage;
 import me.hjeong.mojji.mail.EmailService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,9 +33,6 @@ public class AccountService implements UserDetailsService {
     private final EmailService emailService;
     private final AppProperties appProperties;
     private final TemplateEngine templateEngine;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
 
     public Account createNewAccount(RegisterForm registerForm) {
         String password = passwordEncoder.encode(registerForm.getPassword());
