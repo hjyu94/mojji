@@ -1,6 +1,7 @@
 package me.hjeong.mojji.account;
 
 import lombok.RequiredArgsConstructor;
+import me.hjeong.mojji.config.AppProperties;
 import me.hjeong.mojji.domain.Account;
 import me.hjeong.mojji.mail.EmailMessage;
 import me.hjeong.mojji.mail.EmailService;
@@ -21,6 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,6 +38,8 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final AppProperties appProperties;
+    private final TemplateEngine templateEngine;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -50,14 +55,22 @@ public class AccountService implements UserDetailsService {
     }
 
     public void sendRegisterEmail(Account account) {
+        Context context = new Context();
+        context.setVariable("nickname", account.getNickname());
+        context.setVariable("message", "회원가입을 완료하려면 아래 링크를 클릭해주세요.");
+        context.setVariable("host", appProperties.getHost());
+        context.setVariable("link", "/confirmed-account-by-email?"
+                + "token=" + account.getEmailCheckToken()
+                + "&email=" + account.getEmail());
+        context.setVariable("linkName", "모찌 가입 완료");
+        String message = templateEngine.process("email", context);
+
         account.setSendEmailAt(LocalDateTime.now());
         account.generateEmailCheckToken();
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
-                .subject("[Mojji] 회원 가입 인증")
-                .message("/confirmed-account-by-email?"
-                        + "token=" + account.getEmailCheckToken()
-                        + "&email=" + account.getEmail())
+                .subject("[모찌마켓] 회원 가입 인증")
+                .message(message)
                 .build();
         emailService.sendEmail(emailMessage);
     }
@@ -96,14 +109,13 @@ public class AccountService implements UserDetailsService {
         return account.getSendEmailAt().isBefore(LocalDateTime.now().minusHours(1));
     }
 
-    public void
-    sendResetPasswordEmail(Account account) {
-        String temppassword = UUID.randomUUID().toString();
-        account.setPassword(passwordEncoder.encode(temppassword));
+    public void sendResetPasswordEmail(Account account) {
+        String temp_password = UUID.randomUUID().toString();
+        account.setPassword(passwordEncoder.encode(temp_password));
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
-                .subject("[Mojji] 회원 가입 인증")
-                .message(temppassword)
+                .subject("[모찌마켓] 회원 가입 인증")
+                .message(temp_password)
                 .build();
         emailService.sendEmail(emailMessage);
     }
