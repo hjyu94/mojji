@@ -9,26 +9,58 @@
     <div class="container">
         <div th:replace="fragments.html :: profile-header"></div>
         <nav th:replace="fragments.html :: setting-menu(currentMenu = 'profile')"></nav>
-        <div class="row mt-3 tab-content">
-            <form class="form flex-grow-1">
-                <div class="form-group row justify-content-center">
-                    <label for="staticEmail" class="col-lg-2 col-2 col-form-label">Email</label>
-                    <div class="col-lg-5 col">
-                        <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="email@example.com">
+        <div class="row justify-content-center mt-3">
+            <form class="form col-md-8 col-12">
+                <div class="form-group row">
+                    <label for="staticEmail" class="col-lg-2 col-2 col-form-label">이메일</label>
+                    <div class="col">
+                        <div class="row">
+                            <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="email@example.com">
+                        </div>
+                        <small class="row form-text text-primary">
+                            Password is required
+                        </small>
+                        <small class="row form-text text-danger">
+                            Nickname Error
+                        </small>
                     </div>
                 </div>
-                <div class="form-group row justify-content-center">
-                    <label for="nickname" class="col-form-label col-2">Nickname</label>
-                    <div class="col-lg-4 col">
-                        <input type="text" class="form-control" id="nickname" placeholder="nickname">
+                <div class="form-group row">
+                    <label for="nickname" class="col-form-label col-2">닉네임</label>
+                    <div class="col">
+                        <div class="row">
+                            <input type="text" class="col form-control" id="nickname">
+                            <button class="btn btn-link col-1"><i class="fa fa-check text-success" aria-hidden="true"></i></button>
+                            <button class="btn btn-success col-1"><i class="fa fa-check" aria-hidden="true"></i></button>
+                        </div>
+                        <small class="row form-text text-primary">
+                            Password is required
+                        </small>
+                        <small class="row form-text text-danger">
+                            Nickname Error
+                        </small>
                     </div>
-                    <button class="btn btn-primary col-1"><i class="fa fa-check" aria-hidden="true"></i></button>
                 </div>
-                <div class="form-group row justify-content-center">
-                    <div class="alert alert-light col-lg-5 col-12 text-center mb-0" role="alert">
-                        <a th:href="@{/settings/locations}">내 동네</a>에 <a th:href="@{/settings/keywords}">관심있는 물건</a>이 올라올 때 알림을 받습니다.
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">프로필 사진</label>
+                    <div class="col">
+                        <div class="row custom-file">
+                            <input type="file" class="col custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+                        <small class="row form-text text-primary">
+                            Password is required
+                        </small>
+                        <small class="row form-text text-danger">
+                            Nickname Error
+                        </small>
                     </div>
-                    <div class="col-lg-4 col-12 text-center align-self-center">
+                </div>
+                <div class="form-group row">
+                    <div class="col-2">
+                        알림
+                    </div>
+                    <div class="col">
                         <div class="custom-control custom-switch custom-control-inline">
 <!--                            <input type="checkbox" th:field="*{studyCreatedByEmail}" class="custom-control-input" id="studyCreatedByEmail">-->
                             <input type="checkbox" class="custom-control-input" id="studyCreatedByEmail">
@@ -41,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary btn-block" type="submit" aria-describedby="submitHelp">수정하기</button>
+                <button class="ml-auto col-3 btn btn-primary btn-block" type="submit" aria-describedby="submitHelp">수정하기</button>
             </form>
         </div>
     </div>
@@ -78,6 +110,13 @@
                 }
             }
         });  // ajax 끝
+    });
+</script>
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 </script>
 </body>

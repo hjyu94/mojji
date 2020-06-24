@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"city", "province"}))
-public class Zone {
+public class Location {
 
     @Id
     @GeneratedValue

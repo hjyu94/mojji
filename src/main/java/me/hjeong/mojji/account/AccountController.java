@@ -93,6 +93,7 @@ public class AccountController {
         if(!accountService.canResendRegisterEmail(account)) {
             message = "한시간 이내에 메세지를 보냈습니다. 받은 메세지함을 다시 확인해 주세요.";
         } else {
+            accountService.sendRegisterEmail(account);
             message = "이메일을 다시 전송했습니다";
         }
 
@@ -109,6 +110,10 @@ public class AccountController {
 
     @GetMapping("/account/password")
     public String forgotPassword(@CurrentAccount Account account) {
+        // 로그인한 사용자가 비밀번호를 찾으려고 하는 경우 홈으로 리다이렉트한다.
+        if (account != null) {
+            return "redirect:/";
+        }
         return "account/forgot";
     }
 
@@ -133,7 +138,7 @@ public class AccountController {
     public String showProfile(@PathVariable String nickname, Model model) {
         Account account = accountRepository.findByNickname(nickname);
         if(account == null) {
-            return "message";
+            return "error";
         }
         model.addAttribute(account);
         return "account/profile";

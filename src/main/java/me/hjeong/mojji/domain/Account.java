@@ -35,7 +35,7 @@ public class Account {
     private LocalDateTime joinedAt;
 
     @OneToMany
-    private Set<Zone> zones = new HashSet<>();
+    private Set<Location> locations = new HashSet<>();
 
     @Lob
     @Basic(fetch = FetchType.EAGER)
@@ -46,8 +46,8 @@ public class Account {
     }
 
     public String getZonesToString() {
-        return zones.stream()
-                .map(Zone::toString)
+        return locations.stream()
+                .map(Location::toString)
                 .collect(Collectors.joining(", "));
     }
 }

@@ -15,9 +15,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
-
-    <link th:if="${mode == null}" rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
+    <link th:if="${mode != 'auth'}" rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
     <link th:if="${mode == 'auth'}" rel="stylesheet" type="text/css" href="/css/my-login.css">
+    <link th:if="${mode == 'tagify'}" rel="stylesheet" type="text/css" href="/node_modules/@yaireo/tagify/dist/tagify.css"/>
+    <script th:if="${mode == 'tagify'}" src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <script th:if="${mode == 'tagify'}" src="/node_modules/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+
+    <style th:if="${mode == 'tagify'}">
+        .customSuggestionsList > div{
+            max-height: 200px;
+            border: 2px solid pink;
+            overflow: auto;
+        }
+    </style>
     <style>
         body {
             font-family: 'Nanum Gothic', sans-serif;
@@ -131,14 +141,14 @@
 </script>
 
 <!--Profile-->
-<div th:fragment="profile-header" class="row col-md-8">
-    <div class="col-md-3">
+<div th:fragment="profile-header" class="row justify-content-center">
+    <div class="col-md-3 col-4">
         <svg th:if="${#strings.isEmpty(account.profileImage)}" class="img-fluid float-left rounded img-thumbnail mt-4"
              th:data-jdenticon-value="${account.nickname}" width="150" height="150"></svg>
         <img th:if="${!#strings.isEmpty(account.profileImage)}" class="img-fluid float-left rounded img-thumbnail mt-4"
              th:src="${account.profileImage}" width="150" height="150"/>
     </div>
-    <div class="col-md-9">
+    <div class="col-md-5 col-8">
         <h1 class="my-4" th:text="${account.nickname}">nickname</h1>
         <p th:if="${#strings.isEmpty(account.getZonesToString())}">Not yet</p>
         <p th:if="${!#strings.isEmpty(account.getZonesToString())}">zone1, zone2</p>
@@ -153,12 +163,12 @@
     </div>
 </div>
 
-<nav th:fragment="setting-menu (currentMenu)" class="col-md-8 mt-3">
-    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+<nav th:fragment="setting-menu (currentMenu)" class="row justify-content-center mt-5">
+    <div class="nav nav-tabs col-md-8 col-12" id="nav-tab" role="tablist">
         <a class="nav-item nav-link" th:classappend="${currentMenu == 'profile'}? active" th:href="@{/setting/profile}">프로필</a>
         <a class="nav-item nav-link" th:classappend="${currentMenu == 'password'}? active" th:href="@{/setting/password}">패스워드 변경</a>
-        <a class="nav-item nav-link" th:classappend="${currentMenu == 'location'}? active" th:href="@{/setting/location}">지역 설정</a>
-        <a class="nav-item nav-link" th:classappend="${currentMenu == 'quit'}? active" th:href="@{/setting/quit}">탈퇴하기</a>
+        <a class="nav-item nav-link" th:classappend="${currentMenu == 'location'}? active" th:href="@{/setting/location}">동네 설정</a>
+        <a class="nav-item nav-link text-danger" th:classappend="${currentMenu == 'quit'}? active" th:href="@{/setting/quit}">탈퇴하기</a>
     </div>
 </nav>
 
