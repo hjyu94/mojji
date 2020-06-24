@@ -55,6 +55,9 @@ public class AccountService implements UserDetailsService {
     }
 
     public void sendRegisterEmail(Account account) {
+        account.setSendEmailAt(LocalDateTime.now());
+        account.generateEmailCheckToken();
+
         Context context = new Context();
         context.setVariable("nickname", account.getNickname());
         context.setVariable("message", "회원가입을 완료하려면 아래 링크를 클릭해주세요.");
@@ -65,8 +68,6 @@ public class AccountService implements UserDetailsService {
         context.setVariable("linkName", "모찌 가입 완료");
         String message = templateEngine.process("email", context);
 
-        account.setSendEmailAt(LocalDateTime.now());
-        account.generateEmailCheckToken();
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
                 .subject("[모찌마켓] 회원 가입 인증")
