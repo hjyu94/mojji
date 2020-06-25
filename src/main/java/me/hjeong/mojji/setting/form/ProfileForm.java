@@ -9,14 +9,14 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class ProfileForm {
 
-    @Email
     @NotBlank
-    private String email;
-
-    @Length(max = 8)
-    @NotBlank
+    @Length(min = 2, max = 8)
     private String nickname;
 
     private String profileImage;
+
+    private boolean notiByWeb;
+
+    private boolean notiByEmail;
 
 }

@@ -10,33 +10,39 @@
         <div th:replace="fragments.html :: profile-header"></div>
         <nav th:replace="fragments.html :: setting-menu(currentMenu = 'profile')"></nav>
         <div class="row justify-content-center mt-3">
-            <form class="form col-md-8 col-12">
+            <form class="form col-md-8 col-12 needs-validation" action="#" th:action="@{/setting/profile}" th:object="${profile}" method="post" novalidate>
                 <div class="form-group row">
-                    <label for="staticEmail" class="col-lg-2 col-2 col-form-label">이메일</label>
+                    <label class="col-lg-2 col-2 col-form-label">이메일</label>
                     <div class="col">
                         <div class="row">
-                            <input type="text" readonly="" class="form-control-plaintext" id="staticEmail" value="email@example.com">
+                            <p class="text-justify my-2" th:text="${account.email}">mojji@email.com</p>
                         </div>
-                        <small class="row form-text text-primary">
-                            Password is required
+                        <small class="row form-text text-muted">
+                            가입에 사용한 이메일은 수정할 수 없습니다.
                         </small>
-                        <small class="row form-text text-danger">
-                            Nickname Error
-                        </small>
+<!--                        <small class="row form-text text-danger">-->
+<!--                            Nickname Error-->
+<!--                        </small>-->
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="nickname" class="col-form-label col-2">닉네임</label>
                     <div class="col">
                         <div class="row">
-                            <input type="text" class="col form-control" id="nickname">
-                            <button class="btn btn-link col-1"><i class="fa fa-check text-success" aria-hidden="true"></i></button>
-                            <button class="btn btn-success col-1"><i class="fa fa-check" aria-hidden="true"></i></button>
+                            <p style="display:none;" id="origin-nickname" th:text="*{nickname}">원래 닉네임</p>
+                            <input type="text" class="col form-control" id="nickname" th:field="*{nickname}" required minlength="2" maxlength="8">
+                            <p id="btn-nickname-check" class="btn btn-link col-1" style="display: none;"><i class="fa fa-check text-success" aria-hidden="true"></i></p>
                         </div>
-                        <small class="row form-text text-primary">
-                            Password is required
+                        <small class="row form-text text-muted">
+                            닉네임은 2글자에서 8글자 사이로 설정 가능합니다.
                         </small>
-                        <small class="row form-text text-danger">
+                        <small id="txt-nickname-check" class="row form-text text-danger" style="display: none;">
+                            중복되는 닉네임이 있는지 확인해주세요.
+                        </small>
+                        <small id="txt-nickname-safe" class="row form-text text-primary" style="display: none;">
+                            사용 가능한 닉네임입니다.
+                        </small>
+                        <small class="row form-text text-danger" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">
                             Nickname Error
                         </small>
                     </div>
@@ -62,14 +68,12 @@
                     </div>
                     <div class="col">
                         <div class="custom-control custom-switch custom-control-inline">
-<!--                            <input type="checkbox" th:field="*{studyCreatedByEmail}" class="custom-control-input" id="studyCreatedByEmail">-->
-                            <input type="checkbox" class="custom-control-input" id="studyCreatedByEmail">
-                            <label class="custom-control-label" for="studyCreatedByEmail">이메일로 받기</label>
+                            <input type="checkbox" th:field="*{notiByWeb}" class="custom-control-input" id="notiByWeb">
+                            <label class="custom-control-label" for="notiByWeb">웹으로 받기</label>
                         </div>
                         <div class="custom-control custom-switch custom-control-inline">
-<!--                            <input type="checkbox" th:field="*{studyCreatedByWeb}" class="custom-control-input" id="studyCreatedByWeb">-->
-                            <input type="checkbox" class="custom-control-input" id="studyCreatedByWeb">
-                            <label class="custom-control-label" for="studyCreatedByWeb">웹으로 받기</label>
+                            <input type="checkbox" th:field="*{notiByEmail}" class="custom-control-input" id="notiByEmail">
+                            <label class="custom-control-label" for="notiByEmail">이메일로 받기</label>
                         </div>
                     </div>
                 </div>
@@ -90,33 +94,54 @@
     });
 </script>
 <script>
-    $(".idCheck").click(function(){
-
-        var query = {userId : $("#userId").val()};
-
-        $.ajax({
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            url : "/idCheck",
-            type : "post",
-            data : query,
-            success : function(data) {
-                if(data == 1) {
-                    $(".result .msg").text("사용 불가");
-                    $(".result .msg").attr("style", "color:#f00");
-                } else {
-                    $(".result .msg").text("사용 가능");
-                    $(".result .msg").attr("style", "color:#00f");
-                }
-            }
-        });  // ajax 끝
-    });
-</script>
-<script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
+<script>
+    var nickname = $('#nickname');
+    var btn_check = $('#btn-nickname-check');
+    var alert = $('#txt-nickname-check');
+    var safe = $('#txt-nickname-safe');
+    var origin_nickname = $("#origin-nickname");
+
+    nickname.on("change keyup paste", function() {
+        if($.trim(nickname.val()) == '') {
+            alert.text("닉네임은 빈칸으로 설정할 수 없습니다");
+            alert.show();
+            btn_check.hide();
+        } else if(nickname.val().length < 2) {
+            alert.text("닉네임은 최소 2글자는 되어야 합니다");
+            alert.show();
+            btn_check.hide();
+        } else if(nickname.val() != origin_nickname.text()) {
+            alert.text("중복되는 닉네임이 있는지 확인해주세요.");
+            alert.show()
+            btn_check.show();
+        } else {
+            btn_check.hide();
+            alert.hide();
+        }
+    });
+
+    btn_check.click(function(){
+        $.ajax({
+            url : "/setting/profile/idcheck",
+            type : "get",
+            data : "nickname=" + nickname.val(),
+            success : function(data) {
+                if(data == 1) {
+                    alert.text("중복되는 닉네임이 있습니다. 다른 닉네임을 사용해주세요.")
+                } else {
+                    alert.hide();
+                    btn_check.hide();
+                    safe.show();
+                    origin_nickname.text(nickname.val());
+                }
+            }
+        });
     });
 </script>
 </body>

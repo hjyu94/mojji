@@ -14,6 +14,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,11 +31,23 @@ public class SettingController {
 
     @GetMapping("/setting/profile")
     public String profileForm(@CurrentAccount Account account, Model model) {
-        Account byId = accountRepository.findById(account.getId()).get();
-        ProfileForm profile = modelMapper.map(byId, ProfileForm.class);
-        model.addAttribute(profile);
-        model.addAttribute(byId);
+        Account accountWithLocation = accountRepository.findByEmail(account.getEmail());
+        // Lazy loading 으로 인해 zone 정보를 가지고 있지 않다.
+        ProfileForm profile = modelMapper.map(accountWithLocation, ProfileForm.class);
+        model.addAttribute(accountWithLocation);
+        model.addAttribute("profile", profile);
         return "setting/profile";
+    }
+
+    // Id 중복 체크
+    @GetMapping("/setting/profile/idcheck")
+    @ResponseBody
+    public int idCheck(@RequestParam String nickname) {
+        if(accountRepository.existsByNickname(nickname)) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @PostMapping("/setting/profile")

@@ -34,6 +34,10 @@ public class Account {
 
     private LocalDateTime joinedAt;
 
+    private boolean notiByWeb = true;
+
+    private boolean notiByEmail = false;
+
     @OneToMany
     private Set<Location> locations = new HashSet<>();
 
@@ -46,8 +50,7 @@ public class Account {
     }
 
     public String getZonesToString() {
-        return locations.stream()
-                .map(Location::toString)
-                .collect(Collectors.joining(", "));
+        return "";
     }
+
 }
