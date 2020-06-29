@@ -10,50 +10,44 @@
         <div th:replace="fragments.html :: profile-header"></div>
         <nav th:replace="fragments.html :: setting-menu(currentMenu = 'quit')"></nav>
         <div class="row justify-content-center mt-3">
-
-            <form class="form col-md-8 col-12">
+            <form class="form col-md-8 col-12 needs-validation" th:action="@{/setting/quit}" method="post" th:object="${quitForm}" onsubmit="return validateForm()" novalidate>
                 <div>
-                    <p>
-                        <strong>탈퇴 후 회원정보가 모두 삭제됩니다.</strong><br>메일주소, 핸드폰 번호/기타 연락처 등 회원정보가 모두 삭제되며, 삭제된 데이터는 복구되지 않습니다. <br>
-                    </p>
-                    <p>
-                        <strong>탈퇴 후에도 작성된  게시글은 그대로 남아 있습니다.</strong><br> 각 게시판에 등록한 게시물 및 댓글은 탈퇴 후에도 남아있습니다. 삭제를 원하시는 게시물은 탈퇴 전 반드시 삭제하시기 바랍니다. (탈퇴 후에는 게시글 임의 삭제 요청을 받지 않습니다.)
-                    </p>
+                    <p><strong>탈퇴 후 회원정보가 모두 삭제됩니다.</strong><br>메일주소, 핸드폰 번호/기타 연락처 등 회원정보가 모두 삭제되며, 삭제된 데이터는 복구되지 않습니다. <br></p>
+                    <p><strong>탈퇴 후에도 작성된  게시글은 그대로 남아 있습니다.</strong><br> 각 게시판에 등록한 게시물 및 댓글은 탈퇴 후에도 남아있습니다. 삭제를 원하시는 게시물은 탈퇴 전 반드시 삭제하시기 바랍니다. (탈퇴 후에는 게시글 임의 삭제 요청을 받지 않습니다.)</p>
                 </div>
                 <div class="text-center custom-control custom-checkbox mb-3">
-                    <input type="checkbox" class="custom-control-input" id="customCheck" name="example1">
-                    <label class="custom-control-label" for="customCheck">동의합니다</label>
-                    <hr>
+                    <input type="checkbox" class="custom-control-input" id="notiConfirm" th:field="*{notiConfirm}">
+                    <label class="custom-control-label" for="notiConfirm">동의합니다</label>
                 </div>
+                <hr>
                 <div class="form-group row">
                     <label for="userPassword" class="col-2 col-form-label">기존 비밀번호</label>
                     <div class="col">
-                        <div class="row">
-                            <input type="password" class="form-control" id="userPassword">
-                        </div>
-                        <small class="row form-text text-primary">
-                            Password is required
+                        <input type="password" class="form-control" id="userPassword" th:field="*{password}" required>
+                        <small class="row form-text text-danger invalid-feedback ml-0">
+                            기존 비밀번호를 입력해주세요.
                         </small>
-                        <small class="row form-text text-danger">
-                            Nickname Error
+                        <small class="row form-text text-danger ml-0" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                            password Error
                         </small>
                     </div>
                 </div>
-                <button class="ml-auto col-3 btn btn-danger btn-block" type="submit" aria-describedby="submitHelp">삭제하기</button>
+                <button class="ml-auto col-3 btn btn-danger btn-block" type="submit" aria-describedby="submitHelp">탈퇴하기</button>
             </form>
         </div>
     </div>
 </section>
 <div th:replace="fragments.html :: normal-footer"></div>
 <div th:replace="fragments.html :: normal-script"></div>
-<script type="application/javascript" th:inline="javascript" th:fragment="ajax-csrf-header">
-    $(function() {
-        var csrfToken = /*[[${_csrf.token}]]*/ null;
-        var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
-        $(document).ajaxSend(function (e, xhr, options) {
-            xhr.setRequestHeader(csrfHeader, csrfToken);
-        });
-    });
+<script th:replace="fragments.html :: ajax-csrf-header"></script>
+<script th:replace="fragments.html :: form-validation"></script>
+<script>
+    function validateForm() {
+        if(!$('#notiConfirm').prop("checked")) {
+            alert("탈퇴 동의에 체크해주세요.");
+            return false;
+        }
+    }
 </script>
 </body>
 </html>

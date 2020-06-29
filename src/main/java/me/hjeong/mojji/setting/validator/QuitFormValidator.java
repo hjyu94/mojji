@@ -1,31 +1,35 @@
 package me.hjeong.mojji.setting.validator;
 
+import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.account.UserAccount;
-import me.hjeong.mojji.setting.form.ProfileForm;
+import me.hjeong.mojji.setting.form.QuitForm;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @Component
-public class ProfileFormValidator implements Validator {
+@RequiredArgsConstructor
+public class QuitFormValidator implements Validator {
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return ProfileForm.class.isAssignableFrom(aClass);
+        return aClass.isAssignableFrom(QuitForm.class);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        ProfileForm form = (ProfileForm) o;
+        QuitForm form = (QuitForm) o;
 
+        // 기존 패스워드와 일치해야 한다
         SecurityContext context = SecurityContextHolder.getContext();
         UserAccount userAccount = (UserAccount) context.getAuthentication().getPrincipal();
-
-        // 닉네임을 변경하려는데 중복확인을 하지 않은 경우
-        if(!form.getNickname().equals(userAccount.getAccount().getNickname()) && !form.isNicknameConfirm()) {
-            errors.rejectValue("nickname", "invalid.nickname", "중복확인이 필요합니다.");
+        if(!form.getPassword().isBlank() && !passwordEncoder.matches(form.getPassword(), userAccount.getAccount().getPassword())) {
+            errors.rejectValue("password", "password", "패스워드가 올바르지 않습니다");
         }
     }
 }

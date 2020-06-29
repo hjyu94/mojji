@@ -9,29 +9,31 @@
     <div class="container">
         <div th:replace="fragments.html :: profile-header"></div>
         <nav th:replace="fragments.html :: setting-menu(currentMenu = 'profile')"></nav>
+        <div th:replace="fragments.html :: message"></div>
         <div class="row justify-content-center mt-3">
-            <form class="form col-md-8 col-12 needs-validation" action="#" th:action="@{/setting/profile}" th:object="${profile}" method="post" novalidate>
+            <form class="form col-md-8 col-12 needs-validation" id="profile-form" action="#" onsubmit="return validateForm()" th:action="@{/setting/profile}" th:object="${profileForm}" method="post" novalidate>
                 <div class="form-group row">
                     <label class="col-lg-2 col-2 col-form-label">이메일</label>
                     <div class="col">
                         <div class="row">
                             <p class="text-justify my-2" th:text="${account.email}">mojji@email.com</p>
+                            <p class="text-justify my-2 text-muted" th:if="!${account.isEmailVerified()}">(이메일 인증 전입니다. 받은 메세지함을 확인해주세요)</p>
                         </div>
                         <small class="row form-text text-muted">
                             가입에 사용한 이메일은 수정할 수 없습니다.
                         </small>
-<!--                        <small class="row form-text text-danger">-->
-<!--                            Nickname Error-->
-<!--                        </small>-->
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="nickname" class="col-form-label col-2">닉네임</label>
                     <div class="col">
                         <div class="row">
-                            <p style="display:none;" id="origin-nickname" th:text="*{nickname}">원래 닉네임</p>
+                            <p style="display:none;" id="origin-nickname" th:text="${#authorization.getAuthentication().getPrincipal().getAccount().getNickname()}">원래 닉네임</p>
                             <input type="text" class="col form-control" id="nickname" th:field="*{nickname}" required minlength="2" maxlength="8">
-                            <p id="btn-nickname-check" class="btn btn-link col-1" style="display: none;"><i class="fa fa-check text-success" aria-hidden="true"></i></p>
+                            <div class="ml-2 col-3 custom-control custom-checkbox" id="nickname-check-div">
+                                <input type="checkbox" class="custom-control-input" id="customCheck" th:field="*{nicknameConfirm}">
+                                <label class="custom-control-label" for="customCheck">중복체크</label>
+                            </div>
                         </div>
                         <small class="row form-text text-muted">
                             닉네임은 2글자에서 8글자 사이로 설정 가능합니다.
@@ -51,16 +53,21 @@
                     <label class="col-2 col-form-label">프로필 사진</label>
                     <div class="col">
                         <div class="row custom-file">
-                            <input type="file" class="col custom-file-input" id="customFile">
-                            <label class="custom-file-label" for="customFile">Choose file</label>
+                            <input type="file" class="col custom-file-input" id="customFile" accept="image/*">
+                            <label class="custom-file-label" for="customFile"></label>
                         </div>
-                        <small class="row form-text text-primary">
-                            Password is required
+                        <small class="row form-text text-muted">
+                            프로필 사진은 2MB 이하의 이미지만 사용 가능합니다.
                         </small>
-                        <small class="row form-text text-danger">
-                            Nickname Error
+                        <small id="profile-image-client-msg" class="row form-text text-danger" style="display: none;">
+                            message
                         </small>
+                        <small class="row form-text text-danger" th:if="${#fields.hasErrors('profileImage')}" th:errors="*{profileImage}">
+                            profileImage Error
+                        </small>
+                        <img id="preview" class="my-2 row" src="" width="150" alt="프로필 사진" style="display: none;">
                     </div>
+                    <input id="profileImage" type="hidden" th:field="*{profileImage}" class="form-control"/>
                 </div>
                 <div class="form-group row">
                     <div class="col-2">
@@ -84,65 +91,132 @@
 </section>
 <div th:replace="fragments.html :: normal-footer"></div>
 <div th:replace="fragments.html :: normal-script"></div>
-<script type="application/javascript" th:inline="javascript" th:fragment="ajax-csrf-header">
-    $(function() {
-        var csrfToken = /*[[${_csrf.token}]]*/ null;
-        var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
-        $(document).ajaxSend(function (e, xhr, options) {
-            xhr.setRequestHeader(csrfHeader, csrfToken);
-        });
-    });
-</script>
+<script th:replace="fragments.html :: ajax-csrf-header"></script>
+<script th:replace="fragments.html :: form-validation"></script>
 <script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        var reg = /(.*?)\.(jpg|jpeg|png|gif|bmp)$/;
+        if(fileName.match(reg)) {
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        }
     });
 </script>
 <script>
-    var nickname = $('#nickname');
-    var btn_check = $('#btn-nickname-check');
-    var alert = $('#txt-nickname-check');
-    var safe = $('#txt-nickname-safe');
     var origin_nickname = $("#origin-nickname");
+    var nickname = $('#nickname');
+    var nickname_alert  = $('#txt-nickname-check');
+    var safe = $('#txt-nickname-safe');
+    var nickname_check = $('#customCheck');
+
+    if(nickname.val() == origin_nickname.text()) {
+        nickname_check.prop("checked", false);
+    }
 
     nickname.on("change keyup paste", function() {
+        // 중복확인 사용 가능, 체크 해제
+        nickname_check.prop("checked", false);
+        safe.hide();
+
+        // 만약 빈칸이었다면
         if($.trim(nickname.val()) == '') {
-            alert.text("닉네임은 빈칸으로 설정할 수 없습니다");
-            alert.show();
-            btn_check.hide();
-        } else if(nickname.val().length < 2) {
-            alert.text("닉네임은 최소 2글자는 되어야 합니다");
-            alert.show();
-            btn_check.hide();
-        } else if(nickname.val() != origin_nickname.text()) {
-            alert.text("중복되는 닉네임이 있는지 확인해주세요.");
-            alert.show()
-            btn_check.show();
-        } else {
-            btn_check.hide();
-            alert.hide();
+            nickname_alert.text("닉네임은 빈칸으로 설정할 수 없습니다");
+            nickname_alert.show();
+        }
+        // 2글자 미만이라면
+        else if(nickname.val().length < 2) {
+            nickname_alert.text("닉네임은 최소 2글자는 되어야 합니다");
+            nickname_alert.show();
+        }
+        // 기존 닉네임과 다르다면
+        else if(nickname.val() != origin_nickname.text()) {
+            nickname_alert.text("중복되는 닉네임이 있는지 확인해주세요.");
+            nickname_alert.show();
+        }
+        // 위에 해당사항 없다면
+        else {
+            nickname_alert.hide();
         }
     });
 
-    btn_check.click(function(){
+    nickname_check.click(function(){
         $.ajax({
             url : "/setting/profile/idcheck",
             type : "get",
             data : "nickname=" + nickname.val(),
             success : function(data) {
                 if(data == 1) {
-                    alert.text("중복되는 닉네임이 있습니다. 다른 닉네임을 사용해주세요.")
+                    nickname_alert.text("중복되는 닉네임이 있습니다. 다른 닉네임을 사용해주세요.")
                 } else {
-                    alert.hide();
-                    btn_check.hide();
+                    nickname_alert.hide();
                     safe.show();
-                    origin_nickname.text(nickname.val());
                 }
             }
         });
     });
+</script>
+<script> // 프로필 이미지 지정하기
+    var file = document.querySelector('#customFile');
+    var image_alert  = $('#profile-image-client-msg');
+
+    file.onchange = function () {
+        var fileList = file.files;
+
+        var reg = /(.*?)\.(jpg|jpeg|png|gif|bmp)$/;
+        var isImageFile = fileList[0].name.match(reg);
+
+        if (isImageFile) {
+            // 읽기
+            var reader = new FileReader();
+            reader.readAsDataURL(fileList[0]);
+
+            //로드 한 후
+            reader.onload = function () {
+                //썸네일 이미지 생성
+                var tempImage = new Image(); // drawImage 메서드에 넣기 위해 이미지 객체화
+                tempImage.src = reader.result; //data-uri를 이미지 객체에 주입
+                tempImage.onload = function () {
+                    //리사이즈를 위해 캔버스 객체 생성
+                    var canvas = document.createElement('canvas');
+                    var canvasContext = canvas.getContext("2d");
+
+                    //캔버스 크기 설정
+                    canvas.width = 150; //가로 100px
+                    canvas.height = 150; //세로 100px
+
+                    //이미지를 캔버스에 그리기
+                    canvasContext.drawImage(this, 0, 0, 150, 150);
+
+                    //캔버스에 그린 이미지를 다시 data-uri 형태로 변환
+                    var dataURI = canvas.toDataURL("image/jpeg");
+
+                    //썸네일 이미지 보여주기
+                    // img_preview.src = dataURI;
+                    $('#preview').show();
+                    document.querySelector('#preview').src = dataURI;
+                    $('#profileImage').val(dataURI);
+
+                    // 경고 메세지가 보이는 중이었다면 숨기기
+                    image_alert .hide();
+                };
+            };
+        } else {
+            $('#preview').hide();
+            file.files[0] = undefined;
+            image_alert.text("프로필 사진은 이미지 파일(jpg, jpeg, png, gif, bmp) 만 사용 가능합니다.");
+            image_alert.show();
+        }
+    }
+</script>
+<script>
+    function validateForm() {
+        // 중복확인을 안 했는데 기존 닉네임과 다르다면
+        if(!nickname_check.prop("checked") && nickname.val() != origin_nickname.text()) {
+            alert("닉네임 중복확인이 필요합니다.");
+            return false;
+        }
+    }
 </script>
 </body>
 </html>

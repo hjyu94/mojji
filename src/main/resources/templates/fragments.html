@@ -10,29 +10,30 @@
     <meta name="author" content="">
 
     <title>모찌마켓</title>
+
+    <!--공통-->
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
-    <link th:if="${mode != 'auth'}" rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
-    <link th:if="${mode == 'auth'}" rel="stylesheet" type="text/css" href="/css/my-login.css">
-    <link th:if="${mode == 'tagify'}" rel="stylesheet" type="text/css" href="/node_modules/@yaireo/tagify/dist/tagify.css"/>
-    <script th:if="${mode == 'tagify'}" src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
-    <script th:if="${mode == 'tagify'}" src="/node_modules/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
-    <style th:if="${mode == 'tagify'}">
-        .customSuggestionsList > div{
-            max-height: 200px;
-            border: 2px solid pink;
-            overflow: auto;
-        }
-    </style>
     <style>
         body {
             font-family: 'Nanum Gothic', sans-serif;
         }
     </style>
+
+    <!--auth-->
+    <link th:if="${mode != 'auth'}" rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
+    <link th:if="${mode == 'auth'}" rel="stylesheet" type="text/css" href="/css/my-login.css">
+
+    <!--tagify-->
+    <link th:if="${mode == 'tagify'}" rel="stylesheet" type="text/css" href="/node_modules/@yaireo/tagify/dist/tagify.css"/>
+    <script th:if="${mode == 'tagify'}" src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <script th:if="${mode == 'tagify'}" src="/node_modules/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
 </head>
 
 <div th:fragment="auth-banner">
@@ -150,9 +151,10 @@
     </div>
     <div class="col-md-5 col-8">
         <h1 class="my-4" th:text="${account.nickname}">nickname</h1>
-        <p th:if="${#strings.isEmpty(account.getZonesToString())}">Not yet</p>
-        <p th:if="${!#strings.isEmpty(account.getZonesToString())}">zone1, zone2</p>
-        <p>전자제품, 맥북, 커피기구</p>
+        <p th:if="${#strings.isEmpty(account.getStationsString())}" class="text-muted">동네가 아직 설정되지 않았습니다.</p>
+        <p th:if="${!#strings.isEmpty(account.getStationsString())}" th:text="${account.getStationsString()}"></p>
+        <p th:if="${#strings.isEmpty(account.getCategoriesString())}" class="text-muted">관심 물건 카테고리가 아직 설정되지 않았습니다.</p>
+        <p th:if="${!#strings.isEmpty(account.getCategoriesString())}" th:text="${account.getCategoriesString()}"></p>
     </div>
 </div>
 
@@ -167,14 +169,23 @@
     <div class="nav nav-tabs col-md-8 col-12" id="nav-tab" role="tablist">
         <a class="nav-item nav-link" th:classappend="${currentMenu == 'profile'}? active" th:href="@{/setting/profile}">프로필</a>
         <a class="nav-item nav-link" th:classappend="${currentMenu == 'password'}? active" th:href="@{/setting/password}">패스워드 변경</a>
-        <a class="nav-item nav-link" th:classappend="${currentMenu == 'location'}? active" th:href="@{/setting/location}">동네 설정</a>
+        <a class="nav-item nav-link" th:classappend="${currentMenu == 'category'}? active" th:href="@{/setting/category}">관심 물건</a>
+        <a class="nav-item nav-link" th:classappend="${currentMenu == 'station'}? active" th:href="@{/setting/station}">동네 설정</a>
         <a class="nav-item nav-link text-danger" th:classappend="${currentMenu == 'quit'}? active" th:href="@{/setting/quit}">탈퇴하기</a>
     </div>
 </nav>
 
+<div th:fragment="message" class="row justify-content-center" th:if="${message}">
+    <div class="col-md-8 col-12 alert alert-success alert-dismissible fade show mt-3">
+        <span th:utext="${message}">완료</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+</div>
+
 <div th:fragment="normal-script">
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
     <script src="/js/scrolling-nav.js"></script>
 </div>
@@ -182,8 +193,39 @@
 <div th:fragment="auth-script">
     <script src="/node_modules/jquery/dist/jquery.slim.min.js"></script>
     <script src="/node_modules/popper.js/dist/popper.min.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="/js/my-login.js"></script>
 </div>
+
+<script type="application/javascript" th:inline="javascript" th:fragment="ajax-csrf-header">
+    $(function() {
+        var csrfToken = /*[[${_csrf.token}]]*/ null;
+        var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        });
+    });
+</script>
+
+<script type="application/javascript" th:fragment="form-validation">
+    (function () {
+        'use strict';
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+
+            // Loop over them and prevent submission
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        }, false)
+    }())
+</script>
 
 </html>

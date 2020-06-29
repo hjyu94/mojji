@@ -3,8 +3,12 @@ package me.hjeong.mojji.account;
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.config.AppProperties;
 import me.hjeong.mojji.domain.Account;
+import me.hjeong.mojji.domain.Category;
+import me.hjeong.mojji.domain.Station;
 import me.hjeong.mojji.mail.EmailMessage;
 import me.hjeong.mojji.mail.EmailService;
+import me.hjeong.mojji.setting.form.PasswordForm;
+import me.hjeong.mojji.setting.form.ProfileForm;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -118,4 +122,41 @@ public class AccountService implements UserDetailsService {
         this.login(account); // update current login user
     }
 
+    public void updateProfile(ProfileForm form, Account account) {
+        account.setNickname(form.getNickname());
+        if(!form.getProfileImage().isBlank()) {
+            account.setProfileImage(form.getProfileImage());
+        }
+        account.setNotiByEmail(form.isNotiByEmail());
+        account.setNotiByWeb(form.isNotiByWeb());
+        accountRepository.save(account);
+        login(account);
+    }
+
+    public void updatePassword(PasswordForm passwordForm, Account account) {
+        String encode = passwordEncoder.encode(passwordForm.getNewPassword());
+        account.setPassword(encode);
+        accountRepository.save(account);
+        login(account);
+    }
+
+    public void delete(Account account) {
+        accountRepository.delete(account);
+    }
+
+    public void addStation(Station station, Account account) {
+        account.getStations().add(station);
+    }
+
+    public void removeStation(Station station, Account account) {
+        account.getStations().remove(station);
+    }
+
+    public void addCategory(Category category, Account account) {
+        account.getCategories().add(category);
+    }
+
+    public void removeCategory(Category category, Account account) {
+        account.getCategories().remove(category);
+    }
 }

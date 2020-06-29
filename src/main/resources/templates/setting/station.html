@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments.html :: head"></head>
+<body id="page-top">
+<nav th:replace="fragments.html :: main-nav"></nav>
+<section>
+    <div class="container">
+        <div th:replace="fragments.html :: profile-header"></div>
+        <nav th:replace="fragments.html :: setting-menu(currentMenu = 'location')"></nav>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-12 mt-3">
+                <p>아래 목록에서 동네를 선택해주세요. <br>설정한 동네에 내가 <a th:href="@{/setting/category}">관심물건으로 설정</a>한 카테고리 물건 판매글이 올라오는 경우 알림을 받으실 수 있습니다.</p>
+                <div id="region" th:text="${regions}" hidden></div>
+                <div id="line" hidden></div>
+                <div id="name" hidden></div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-11 mb-3" id="user-stations">
+                <span type="button" class="user-station btn btn-info mr-2 mt-3" th:each="station : ${stations}">
+                    <small th:text="${station}"></small>
+                    <span class="remove-station badge" th:id="${station.toString()}">x</span>
+                </span>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-2 col-3 list-group">
+                <label for="select_region">지역</label>
+                <select multiple="" class="form-control" id="select_region" style="height: 300px">
+                    <option class="option_region" th:if="${regions}" th:each="region : ${regions}" th:text="${region}"></option>
+                </select>
+            </div>
+            <div class="col-md-2 col-4 list-group">
+                <label for="select_line">호선</label>
+                <select multiple="" class="form-control" id="select_line" style="height: 300px">
+                </select>
+            </div>
+            <div class="col-md-3 col-4 list-group">
+                <label for="select_name">역 이름</label>
+                <select multiple="" class="form-control" id="select_name" style="height: 300px">
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+<div th:replace="fragments.html :: normal-footer"></div>
+<div th:replace="fragments.html :: normal-script"></div>
+<script th:replace="fragments.html :: ajax-csrf-header"></script>
+<script>
+$(function(){
+
+    function onDblClickRegion() {
+        var form = {region: $("#select_region option:selected").val()};
+        $.ajax({
+            url: "/setting/station/requestRegion",
+            type: "POST",
+            data: form,
+            success: function(data) {
+                $('.option_line').remove();
+                $('.option_name').remove();
+
+                for(var i=0; i<data.length; i++){
+                    var element = "<option class=\"option_line\">" + data[i] + "</option>";
+                    $('#select_line').append(element);
+                }
+
+                $('.option_line').on('dblclick', onDblClickStationLine);
+            }
+        });
+    }
+
+    function onDblClickStationName() {
+        var form = {
+            region: $("#select_region option:selected").val(),
+            line: $("#select_line option:selected").val(),
+            name: $("#select_name option:selected").val(),
+        };
+        $.ajax({
+            url: "/setting/station/add",
+            type: "POST",
+            data: form,
+            success: function (data) {
+                $('.user-station').remove();
+                for (var i = 0; i < data.length; i++) {
+                    var element =
+                        "<span type=\"button\" class=\"user-station btn btn-info mr-2 mt-3\">" +
+                        "<small>" + data[i] + "</small>" +
+                        "<span id=\"" + data[i] + "\" class=\"remove-station badge\">x</span></span>";
+                    $('#user-stations').append(element);
+                }
+                $('.remove-station').on('click', onClickRemove);
+            }
+        });
+    }
+
+    function onDblClickStationLine() {
+        var form = {
+            region: $("#select_region option:selected").val(),
+            line: $("#select_line option:selected").val()
+        };
+        $.ajax({
+            url: "/setting/station/requestName",
+            type: "POST",
+            data: form,
+            success: function (data) {
+                $('.option_name').remove();
+                for(var i=0; i<data.length; i++){
+                    var element = "<option class=\"option_name\">" + data[i] + "</option>";
+                    $('#select_name').append(element);
+                }
+                $('.option_name').on('dblclick', onDblClickStationName);
+            }
+        });
+    }
+
+    function onClickRemove(e) {
+        var form = {station: e.target.id};
+        $.ajax({
+            url: "/setting/station/remove",
+            type: "POST",
+            data: form,
+            success: function(data) {
+                $('.user-station').remove();
+
+                for (var i = 0; i < data.length; i++) {
+                    var element =
+                        "<span type=\"button\" class=\"user-station btn btn-info mr-2 mt-3\">" +
+                        "<small>" + data[i] + "</small>" +
+                        "<span id=\"" + data[i] + "\" class=\"remove-station badge\">x</span></span>";
+                    $('#user-stations').append(element);
+                }
+                $('.remove-station').on('click', onClickRemove);
+            }
+        });
+    }
+
+    $('.remove-station').on('click', onClickRemove);
+    $('.option_region').on('dblclick', onDblClickRegion);
+});
+</script>
+</body>
+</html>

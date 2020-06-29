@@ -39,18 +39,32 @@ public class Account {
     private boolean notiByEmail = false;
 
     @OneToMany
-    private Set<Location> locations = new HashSet<>();
+    private Set<Station> stations = new HashSet<>();
+
+    @OneToMany
+    private Set<Category> categories = new HashSet<>();
 
     @Lob
-    @Basic(fetch = FetchType.EAGER)
-    private String profileImage; // Varchar(255) -> Test, 기본적으로 LAZY Fetch
+    private String profileImage;
 
     public void generateEmailCheckToken() {
         emailCheckToken = UUID.randomUUID().toString();
     }
 
-    public String getZonesToString() {
-        return "";
+    public String getStationsString() {
+        return stations.stream()
+                .map(station -> {
+                    String name = station.getName();
+                    if(!name.endsWith("역")) {
+                        name = name + "역";
+                    }
+                    return name;
+                })
+                .reduce((a,b) -> a + ", " + b).orElse("");
+    }
+
+    public String getCategoriesString() {
+        return categories.stream().map(Category::getTitle).reduce((a,b) -> a + ", " + b).orElse("");
     }
 
 }
