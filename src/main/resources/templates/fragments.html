@@ -16,9 +16,11 @@
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
 
+    <!-- 순서 주의! [ jquery.min.js -> bootstrap.min.js -> app.js ] -->
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
 
     <style>
         body {
@@ -27,7 +29,6 @@
     </style>
 
     <!--auth-->
-    <link th:if="${mode != 'auth'}" rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
     <link th:if="${mode == 'auth'}" rel="stylesheet" type="text/css" href="/css/my-login.css">
 
     <!--tagify-->
@@ -76,19 +77,17 @@
             <a class="navbar-brand" href="/"><img src="/images/logo.png" alt="Logo" style="height: 30px; width: auto;"></a>
             <a class="navbar-brand" href="/" id="navbar-logo-text">모찌마켓</a>
         </div>
-        <div class="nav navbar-nav navbar-logo mx-auto">
-            <form class="form-inline" role="form" method="get" action="/search">
-                <!--                    <input class="form-control mr-sm-2" type="text" placeholder="Search">-->
-                <!--                    <button class="btn btn-success" type="submit">Search</button>-->
-                <input class="form-control mr-sm-2 flex-grow-1" type="search" placeholder="지역, 상품 등을 검색해보세요." name="keywords" aria-label="Search">
-                <button class="btn btn-success my-2 my-sm-0" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        <div class="nav navbar-nav navbar-logo mx-auto row">
+            <form class="form-inline" role="form" method="get" action="/search" style="min-width: 350px;">
+                <input class="form-control mr-2 col-9" type="search" placeholder="지역, 상품 등을 검색해보세요." name="keywords" aria-label="Search">
+                <button class="btn btn-success my-2 my-sm-0 col-2" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
             </form>
         </div>
         <div class="nav navbar-nav pull-sm-right">
-            <button class="navbar-toggler" type="button" data-toggle="drawer" data-target="#dw-s1">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse">
+            <div id="collapsibleNavbar" class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
                     <!-- no authenticated user-->
                     <li class="nav-item" sec:authorize="!isAuthenticated()">
@@ -136,9 +135,9 @@
 </nav>
 
 <script th:fragment="tooltip" type="application/javascript">
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 </script>
 
 <!--Profile-->
@@ -185,14 +184,11 @@
 </div>
 
 <div th:fragment="normal-script">
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
-    <script src="/js/scrolling-nav.js"></script>
 </div>
 
 <div th:fragment="auth-script">
     <script src="/node_modules/jquery/dist/jquery.slim.min.js"></script>
-    <script src="/node_modules/popper.js/dist/popper.min.js"></script>
     <script src="/js/my-login.js"></script>
 </div>
 
