@@ -6,12 +6,12 @@
     <th:block th:include="fragments.html :: basic-head"></th:block>
     <th:block th:include="fragments.html :: navbar-head"></th:block>
 </head>
-<body id="page-top">
+<body>
 <nav th:replace="fragments.html :: main-nav"></nav>
 <section>
     <div class="container">
-        <div class="row justify-content-center">
-            <div th:replace="fragments.html :: profile-header"></div>
+        <div th:replace="fragments.html :: profile-header"></div>
+        <div class="row justify-content-center mt-3">
             <nav class="col-md-8 mt-3">
                 <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-selling"
@@ -38,6 +38,6 @@
     </div>
 </section>
 <footer th:replace="fragments.html :: footer"></footer>
-<div th:replace="fragments.html :: basic-script"></div>
+<th:block th:replace="fragments.html :: basic-script"></th:block>
 </body>
 </html>

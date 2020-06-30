@@ -6,13 +6,12 @@
     <th:block th:include="fragments.html :: basic-head"></th:block>
     <th:block th:include="fragments.html :: navbar-head"></th:block>
 </head>
-<body id="page-top">
+<body>
 <div id="register-email-alert" style="margin-bottom: 0px" class="fixed-top row justify-content-center align-self-center alert alert-warning" th:if="${account != null && !account.emailVerified}">
     모찌 가입을 완료하려면&nbsp;<a href="#" th:href="@{/account/confirm-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
 </div>
 <nav th:replace="fragments.html :: main-nav"></nav>
 <main role="main">
-
     <div class="jumbotron">
         <div class="container">
             <div class="row justify-content-center">

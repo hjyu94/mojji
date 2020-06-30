@@ -6,7 +6,7 @@
     <th:block th:include="fragments.html :: basic-head"></th:block>
     <th:block th:include="fragments.html :: navbar-head"></th:block>
 </head>
-<body id="page-top">
+<body>
 <nav th:replace="fragments.html :: main-nav"></nav>
 <section>
     <div class="container">
@@ -41,7 +41,7 @@
     </div>
 </section>
 <footer th:replace="fragments.html :: footer"></footer>
-<div th:replace="fragments.html :: basic-script"></div>
+<th:block th:replace="fragments.html :: basic-script"></th:block>
 <script th:replace="fragments.html :: ajax-csrf-header"></script>
 <script th:replace="fragments.html :: form-validation"></script>
 <script>
