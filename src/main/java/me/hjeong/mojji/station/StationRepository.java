@@ -10,5 +10,5 @@ import java.util.List;
 public interface StationRepository extends JpaRepository<Station, Long> {
     List<Station> findAllByRegion(String region); // 지역
     List<Station> findAllByRegionAndLine(String region, String line); // 지역, 호선
-    Station findByRegionAndLineAndName(String region, String line, String name); // 지역, 역 이름
+    Station findByRegionAndLineAndName(String region, String line, String name); // 지역, 호선, 역 이름
 }
