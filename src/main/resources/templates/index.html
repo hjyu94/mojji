@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments.html :: head"></head>
-<body id="page-top">
+<head>
+    <th:block th:include="fragments.html :: basic-head"></th:block>
+    <th:block th:include="fragments.html :: navbar-head"></th:block>
+</head>
+<body>
 <div id="register-email-alert" style="margin-bottom: 0px" class="fixed-top row justify-content-center align-self-center alert alert-warning" th:if="${account != null && !account.emailVerified}">
     모찌 가입을 완료하려면&nbsp;<a href="#" th:href="@{/account/confirm-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
 </div>
 <nav th:replace="fragments.html :: main-nav"></nav>
 <main role="main">
-
     <div class="jumbotron">
         <div class="container">
             <div class="row justify-content-center">
@@ -77,8 +78,9 @@
         </div>
     </div>
 </main>
-<div th:replace="fragments.html :: normal-footer"></div>
-<div th:replace="fragments.html :: normal-script"></div>
+<footer th:replace="fragments.html :: footer"></footer>
+<th:block th:replace="fragments.html :: tooltip-script"></th:block>
+<th:block th:replace="fragments.html :: basic-script"></th:block>
 <script>
     window.onload = function(){
         var ele_nav = $('#mainNav');
@@ -96,6 +98,5 @@
         ele_main.css('padding-top', bottom_y_alert);
     }
 </script>
-<script th:replace="fragments.html :: tooltip"></script>
 </body>
 </html>

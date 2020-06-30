@@ -3,12 +3,11 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:fragment="head">
+<!--################################### head ###################################-->
+
+<th:block th:fragment="basic-head">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
     <title>모찌마켓</title>
 
     <!--공통-->
@@ -20,24 +19,41 @@
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
 
     <style>
         body {
             font-family: 'Nanum Gothic', sans-serif;
         }
     </style>
+</th:block>
 
-    <!--auth-->
-    <link th:if="${mode == 'auth'}" rel="stylesheet" type="text/css" href="/css/my-login.css">
+<th:block th:fragment="navbar-head">
+    <link rel="stylesheet" type="text/css" href="/css/scrolling-nav.css">
+    <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
+</th:block>
 
-    <!--tagify-->
-    <link th:if="${mode == 'tagify'}" rel="stylesheet" type="text/css" href="/node_modules/@yaireo/tagify/dist/tagify.css"/>
-    <script th:if="${mode == 'tagify'}" src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
-    <script th:if="${mode == 'tagify'}" src="/node_modules/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
-</head>
+<th:block th:fragment="auth-head">
+    <link rel="stylesheet" type="text/css" href="/css/my-login.css">
+</th:block>
 
-<div th:fragment="auth-banner">
+<th:block th:fragment="tagify-head">
+    <link rel="stylesheet" type="text/css" href="/node_modules/@yaireo/tagify/dist/tagify.css"/>
+    <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <script src="/node_modules/@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+</th:block>
+
+<th:block th:fragment="summernote-head">
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css"/>
+    <script src="/node_modules/summernote/dist/summernote-bs4.min.js"></script>
+</th:block>
+
+<th:block th:fragment="jquery-multifile-head">
+    <script src="/node_modules/jquery-multifile/jquery.MultiFile.min.js"></script>
+</th:block>
+
+<!--################################### auth banner ###################################-->
+
+<div id="auth-banner" th:fragment="auth-banner">
     <a href="/" th:href="@{/}">
         <div class="brand">
             <img src="/images/logo.png" alt="banner">
@@ -45,29 +61,30 @@
     </a>
 </div>
 
-<div th:fragment="normal-footer">
-    <footer class="page-footer text-white font-small bg-dark pt-4">
-        <div class="container text-center text-md-left">
-            <div class="row text-center">
-                <div class="col-md-4 mb-md-0">
-                    <h5 class="text-uppercase"><i class="fa fa-street-view" aria-hidden="true"></i>&nbsp;Location</h5>
-                    <p>Anyang-si, Gyeonggi-do</p>
-                </div>
-                <div class="col-md-4 mb-md-0">
-                    <h5 class="text-uppercase"><i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp;Email</h5>
-                    <p>hjeong.you@gmail.com</p>
-                </div>
-                <div class="col-md-4 mb-md-0">
-                    <h5 class="text-uppercase"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;Github</h5>
-                    <p>https://github.com/hjyu94</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-</div>
+<!--################################### footer ###################################-->
 
-<nav th:fragment="main-nav" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav"> <!-- class=" navbar-expand-md > -->
+<footer class="page-footer text-white font-small bg-dark pt-4" th:fragment="footer">
+    <div class="row text-center">
+        <div class="col-sm-4">
+            <h5 class="text-uppercase"><i class="fa fa-street-view" aria-hidden="true"></i>&nbsp;Location</h5>
+            <p>Anyang-si, Gyeonggi-do</p>
+        </div>
+        <div class="col-sm-4">
+            <h5 class="text-uppercase"><i class="fa fa-envelope-o" aria-hidden="true"></i>&nbsp;Email</h5>
+            <p>hjeong.you@gmail.com</p>
+        </div>
+        <div class="col-sm-4">
+            <h5 class="text-uppercase"><i class="fa fa-github" aria-hidden="true"></i>&nbsp;Github</h5>
+            <p>https://github.com/hjyu94</p>
+        </div>
+    </div>
+</footer>
+
+<!--################################### nav ###################################-->
+
+<nav th:fragment="main-nav" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
     <style>
+        /* logo text 는 너비 992px 이상에서 보인다 */
         @media screen and (max-width: 992px) {
             #navbar-logo-text { display: none; }
         }
@@ -134,11 +151,7 @@
     </div>
 </nav>
 
-<script th:fragment="tooltip" type="application/javascript">
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
+<!--################################### body ###################################-->
 
 <!--Profile-->
 <div th:fragment="profile-header" class="row justify-content-center">
@@ -183,16 +196,15 @@
     </div>
 </div>
 
-<div th:fragment="normal-script">
-    <script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
-</div>
+<!--################################### script ###################################-->
 
-<div th:fragment="auth-script">
-    <script src="/node_modules/jquery/dist/jquery.slim.min.js"></script>
-    <script src="/js/my-login.js"></script>
-</div>
+<script th:fragment="tooltip-script" type="application/javascript">
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 
-<script type="application/javascript" th:inline="javascript" th:fragment="ajax-csrf-header">
+<script th:fragment="ajax-csrf-header" type="application/javascript" th:inline="javascript">
     $(function() {
         var csrfToken = /*[[${_csrf.token}]]*/ null;
         var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
@@ -202,7 +214,16 @@
     });
 </script>
 
-<script type="application/javascript" th:fragment="form-validation">
+<th:block th:fragment="basic-script">
+    <script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
+</th:block>
+
+<th:block th:fragment="auth-script">
+    <script src="/node_modules/jquery/dist/jquery.slim.min.js"></script>
+    <script src="/js/my-login.js"></script>
+</th:block>
+
+<script th:fragment="form-validation" type="application/javascript">
     (function () {
         'use strict';
 
