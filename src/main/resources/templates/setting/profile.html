@@ -11,7 +11,7 @@
         <nav th:replace="fragments.html :: setting-menu(currentMenu = 'profile')"></nav>
         <div th:replace="fragments.html :: message"></div>
         <div class="row justify-content-center mt-3">
-            <form class="form col-md-8 col-12 needs-validation" id="profile-form" action="#" onsubmit="return validateForm()" th:action="@{/setting/profile}" th:object="${profileForm}" method="post" novalidate>
+            <form class="form col-md-8 col-12 needs-validation" id="profile-form" action="#" onsubmit="return validateForm()" th:action="@{/setting/profile}" th:object="${profileForm}" method="post" enctype="multipart/form-data"> novalidate>
                 <div class="form-group row">
                     <label class="col-lg-2 col-2 col-form-label">이메일</label>
                     <div class="col">
