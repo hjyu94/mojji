@@ -223,6 +223,19 @@
     <script src="/js/my-login.js"></script>
 </th:block>
 
+<th:block th:fragment="summernote-script">
+    <script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+    <script type="application/javascript">
+        $(function () {
+            $('#summernote').summernote({
+                // placeholder: 'Hello Bootstrap 4',
+                tabsize: 4,
+                height: 250
+            });
+        })
+    </script>
+</th:block>
+
 <script th:fragment="form-validation" type="application/javascript">
     (function () {
         'use strict';
