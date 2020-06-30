@@ -2,7 +2,10 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments.html :: head"></head>
+<head>
+    <th:block th:include="fragments.html :: basic-head"></th:block>
+    <th:block th:include="fragments.html :: navbar-head"></th:block>
+</head>
 <body id="page-top">
 <nav th:replace="fragments.html :: main-nav"></nav>
 <section>
@@ -37,8 +40,8 @@
         </div>
     </div>
 </section>
-<div th:replace="fragments.html :: normal-footer"></div>
-<div th:replace="fragments.html :: normal-script"></div>
+<footer th:replace="fragments.html :: footer"></footer>
+<div th:replace="fragments.html :: basic-script"></div>
 <script th:replace="fragments.html :: ajax-csrf-header"></script>
 <script th:replace="fragments.html :: form-validation"></script>
 <script>
