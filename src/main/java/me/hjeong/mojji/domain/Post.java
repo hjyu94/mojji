@@ -1,6 +1,7 @@
 package me.hjeong.mojji.domain;
 
 import lombok.*;
+import me.hjeong.mojji.account.UserAccount;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public class Post {
     private Long id;
 
     @ElementCollection
+    @Builder.Default
     private Set<String> images = new HashSet<>(); // url
 
     @ManyToOne
@@ -33,9 +35,13 @@ public class Post {
     private LocalDateTime createdDateTime;
 
     @ManyToMany
+    @Builder.Default
     private Set<Station> stations = new HashSet<>();
 
     @ManyToOne
     private Category category;
 
+    public boolean isCreatedBy(UserAccount userAccount) {
+        return this.account.equals(userAccount.getAccount());
+    }
 }
