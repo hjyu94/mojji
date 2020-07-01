@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +46,7 @@ public class StationService {
     public Station getStationByString(String stationStr) {
         String pattern = "[()-]";
         String[] split = stationStr.split(pattern);
-        Station station = stationRepository.findByRegionAndLineAndName(split[1], split[2], split[0]);
-        return station;
+        Optional<Station> optStation = stationRepository.findByRegionAndLineAndName(split[1], split[2], split[0]);
+        return optStation.orElse(null);
     }
 }

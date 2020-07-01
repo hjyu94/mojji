@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -187,11 +188,14 @@ public class SettingController {
     @PostMapping("/setting/station/add")
     @ResponseBody
     public Object addStation(@CurrentAccount Account account, Station station) {
-        Station foundStation = stationRepository.findByRegionAndLineAndName(station.getRegion(), station.getLine(),station.getName());
-        Account accountWithStations = accountRepository.findAccountWithStationsById(account.getId());
-        accountService.addStation(foundStation, accountWithStations);
-        List<String> stations = accountWithStations.getStations().stream().map(Station::toString).collect(Collectors.toList());
-        return stations;
+        Optional<Station> optStation = stationRepository.findByRegionAndLineAndName(station.getRegion(), station.getLine(),station.getName());
+        if(optStation.isPresent()) {
+            Account accountWithStations = accountRepository.findAccountWithStationsById(account.getId());
+            accountService.addStation(optStation.get(), accountWithStations);
+            List<String> stations = accountWithStations.getStations().stream().map(Station::toString).collect(Collectors.toList());
+            return stations;
+        }
+        return null;
     }
 
     @PostMapping("/setting/station/remove")
