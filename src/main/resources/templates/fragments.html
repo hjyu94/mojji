@@ -220,7 +220,12 @@
 </script>
 
 <th:block th:fragment="basic-script">
-    <script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
+<script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
+<script>
+    window.onload = function(){
+        jdenticon(); // Jdenticon doesn't render my icons - solution
+    };
+</script>
 </th:block>
 
 <th:block th:fragment="auth-script">
