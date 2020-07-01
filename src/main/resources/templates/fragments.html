@@ -56,6 +56,37 @@
     <script src="/node_modules/jquery-multifile/jquery.MultiFile.min.js"></script>
 </th:block>
 
+<style th:fragment="no-validate-css" th:remove="tag">
+    .no-validate{
+        border: 1px solid #ced4da !important;
+        background-image: inherit !important;
+        box-shadow:inherit !important;
+    }
+</style>
+
+<style th:fragment="tagify-text-input-suggestion-css" th:remove="tag">
+    .tags-look .tagify__dropdown__item{
+        display: inline-block;
+        border-radius: 3px;
+        padding: .3em .5em;
+        border: 1px solid #CCC;
+        background: #F3F3F3;
+        margin: .2em;
+        font-size: .85em;
+        color: black;
+        transition: 0s;
+    }
+
+    .tags-look .tagify__dropdown__item--active{
+        color: black;
+    }
+
+    .tags-look .tagify__dropdown__item:hover{
+        background: lightyellow;
+        border-color: gold;
+    }
+</style>
+
 <!--################################### auth banner ###################################-->
 
 <div id="auth-banner" th:fragment="auth-banner">
@@ -247,7 +278,7 @@
 </th:block>
 
 <script th:fragment="form-validation" type="application/javascript">
-    (function () {
+    $(function () {
         'use strict';
 
         window.addEventListener('load', function () {
@@ -266,6 +297,74 @@
             })
         }, false)
     }())
+</script>
+
+<script th:fragment="jquery-multifile-script" type="application/javascript">
+$(function(){ // wait for page to load
+
+    // this is your selector
+    $('#customFile').MultiFile({
+        // your options go here
+        max: 5,
+        accept: 'jpg|jpeg|png|gif|bmp',
+        STRING: {
+            remove:'x',
+            denied:'$ext 확장자는 사용할 수 없습니다. 이미지 파일을 선택해주세요.',
+        },
+        list: '#file-list',
+        afterFileRemove: function(element, value, master_element) {
+            if($('.custom-file-label').text() == value) {
+                $('.custom-file-label').text('');
+            }
+        },
+        afterFileAppend: function(element, value, master_element) {
+            $('.custom-file-label').text(value);
+        },
+    });
+});
+</script>
+
+<script th:fragment="tagify-text-input-suggestion-script" type="application/javascript">
+    var input = document.querySelector('input[name="input-custom-dropdown"]'),
+        // init Tagify script on the above inputs
+        tagify = new Tagify(input, {
+            whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
+            maxTags: 10,
+            dropdown: {
+                maxItems: 20,           // <- mixumum allowed rendered suggestions
+                classname: "tags-look", // <- custom classname for this dropdown, so it could be targeted
+                enabled: 0,             // <- show suggestions on focus
+                closeOnSelect: false    // <- do not hide the suggestions dropdown once an item has been selected
+            }
+        });
+
+    tagify.on("add", resetHiddenTagInput);
+    tagify.on("remove", resetHiddenTagInput);
+
+    function resetHiddenTagInput() {
+        let str = "";
+        tagify.value.forEach(function(element){
+            str = str + "," + element.value;
+        });
+        $('#input-stations').val(str);
+    }
+</script>
+
+<script th:fragment="null-check-category-script" type="application/javascript">
+    function checkFormData() {
+        let input_stations = $('#input-stations');
+        let str_stations = input_stations.val();
+        if(str_stations.charAt(0) == ',') {
+            input_stations.val(str_stations.substr(1, str_stations.length));
+        }
+        console.log(input_stations.val());
+
+        // 카테고리가 선택되지 않았으면 선택하라는 alert 띄우기
+        if($('select').val() == "0") {
+            alert("카테고리를 선택해주세요.");
+            return false;
+        }
+    }
 </script>
 
 </html>
