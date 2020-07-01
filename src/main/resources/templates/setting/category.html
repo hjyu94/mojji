@@ -74,6 +74,7 @@
 
         // init Tagify script on the above inputs
         var tagify = new Tagify(input, {
+            enforceWhitelist: true,
             whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
             dropdown: {
                 position: "input",

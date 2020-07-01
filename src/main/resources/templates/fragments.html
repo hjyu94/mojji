@@ -328,6 +328,7 @@ $(function(){ // wait for page to load
     var input = document.querySelector('input[name="input-custom-dropdown"]'),
         // init Tagify script on the above inputs
         tagify = new Tagify(input, {
+            enforceWhitelist: true,
             whitelist: JSON.parse(document.querySelector("#whitelist").textContent),
             maxTags: 10,
             dropdown: {
