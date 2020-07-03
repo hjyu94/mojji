@@ -60,7 +60,7 @@
             </div>
             <div class="form-group mt-3">
                 <div class="custom-file">
-                    <input type="file" class="col custom-file-input with-preview" id="customFile" th:field="*{images}" aria-describedby="fileHelp" data-maxfile="2048">
+                    <input type="file" class="custom-file-input with-preview" id="customFile" th:field="*{images}" aria-describedby="fileHelp" accept="image/*" multiple>
                     <label class="custom-file-label" for="customFile"></label>
                     <small id="fileHelp" class="form-text text-muted">
                         2MB 크기 이하의 이미지 파일을 선택해주세요.
@@ -70,7 +70,7 @@
                     <div id="delete-file-names" hidden>
 <!--                        <input name="deleteFileNames" val="">-->
                     </div>
-                    <div th:each="fileName, i: ${alreadyUploadedFileNames}" th:id="${'uploaded-div-'+ i.index}">
+                    <div class="already-upload" th:each="fileName, i: ${alreadyUploadedFileNames}" th:id="${'uploaded-div-'+ i.index}">
                         <a class="text-success delete-uploaded-image" th:id="${'uploaded-remove-'+ i.index}" onmouseover="" style="cursor: pointer;">x</a>
                         <span>
                             <span th:title='${fileName + " 을 선택했습니다."}'>
@@ -94,9 +94,9 @@
 <script th:replace="fragments.html :: ajax-csrf-header"></script>
 <script th:replace="fragments.html :: form-validation"></script>
 <th:block th:replace="fragments.html :: summernote-script"></th:block>
-<script th:replace="fragments.html :: jquery-multifile-script"></script>
 <script th:replace="fragments.html :: tagify-text-input-suggestion-script"></script>
 <script th:replace="fragments.html :: null-check-category-script"></script>
+<script th:replace="fragments.html :: jquery-multifile-script"></script>
 <script>
 $(function() {
     $('.delete-uploaded-image').on("click", function() {

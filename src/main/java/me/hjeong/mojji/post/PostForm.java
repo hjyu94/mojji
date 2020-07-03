@@ -16,5 +16,6 @@ public class PostForm {
     private Category category;
     private List<Station> stations;
     private List<MultipartFile> images;
+    private List<String> deleteFileNames; // can be null
 
 }

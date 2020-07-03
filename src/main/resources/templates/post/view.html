@@ -71,28 +71,26 @@
                 </div>
             </div>
             <hr/>
-            <div class="d-flex justify-content-between">
-                <div class="row">
+            <div class="row mt-3">
+                <span class="col">
                     🚉 선호하는 위치 :
-                    <p class="mr-2" th:each="station: ${post.stations}" data-toggle="tooltip" data-placement="bottom" th:title='${station.region + "-" + station.line}'>
+                    <span class="mr-2" th:each="station: ${post.stations}" data-toggle="tooltip" data-placement="bottom" th:title='${station.region + "-" + station.line}'>
                         <u th:text="${station.name + '역'}"></u>
-                    </p>
-                </div>
-                <div>
+                    </span>
+                </span>
+                <span class="col-lg-4 col-md-5 col-6 text-right">
                     <i class="fa fa-calendar" aria-hidden="true"></i>
                     <small th:text="${#temporals.format(post.createdDateTime, 'yyyy-MM-dd')}"></small>
                     ∙ <i class="fa fa-mouse-pointer" aria-hidden="true"></i>
                     <small th:text="${post.lookCount}"></small>
                     ∙ <i class="fa fa-envelope-o" aria-hidden="true"></i>
                     <small th:text="${post.letterCount}"></small>
-                </div>
+                </span>
             </div>
-            <div class="d-flex justify-content-between">
-                <div class="row">
-                    &#128179; 희망가 : <strong th:text="${post.price + '원'}">원</strong>
-                </div>
+            <div class="row mx-0 mt-3">
+                <span>&#128179; 희망가 : <strong th:text="${post.price + '원'}">원</strong></span>
             </div>
-            <div th:utext="${post.body}"></div>
+            <div class="mt-3" th:utext="${post.body}"></div>
             <hr/>
             <div class="d-flex justify-content-end" th:if="${#authentication.principal != 'anonymousUser' && post.isCreatedBy(#authentication.principal)}">
                 <a th:href="@{'/post/' + ${post.id} + '/edit'}" class="btn btn-primary p-2 mr-2">수정</a>

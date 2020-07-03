@@ -20,7 +20,7 @@ public class Post {
 
     @ElementCollection
     @Builder.Default
-    private List<String> imgFileNames = new ArrayList<>();
+    private Set<String> imgFileNames = new HashSet<>();
 
     private Integer price;
 
@@ -41,7 +41,7 @@ public class Post {
 
     @ManyToMany
     @Builder.Default
-    private Set<Station> stations = new HashSet<>();
+    private List<Station> stations = new ArrayList<>();
 
     @ManyToOne
     private Category category;

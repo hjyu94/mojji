@@ -2,7 +2,9 @@ package me.hjeong.mojji.util;
 
 import me.hjeong.mojji.domain.Post;
 import org.imgscalr.Scalr;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,4 +82,21 @@ public class FileUtils {
         return postUploadPath;
     }
 
+    public static void deleteFiles(List<String> fileNames, String dirName) {
+        for (String fileName : fileNames) {
+            deleteFile(fileName, dirName);
+        }
+    }
+
+    private static void deleteFile(String fileName, String dirName) {
+        File file = new File(dirName, fileName);
+        if (file.exists())
+            file.delete();
+
+        // 썸네일 이미지도 삭제!
+        String thumbnailName = "s_" + fileName;
+        File thumbnail = new File(dirName, thumbnailName);
+        if(thumbnail.exists())
+            thumbnail.delete();
+    }
 }

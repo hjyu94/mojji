@@ -143,15 +143,35 @@ public class PostController {
             model.addAttribute(account);
             model.addAttribute(post);
             model.addAttribute("form", modelMapper.map(post, PostForm.class));
+            model.addAttribute("alreadyUploadedFileNames", post.getImgFileNames());
             putCategoryAndStationData(model);
 
-            return "post/update-form";
+            return "post/edit";
 
         } catch (NoSuchElementException e) { // TODO:: advice controller 로 빼내기
             model.addAttribute("title", "ERROR");
             model.addAttribute("message", "해당 게시물이 없습니다.");
             return "account/message";
         }
+    }
+
+    @PostMapping("/post/{post-id}/edit")
+    public String updatePostSubmit(@CurrentAccount Account account, @PathVariable("post-id") Long id
+                                , @Valid PostForm postForm, Errors errors
+                                , Model model, RedirectAttributes attributes) throws IOException {
+        Post post = postRepository.findById(id).orElse(null);
+        if(post == null) {
+            throw new NoSuchElementException("해당하는 게시물이 없습니다");
+        }
+        if(isNotPostWriter(post, account, attributes)) {
+            return "redirect:/account/message";
+        }
+        if(errors.hasErrors()) {
+            model.addAttribute(account);
+            return "post/edit";
+        }
+        postService.updatePost(post, postForm);
+        return "redirect:/post/" + getEncodedURL(post.getId());
     }
 
     private boolean isNotPostWriter(Post post, Account account, RedirectAttributes attributes) {
