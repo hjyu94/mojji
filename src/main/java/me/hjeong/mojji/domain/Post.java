@@ -20,7 +20,9 @@ public class Post {
 
     @ElementCollection
     @Builder.Default
-    private Set<String> images = new HashSet<>(); // url
+    private List<String> images = new ArrayList<>();
+
+    private Integer price;
 
     @ManyToOne
     private Account account;
@@ -31,6 +33,9 @@ public class Post {
 
     @Builder.Default
     private Integer lookCount = 0;
+
+    @Builder.Default
+    private Integer letterCount = 0;
 
     private LocalDateTime createdDateTime;
 
@@ -43,5 +48,9 @@ public class Post {
 
     public boolean isCreatedBy(UserAccount userAccount) {
         return this.account.equals(userAccount.getAccount());
+    }
+
+    public boolean isCreatedBy(Account account) {
+        return this.account.equals(account);
     }
 }
