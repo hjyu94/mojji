@@ -1,5 +1,6 @@
 package me.hjeong.mojji.util;
 
+import lombok.extern.slf4j.Slf4j;
 import me.hjeong.mojji.domain.Post;
 import org.imgscalr.Scalr;
 import org.springframework.http.HttpStatus;
@@ -12,11 +13,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+@Slf4j
 public class FileUtils {
     private static Map<String, MediaType> mediaMap;
     static { // 생성자가 없기 때문에, FileUtils 를 new 해서 만들어 쓸 게 아니기 때문에 메모리에 올라올 때 static 일 때 처리한다
@@ -98,5 +97,31 @@ public class FileUtils {
         File thumbnail = new File(dirName, thumbnailName);
         if(thumbnail.exists())
             thumbnail.delete();
+    }
+
+    public static void deleteFolder(String folderPath) {
+        log.info("call deleteFolder, path: {}", folderPath);
+
+        File folder = new File(folderPath);
+        try {
+            while(folder.exists()) {
+                File[] files = folder.listFiles(); //파일리스트 얻어오기
+
+                Arrays.stream(files).forEach(file -> {
+                    if(file.isFile()) {
+                        log.info("파일 {} 을 삭제합니다..", file.getName());
+                        file.delete();
+                    } else {
+                        deleteFolder(file.getPath());
+                        log.info("{} 폴더가 삭제되었습니다.", file.getPath());
+                    }
+                });
+
+                folder.delete();
+                log.info("{} 폴더가 삭제되었습니다.", folder.getPath());
+            }
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
     }
 }

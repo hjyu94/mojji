@@ -94,11 +94,36 @@
             <hr/>
             <div class="d-flex justify-content-end" th:if="${#authentication.principal != 'anonymousUser' && post.isCreatedBy(#authentication.principal)}">
                 <a th:href="@{'/post/' + ${post.id} + '/edit'}" class="btn btn-primary p-2 mr-2">수정</a>
-                <a th:href="@{/}" class="btn btn-danger p-2">삭제</a>
+                <a href="#" class="btn btn-danger p-2" data-toggle="modal" data-target="#delete">삭제</a>
             </div>
         </div>
     </div>
 </section>
+
+<!--modal-->
+<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="deleteTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTitle">게시물 삭제하기</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>게시물을 삭제하시겠습니까?</p>
+                <p><strong>확인</strong> 버튼을 클릭하면 게시물 및 업로드된 이미지들이 삭제됩니다.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                <form th:action="@{'/post/' + ${post.id}}" th:method="delete">
+                    <button class="btn btn-danger" type="submit" aria-describedby="submitHelp">확인</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <footer th:replace="fragments.html :: footer"></footer>
 <th:block th:replace="fragments.html :: basic-script"></th:block>
 <th:block th:replace="fragments.html :: tooltip-script"></th:block>

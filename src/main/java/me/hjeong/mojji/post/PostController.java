@@ -174,6 +174,19 @@ public class PostController {
         return "redirect:/post/" + getEncodedURL(post.getId());
     }
 
+    @DeleteMapping("/post/{post-id}")
+    public String deletePost(@CurrentAccount Account account, @PathVariable("post-id") Long id, RedirectAttributes attributes) {
+        Post post = postRepository.findById(id).orElse(null);
+        if(post == null) {
+            throw new NoSuchElementException("해당하는 게시물이 없습니다");
+        }
+        if(isNotPostWriter(post, account, attributes)) {
+            return "redirect:/account/message";
+        }
+        postService.deletePost(post);
+        return "index";
+    }
+
     private boolean isNotPostWriter(Post post, Account account, RedirectAttributes attributes) {
         if(!post.isCreatedBy(account)) {
             attributes.addFlashAttribute("title", "Error");

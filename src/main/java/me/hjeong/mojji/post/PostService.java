@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,5 +68,12 @@ public class PostService {
                 post.getImgFileNames().add(fileName);
             });
         }
+    }
+
+    public void deletePost(Post post) {
+        String postUploadPath = FileUtils.getPostUploadPath(appProperties.getUploadPath(), post);
+        FileUtils.deleteFolder(postUploadPath);
+
+        postRepository.delete(post);
     }
 }
