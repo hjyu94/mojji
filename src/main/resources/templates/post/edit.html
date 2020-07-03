@@ -45,7 +45,10 @@
             <div class="form-group mt-3">
                 <div id="whitelist" th:text="${whitelist}" hidden></div>
                 <input name='input-custom-dropdown' class='some_class_name' placeholder='거래할 장소를 검색하세요' aria-describedby="stationHelp" th:value="${#strings.listJoin(post.stations, ',')}">
-                <input hidden id="input-stations" th:field="*{stations}">
+<!--                <input hidden id="input-stations" th:field="*{stations}">-->
+                <div id="selected-stations" hidden>
+                    <!--<input class="selected-station" type="hidden" name="stations" value="XXX">;-->
+                </div>
                 <small id="stationHelp" class="form-text text-muted">
                     거래하고 싶은 장소를 입력하세요. 택배거래를 하고 싶거나 특정한 장소를 원하지 않는다면 비워두셔도 됩니다.
                 </small>
@@ -57,13 +60,27 @@
             </div>
             <div class="form-group mt-3">
                 <div class="custom-file">
-                    <input type="file" class="col custom-file-input with-preview" id="customFile" aria-describedby="fileHelp" data-maxfile="2048">
+                    <input type="file" class="col custom-file-input with-preview" id="customFile" th:field="*{images}" aria-describedby="fileHelp" data-maxfile="2048">
                     <label class="custom-file-label" for="customFile"></label>
                     <small id="fileHelp" class="form-text text-muted">
                         2MB 크기 이하의 이미지 파일을 선택해주세요.
                     </small>
                 </div>
                 <div id="file-list">
+                    <div id="delete-file-names" hidden>
+<!--                        <input name="deleteFileNames" val="">-->
+                    </div>
+                    <div th:each="fileName, i: ${alreadyUploadedFileNames}" th:id="${'uploaded-div-'+ i.index}">
+                        <a class="text-success delete-uploaded-image" th:id="${'uploaded-remove-'+ i.index}" onmouseover="" style="cursor: pointer;">x</a>
+                        <span>
+                            <span th:title='${fileName + " 을 선택했습니다."}'>
+                                <span th:id="${'uploaded-filename-'+ i.index}" th:text="${fileName}"></span>
+                                <img style="max-height:100px; max-width:100px;"
+                                    th:src='${"/displayFile?post-id=" + post.getId() + "&fileName=s_" + fileName}' th:alt="${'s_' + fileName}">
+                            </span>
+                        </span>
+                    </div>
+                    <hr/>
                 </div>
             </div>
             <div class="row mt-3">
@@ -80,5 +97,22 @@
 <script th:replace="fragments.html :: jquery-multifile-script"></script>
 <script th:replace="fragments.html :: tagify-text-input-suggestion-script"></script>
 <script th:replace="fragments.html :: null-check-category-script"></script>
+<script>
+$(function() {
+    $('.delete-uploaded-image').on("click", function() {
+        let removeId = this.id;
+        let idx = removeId.charAt(removeId.length - 1);
+
+        let fileName = $('#uploaded-filename-' + idx).text();
+        console.debug(fileName);
+
+        let ele = '<input hidden name="deleteFileNames" value="' + fileName + '">';
+        console.debug(ele);
+        $('#delete-file-names').append(ele);
+
+        $('#uploaded-div-'+idx).remove();
+    })
+});
+</script>
 </body>
 </html>

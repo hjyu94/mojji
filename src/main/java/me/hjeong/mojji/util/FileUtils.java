@@ -39,7 +39,7 @@ public class FileUtils {
     public static List<String> storeFiles(List<MultipartFile> files, String uploadPath) throws IOException {
         List<String> fileNameList = new ArrayList<>();
         for(MultipartFile file : files) {
-            if(file != null && !file.isEmpty() && file.getSize() != 0 && isImageFile(file.getName())) {
+            if(file != null && !file.isEmpty() && file.getSize() != 0 && isImageFile(file.getOriginalFilename())) {
                 fileNameList.add(storeFile(file, uploadPath));
             }
         }
