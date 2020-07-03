@@ -20,7 +20,7 @@ public class Post {
 
     @ElementCollection
     @Builder.Default
-    private List<String> images = new ArrayList<>();
+    private List<String> imgFileNames = new ArrayList<>();
 
     private Integer price;
 

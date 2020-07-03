@@ -47,21 +47,17 @@
                 </div>
             </div>
             <div class="mt-3 row justify-content-center">
-                <div th:if="${#sets.isEmpty(post.images)}">
+                <div th:if="${#sets.isEmpty(post.imgFileNames)}">
                     <img src="/images/no-image-icon.PNG" >
                 </div>
-                <div th:if="${!#sets.isEmpty(post.images)}" id="myCarousel" class="col carousel slide" data-ride="carousel">
+                <div th:if="${!#sets.isEmpty(post.imgFileNames)}" id="myCarousel" class="col carousel slide" data-ride="carousel">
                     <!-- Indicators -->
                     <ul class="carousel-indicators">
-                        <li th:each="num: ${#numbers.sequence(0,#sets.size(post.images)-1)}" data-target="#myCarousel" th:data-slide-to="${num}" th:class="${num == 0}? active"></li>
+                        <li th:each="num: ${#numbers.sequence(0,#sets.size(post.imgFileNames)-1)}" data-target="#myCarousel" th:data-slide-to="${num}" th:class="${num == 0}? active"></li>
                     </ul>
                     <!-- The slideshow -->
                     <div class="carousel-inner">
-
-<!--                        <img src="/displayFile?fileName=/nick/post-id/s_d9098510-1393-4eac-bd20-3ed03dcbe101_KakaoTalk_20200622_100949064.jpg"-->
-<!--                             alt="4eac-bd20-3ed03dcbe101_KakaoTalk_20200622_100949064.jpg">-->
-
-                        <div th:each="imgFileName, i: ${post.images}" class="carousel-item" th:classappend="${i.index == 0}? active">
+                        <div th:each="imgFileName, i: ${post.imgFileNames}" class="carousel-item" th:classappend="${i.index == 0}? active">
                             <img th:src='${"/displayFile?post-id=" + post.getId() + "&fileName=" + imgFileName}' th:alt="${imgFileName}">
                         </div>
                     </div>

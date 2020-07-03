@@ -14,6 +14,7 @@ import me.hjeong.mojji.domain.Station;
 import me.hjeong.mojji.station.StationRepository;
 import me.hjeong.mojji.util.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -45,6 +47,7 @@ public class PostController {
     private final StationRepository stationRepository;
     private final ObjectMapper objectMapper;
     private final AppProperties appProperties;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/new-post")
     public String newPost(@CurrentAccount Account account, Model model) throws JsonProcessingException {
@@ -127,80 +130,38 @@ public class PostController {
         }
     }
 
-//    @PostMapping("/post/image/upload")
-//    @ResponseBody
-//    public ResponseEntity uploadImg(List<MultipartFile> files) throws IOException {
-//        List<String> thumbnailNameList = FileUtils.storeFiles(files, appProperties.getUploadPath());
-//        return ResponseEntity.ok(thumbnailNameList);
-//    }
+    @GetMapping("/post/{post-id}/edit")
+    public String updatePost(@CurrentAccount Account account, @PathVariable("post-id") Long id
+                             , Model model, RedirectAttributes attributes) throws IOException {
+        try {
+            Post post = postRepository.findById(id).orElseThrow();
 
+            if(isNotPostWriter(post, account, attributes)) {
+                return "redirect:/account/message";
+            }
 
-//    @PostMapping("/post/image/delete")
-//    @ResponseBody
-//    public ResponseEntity deleteImg(String fileName) throws IOException {
-//        try {
-//            File file = new File(appProperties.getUploadPath() + File.separator + fileName);
-//            if (file.exists())
-//                file.delete();
-//
-//            // 썸네일 이미지도 삭제!
-//            String thumbnailName = "s_" + fileName;
-//            File thumbnail = new File(appProperties.getUploadPath() + File.separator + thumbnailName);
-//            thumbnail.delete();
-//
-//            return new ResponseEntity<>("deleted", HttpStatus.OK);
-//
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        }
-//    }
-//
+            model.addAttribute(account);
+            model.addAttribute(post);
+            model.addAttribute("form", modelMapper.map(post, PostForm.class));
+            putCategoryAndStationData(model);
 
-//    @GetMapping("/post/{post-id}/edit")
-//    public String updatePost(@CurrentAccount Account account, @PathVariable("post-id") Long id
-//                            , Model model, RedirectAttributes attributes) throws IOException {
-//        Post post = postRepository.findById(id).orElseThrow();
-//        if(isNotPostWriter(post, account, attributes)) {
-//            return "redirect:/account/message";
-//        }
-//        model.addAttribute(account);
-//        model.addAttribute(post);
-//
-//        PostForm postForm = modelMapper.map(post, PostForm.class);
-//        model.addAttribute("form", postForm);
-//
-//        File file =new File(appProperties.getUploadPath(), "test.jpg");
-//        model.addAttribute("filesss", file);
-//
-//        putCategoryAndStationData(model);
-//
-//        return "post/update-form";
-//    }
-//
-//    @PostMapping("/post/{post-id}/edit")
-//    public String updatePostSubmit(@CurrentAccount Account account, @PathVariable("post-id") Long id
-//                                , @Valid PostForm postForm, Errors errors, Model model, RedirectAttributes attributes)
-//    {
-//        Post post = postRepository.findById(id).orElseThrow();
-//        if(isNotPostWriter(post, account, attributes)) {
-//            return "redirect:/account/message";
-//        }
-//        if(errors.hasErrors()) {
-//            model.addAttribute(account);
-//            return "post/update-form";
-//        }
-//        postService.updatePost(post, postForm);
-//        return "redirect:/post/" + getEncodedURL(post.getId());
-//    }
-//
-//    private boolean isNotPostWriter(Post post, Account account, RedirectAttributes attributes) {
-//        if(!post.isCreatedBy(account)) {
-//            attributes.addFlashAttribute("title", "Error");
-//            attributes.addFlashAttribute("message", "수정 권한이 없습니다.");
-//            return true;
-//        }
-//        return false;
-//    }
+            return "post/update-form";
+
+        } catch (NoSuchElementException e) { // TODO:: advice controller 로 빼내기
+            model.addAttribute("title", "ERROR");
+            model.addAttribute("message", "해당 게시물이 없습니다.");
+            return "account/message";
+        }
+    }
+
+    private boolean isNotPostWriter(Post post, Account account, RedirectAttributes attributes) {
+        if(!post.isCreatedBy(account)) {
+            attributes.addFlashAttribute("title", "Error");
+            attributes.addFlashAttribute("message", "수정 권한이 없습니다.");
+            return true;
+        }
+        return false;
+    }
 
     private String getEncodedURL(Long id) {
         return URLEncoder.encode(id.toString(), StandardCharsets.UTF_8);

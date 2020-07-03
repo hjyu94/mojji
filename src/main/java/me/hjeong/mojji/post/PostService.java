@@ -31,7 +31,7 @@ public class PostService {
         // upload image files
         String dirName = FileUtils.getPostUploadPath(appProperties.getUploadPath(), savedPost);
         List<String> imageFileNameList = FileUtils.storeFiles(form.getImages(), dirName);
-        savedPost.setImages(imageFileNameList);
+        savedPost.setImgFileNames(imageFileNameList);
 
         return savedPost;
     }
