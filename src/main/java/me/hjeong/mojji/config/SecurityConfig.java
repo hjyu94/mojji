@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/confirmed-account-by-email", "/account/password", "/test").permitAll()
+                .antMatchers("/", "/login", "/confirmed-account-by-email", "/account/password", "/displayFile", "/test").permitAll()
                 .antMatchers(HttpMethod.GET, "/account/profile", "/post/*").permitAll()
                 .antMatchers("/new-account", "/account/password").anonymous()
                 .anyRequest().authenticated()
