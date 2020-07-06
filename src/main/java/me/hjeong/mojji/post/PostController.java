@@ -70,16 +70,10 @@ public class PostController {
 
     @GetMapping("/post/{post-id}")
     public String getPost(@CurrentAccount Account account, @PathVariable("post-id") Long id, Model model) {
-        try {
-            Post post = postRepository.findById(id).orElseThrow();
-            model.addAttribute("account", account); // including null
-            model.addAttribute(post);
-            return "post/view";
-        } catch (NoSuchElementException e) {
-            model.addAttribute("title", "ERROR");
-            model.addAttribute("message", "해당 게시물이 없습니다.");
-            return "account/message";
-        }
+        Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
+        model.addAttribute("account", account); // including null
+        model.addAttribute(post);
+        return "post/view";
     }
 
     @ResponseBody
@@ -89,7 +83,7 @@ public class PostController {
 
         log.info("************************* displayFile: {}, {}", id, fileName);
 
-        Post post = postRepository.findById(id).orElseThrow();
+        Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
         String postUploadPath = FileUtils.getPostUploadPath(appProperties.getUploadPath(), post);
 
         InputStream in = null; // 파일을 읽어오자.
@@ -133,36 +127,26 @@ public class PostController {
     @GetMapping("/post/{post-id}/edit")
     public String updatePost(@CurrentAccount Account account, @PathVariable("post-id") Long id
                              , Model model, RedirectAttributes attributes) throws IOException {
-        try {
-            Post post = postRepository.findById(id).orElseThrow();
+        Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
 
-            if(isNotPostWriter(post, account, attributes)) {
-                return "redirect:/account/message";
-            }
-
-            model.addAttribute(account);
-            model.addAttribute(post);
-            model.addAttribute("form", modelMapper.map(post, PostForm.class));
-            model.addAttribute("alreadyUploadedFileNames", post.getImgFileNames());
-            putCategoryAndStationData(model);
-
-            return "post/edit";
-
-        } catch (NoSuchElementException e) { // TODO:: advice controller 로 빼내기
-            model.addAttribute("title", "ERROR");
-            model.addAttribute("message", "해당 게시물이 없습니다.");
-            return "account/message";
+        if(isNotPostWriter(post, account, attributes)) {
+            return "redirect:/account/message";
         }
+
+        model.addAttribute(account);
+        model.addAttribute(post);
+        model.addAttribute("form", modelMapper.map(post, PostForm.class));
+        model.addAttribute("alreadyUploadedFileNames", post.getImgFileNames());
+        putCategoryAndStationData(model);
+
+        return "post/edit";
     }
 
     @PostMapping("/post/{post-id}/edit")
     public String updatePostSubmit(@CurrentAccount Account account, @PathVariable("post-id") Long id
                                 , @Valid PostForm postForm, Errors errors
                                 , Model model, RedirectAttributes attributes) throws IOException {
-        Post post = postRepository.findById(id).orElse(null);
-        if(post == null) {
-            throw new NoSuchElementException("해당하는 게시물이 없습니다");
-        }
+        Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
         if(isNotPostWriter(post, account, attributes)) {
             return "redirect:/account/message";
         }
@@ -176,10 +160,7 @@ public class PostController {
 
     @DeleteMapping("/post/{post-id}")
     public String deletePost(@CurrentAccount Account account, @PathVariable("post-id") Long id, RedirectAttributes attributes) {
-        Post post = postRepository.findById(id).orElse(null);
-        if(post == null) {
-            throw new NoSuchElementException("해당하는 게시물이 없습니다");
-        }
+        Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
         if(isNotPostWriter(post, account, attributes)) {
             return "redirect:/account/message";
         }

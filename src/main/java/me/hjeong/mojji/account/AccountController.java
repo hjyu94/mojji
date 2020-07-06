@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 
 @Controller
 @RequiredArgsConstructor
@@ -138,7 +139,7 @@ public class AccountController {
     public String showProfile(@PathVariable String nickname, Model model) {
         Account account = accountRepository.findByNickname(nickname);
         if(account == null) {
-            return "error";
+            throw new NoSuchElementException("해당하는 유저를 찾을 수 없습니다");
         }
         model.addAttribute(account);
         return "account/profile";
