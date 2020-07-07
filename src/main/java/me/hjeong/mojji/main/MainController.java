@@ -47,15 +47,18 @@ public class MainController {
     public String search(@CurrentAccount Account account, @RequestParam List<String> keywords, Model model
             , @PageableDefault(size = 9, sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable) {
         log.info("search, keywords : {}", keywords);
-
-        model.addAttribute("account", account);
-        Page<Post> postPage = postRepository.findByKeywords(pageable, keywords);
-        if(!postPage.hasContent()) {
-            postPage = null;
+        if(keywords != null) {
+            Page<Post> postPage = postRepository.findByKeywords(pageable, keywords);
+            if (!postPage.hasContent()) {
+                postPage = null;
+            }
+            model.addAttribute("account", account);
+            model.addAttribute("keywords", keywords);
+            model.addAttribute("posts", postPage);
+            return "post/search";
+        } else {
+            return "redirect:/posts";
         }
-        model.addAttribute("keywords", keywords);
-        model.addAttribute("posts", postPage);
-        return "post/se arch";
     }
 
 }

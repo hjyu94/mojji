@@ -144,11 +144,12 @@
             <a class="navbar-brand" href="/"><img src="/images/logo.png" alt="Logo" style="height: 30px; width: auto;"></a>
             <a class="navbar-brand" href="/" id="navbar-logo-text">모찌마켓</a>
         </div>
-        <div class="nav navbar-nav navbar-logo mx-auto row">
-            <form class="form-inline" role="form" method="get" th:action="@{/search}" style="min-width: 350px;">
-                <input th:if="${keywords == null}" class="form-control mr-2 col-9" type="search" placeholder="지역, 상품 등을 검색해보세요." name="keywords" aria-label="Search">
-                <input th:if="${keywords != null}" th:value="${keywords}" class="form-control mr-2 col-9" type="search" placeholder="지역, 상품 등을 검색해보세요." name="keywords" aria-label="Search">
-                <button class="btn btn-success my-2 my-sm-0 col-2" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        <div class="nav navbar-nav navbar-logo mx-auto row col px-md-5 px-2">
+            <form class="form-inline col" role="form" method="get" th:action="@{/search}">
+                <input th:value="${keywords==null? null : #strings.listJoin(keywords, ',')}" class="col form-control mr-2" type="search" placeholder="지역, 상품, 글 제목 내용 등을 키워드로 검색해보세요." name="keywords" aria-label="Search">
+                <span class="mx-0 px-0" data-toggle="tooltip" data-placement="bottom" title="여러 키워드들을 공백이나 , 로 연결할 수 있습니다.">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                </span>
             </form>
         </div>
         <div class="nav navbar-nav pull-sm-right">
