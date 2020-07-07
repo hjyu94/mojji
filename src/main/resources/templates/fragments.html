@@ -189,7 +189,6 @@
                             <span sec:authentication="name">Username</span>
                         </h6>
                         <a class="dropdown-item" th:href="@{'/account/profile/' + ${#authentication.name}}">프로필</a>
-                        <a class="dropdown-item" >내가 쓴 글</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#" th:href="@{'/setting/profile'}">설정</a>
                         <form class="form-inline my-2 my-lg-0" action="#" th:action="@{/logout}" method="post">
@@ -254,7 +253,7 @@
             전체 글 보기
         </a>
     </div>
-    <div class="list-group" sec:authorize="isAuthenticated()">
+    <div class="col-lg-2 col-3 d-none d-md-block list-group" sec:authorize="isAuthenticated()">
         <a th:href="@{/posts}" class="list-group-item d-flex justify-content-between align-items-center">
             전체 글 보기
         </a>
