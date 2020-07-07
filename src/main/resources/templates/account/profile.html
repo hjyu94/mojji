@@ -25,10 +25,18 @@
             <div class="col-md-8 mt-3 tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-selling" role="tabpanel"
                      aria-labelledby="nav-selling-tab">
-                    ddd
+                    <div class="row">
+                        <div class="col-4" th:each="post : ${sellingPosts}">
+                            <div th:replace="fragments.html :: post-card"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="nav-sold" role="tabpanel" aria-labelledby="nav-sold-tab">
-                    sss
+                    <div class="row">
+                        <div class="col-4" th:each="post : ${soldPosts}">
+                            <div th:replace="fragments.html :: post-card"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-review-tab">
                     (계획: 판매 완료 시 판매자는 구매자를 설정할 수 있고 구매자는 판매자를 평가 할 수 있다.)

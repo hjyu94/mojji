@@ -2,7 +2,8 @@ package me.hjeong.mojji.account;
 
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.domain.Account;
-import org.modelmapper.ModelMapper;
+import me.hjeong.mojji.domain.Post;
+import me.hjeong.mojji.post.PostRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Controller
@@ -19,8 +21,8 @@ public class AccountController {
 
     private final AccountRepository accountRepository;
     private final AccountService accountService;
-    private final ModelMapper modelMapper;
     private final RegisterFormValidator registerFormValidator;
+    private final PostRepository postRepository;
 
     @InitBinder("registerForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -141,7 +143,11 @@ public class AccountController {
         if(account == null) {
             throw new NoSuchElementException("해당하는 유저를 찾을 수 없습니다");
         }
+        List<Post> sellingPosts = postRepository.findPostsBySellerAndIsSold(account, false);
+        List<Post> soldPosts = postRepository.findPostsBySellerAndIsSold(account, true);
         model.addAttribute(account);
+        model.addAttribute("sellingPosts", sellingPosts);
+        model.addAttribute("soldPosts", soldPosts);
         return "account/profile";
     }
 
