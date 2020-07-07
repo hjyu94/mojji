@@ -145,8 +145,9 @@
             <a class="navbar-brand" href="/" id="navbar-logo-text">모찌마켓</a>
         </div>
         <div class="nav navbar-nav navbar-logo mx-auto row">
-            <form class="form-inline" role="form" method="get" action="/search" style="min-width: 350px;">
-                <input class="form-control mr-2 col-9" type="search" placeholder="지역, 상품 등을 검색해보세요." name="keywords" aria-label="Search">
+            <form class="form-inline" role="form" method="get" th:action="@{/search}" style="min-width: 350px;">
+                <input th:if="${keywords == null}" class="form-control mr-2 col-9" type="search" placeholder="지역, 상품 등을 검색해보세요." name="keywords" aria-label="Search">
+                <input th:if="${keywords != null}" th:value="${keywords}" class="form-control mr-2 col-9" type="search" placeholder="지역, 상품 등을 검색해보세요." name="keywords" aria-label="Search">
                 <button class="btn btn-success my-2 my-sm-0 col-2" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
             </form>
         </div>
@@ -267,7 +268,7 @@
     </div>
 </div>
 
-<div th:fragment="post-card" class="card mb-4 shadow-sm">
+<div th:fragment="post-card" class="card mb-4 shadow-sm" th:if="${post!=null}">
     <a class="thumbnail" th:href="@{'/post/' + ${post.getId()}}">
         <img class="thumbnail card-img-top"
              th:if="${#lists.isEmpty(post.getImgFileNames())}"
