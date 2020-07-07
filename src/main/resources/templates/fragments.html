@@ -87,6 +87,20 @@
     }
 </style>
 
+<style th:fragment="post-card-css" th:remove="tag">
+    .long-text {
+        -o-text-overflow: ellipsis;   /* Opera */
+        text-overflow:    ellipsis;   /* IE, Safari (WebKit) */
+        overflow:hidden;              /* don't show excess chars */
+        white-space:nowrap;           /* force single line */
+        width: 100%;                 /* fixed width */
+    }
+    .thumbnail {
+        width: 100%;
+        height: 200px;
+    }
+</style>
+
 <!--################################### auth banner ###################################-->
 
 <div id="auth-banner" th:fragment="auth-banner">
@@ -232,6 +246,50 @@
     </div>
 </div>
 
+<div class="col-lg-2 col-3 d-none d-md-block" th:fragment="post-menu">
+    <div class="list-group" sec:authorize="!isAuthenticated()">
+        <a th:href="@{/posts}" class="list-group-item d-flex justify-content-between align-items-center">
+            전체 글 보기
+        </a>
+    </div>
+    <div class="list-group" sec:authorize="isAuthenticated()">
+        <a th:href="@{/posts}" class="list-group-item d-flex justify-content-between align-items-center">
+            전체 글 보기
+        </a>
+        <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
+            알림
+            <span class="badge badge-primary badge-pill">99</span>
+        </a>
+        <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
+            쪽지
+            <span class="badge badge-primary badge-pill">99</span>
+        </a>
+    </div>
+</div>
+
+<div th:fragment="post-card" class="card mb-4 shadow-sm">
+    <a class="thumbnail" th:href="@{'/post/' + ${post.getId()}}">
+        <img class="thumbnail card-img-top"
+             th:if="${#lists.isEmpty(post.getImgFileNames())}"
+             src="/images/no-image-icon.PNG"
+             alt="Deafult Image">
+        <img class="thumbnail card-img-top"
+             th:if="${!#lists.isEmpty(post.getImgFileNames())}"
+             th:src='${"/displayFile?post-id=" + post.getId() + "&fileName=s_" + post.getImgFileNames().get(0)}'
+             th:alt="${'s_' + post.getImgFileNames().get(0)}">
+    </a>
+    <div class="card-body">
+        <a class="card-title font-weight-bold long-text mb-0" th:text="${post.title}" th:href="@{'/post/' + ${post.getId()}}" style="display:block;">이동식 에어컨</a>
+        <p class="card-text long-text"><span th:each="station : ${post.stations}" th:text="${station.getName() + '역'}">평촌역</span></p>
+        <p class="card-text font-weight-bolder long-text" th:text="${post.price + '원'}">999원</p>
+    </div>
+    <div class="card-footer text-right">
+        <i class="fa fa-mouse-pointer" aria-hidden="true"></i>
+        <small th:text="${post.lookCount}"></small>
+        ∙ <i class="fa fa-envelope-o" aria-hidden="true"></i>
+        <small th:text="${post.letterCount}"></small>
+    </div>
+</div>
 <!--################################### script ###################################-->
 
 <script th:fragment="tooltip-script" type="application/javascript">

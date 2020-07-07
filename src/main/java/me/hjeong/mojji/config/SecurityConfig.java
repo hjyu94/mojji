@@ -48,10 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/confirmed-account-by-email", "/account/password", "/displayFile").permitAll()
-                .antMatchers(HttpMethod.GET, "/account/profile/**", "/post/*").permitAll()
-                .antMatchers("/new-account", "/account/password").anonymous()
-                .anyRequest().authenticated()
+                .antMatchers("/", "/login", "/confirmed-account-by-email", "/account/password", "/posts", "/displayFile").permitAll()
+                .antMatchers(HttpMethod.GET, "/account/profile/**", "/post/*").permitAll() // 아무나 접근 가능
+                .antMatchers("/new-account", "/account/password").anonymous() // 로그인 안 한 상태에서만 접근 가능
+                .anyRequest().authenticated() // 나머지는 로그인 필요
                 .and()
 
                 .formLogin()

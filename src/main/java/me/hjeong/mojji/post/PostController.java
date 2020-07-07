@@ -15,6 +15,10 @@ import me.hjeong.mojji.station.StationRepository;
 import me.hjeong.mojji.util.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -166,6 +170,14 @@ public class PostController {
         }
         postService.deletePost(post);
         return "index";
+    }
+
+    @GetMapping("/posts")
+    public String getAllPosts(@CurrentAccount Account account, Model model
+                            , @PageableDefault(size = 9, sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+        model.addAttribute("posts", posts);
+        return "post/posts";
     }
 
     private boolean isNotPostWriter(Post post, Account account, RedirectAttributes attributes) {
