@@ -20,7 +20,7 @@ public class Post {
 
     @ElementCollection
     @Builder.Default
-    private Set<String> imgFileNames = new HashSet<>();
+    private List<String> imgFileNames = new ArrayList<>();
 
     private Integer price;
 

@@ -57,11 +57,10 @@ public class FileUtils {
         // mime 체크할 때 편하게 하도록 대문자로 설정
     }
 
-    // 업로드한 파일을 읽어서 세로 100인 썸네일 이미지를 만들어 저장한다.
+    // 업로드한 파일을 읽어서 가로 400인 썸네일 이미지를 만들어 저장한다.
     public static String makeThumbnail(String uploadPath, String filename) throws IOException {
         BufferedImage srcImg = ImageIO.read(new File(uploadPath, filename));
-        BufferedImage destImg = Scalr.resize(srcImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, 100);
-        // width: FIT_TO_HEIGHT, height: 100
+        BufferedImage destImg = Scalr.resize(srcImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH, 400);
 
         String thumbnailName = "s_" + filename;
         String ext = getFileExtension(filename); // "PNG"
