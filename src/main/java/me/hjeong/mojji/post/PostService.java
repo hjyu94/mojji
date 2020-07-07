@@ -26,7 +26,7 @@ public class PostService {
 
     public Post createNewPost(PostForm form, Account account) throws IOException {
         Post post = modelMapper.map(form, Post.class);
-        post.setAccount(account);
+        post.setSeller(account);
         post.setCreatedDateTime(LocalDateTime.now());
         Post savedPost = postRepository.save(post);
 

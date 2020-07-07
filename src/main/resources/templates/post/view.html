@@ -28,14 +28,14 @@
             <div class="d-flex justify-content-end">
                 <div class="dropdown">
                     <span class="dropdown-toggle" data-toggle="dropdown">
-                        <svg th:if="${#strings.isEmpty(post.account.profileImage)}" th:data-jdenticon-value="${#authentication.name}"
+                        <svg th:if="${#strings.isEmpty(post.seller.profileImage)}" th:data-jdenticon-value="${#authentication.name}"
                              width="25" height="25" class="rounded border bg-light"></svg>
-                        <img th:if="${!#strings.isEmpty(post.account.profileImage)}" th:src="${account.profileImage}"
+                        <img th:if="${!#strings.isEmpty(post.seller.profileImage)}" th:src="${account.profileImage}"
                              width="25" height="25" class="rounded border"/>
-                        <strong th:text="${post.account.nickname}"></strong>
+                        <strong th:text="${post.seller.nickname}"></strong>
                     </span>
                     <div class="dropdown-menu mt-2">
-                        <a class="dropdown-item" th:href="@{'/account/profile/' + ${post.account.nickname}}">프로필 보기</a>
+                        <a class="dropdown-item" th:href="@{'/account/profile/' + ${post.seller.nickname}}">프로필 보기</a>
                         <a class="dropdown-item" href="#">쪽지 보내기</a>
                     </div>
                 </div>
@@ -87,8 +87,9 @@
             <div class="mt-3" th:utext="${post.body}"></div>
             <hr/>
             <div class="d-flex justify-content-end" th:if="${#authentication.principal != 'anonymousUser' && post.isCreatedBy(#authentication.principal)}">
-                <a th:href="@{'/post/' + ${post.id} + '/edit'}" class="btn btn-primary p-2 mr-2">수정</a>
-                <a href="#" class="btn btn-danger p-2" data-toggle="modal" data-target="#delete">삭제</a>
+                <a th:href="@{'/post/' + ${post.id} + '/edit'}" class="btn btn-outline-primary p-2 mr-2">수정</a>
+                <a href="#" class="btn btn-outline-danger p-2 mr-2" data-toggle="modal" data-target="#delete">삭제</a>
+                <a th:href="@{'/post/' + ${post.id} + '/sold'}" class="btn btn-outline-success p-2 mr-2">★ 판매 완료 ★</a>
             </div>
         </div>
     </div>

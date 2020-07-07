@@ -6,9 +6,7 @@ import me.hjeong.mojji.account.UserAccount;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
@@ -25,7 +23,11 @@ public class Post {
     private Integer price;
 
     @ManyToOne
-    private Account account;
+    private Account seller;
+
+    @ManyToOne
+    @Builder.Default
+    private Account buyer = null;
 
     private String title;
 
@@ -39,6 +41,9 @@ public class Post {
 
     private LocalDateTime createdDateTime;
 
+    @Builder.Default
+    private boolean isSold = false;
+
     @ManyToMany
     @Builder.Default
     private List<Station> stations = new ArrayList<>();
@@ -47,10 +52,10 @@ public class Post {
     private Category category;
 
     public boolean isCreatedBy(UserAccount userAccount) {
-        return this.account.equals(userAccount.getAccount());
+        return this.seller.equals(userAccount.getAccount());
     }
 
     public boolean isCreatedBy(Account account) {
-        return this.account.equals(account);
+        return this.seller.equals(account);
     }
 }

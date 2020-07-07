@@ -72,7 +72,7 @@ public class FileUtils {
 
     public static String getPostUploadPath(String uploadPath, Post post) {
         String postUploadPath = uploadPath
-                + File.separator + post.getAccount().getNickname()
+                + File.separator + post.getSeller().getNickname()
                 + File.separator + post.getId().toString();
         File file = new File(postUploadPath);
         if(!file.exists())
