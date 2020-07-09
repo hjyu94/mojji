@@ -25,7 +25,7 @@ public class Post {
     @ManyToOne
     private Account seller;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @Builder.Default
     private Account buyer = null;
 
@@ -48,7 +48,7 @@ public class Post {
     @Builder.Default
     private List<Station> stations = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     public boolean isCreatedBy(UserAccount userAccount) {

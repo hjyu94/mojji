@@ -35,9 +35,7 @@ public class MainController {
 
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
-        if (account != null) {
-            model.addAttribute(account);
-        }
+        model.addAttribute("account", account);
         List<Post> posts = postRepository.findFirst6ByOrderByCreatedDateTimeDesc();
         model.addAttribute("posts", posts);
         return "index";

@@ -87,7 +87,10 @@ public class PostController {
 
         log.info("************************* displayFile: {}, {}", id, fileName);
 
-        Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
+        Post post = postRepository.findById(id).orElseThrow(()-> {
+            log.info("post {} 가 없습니다", id);
+            return new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다.");
+        });
         String postUploadPath = FileUtils.getPostUploadPath(appProperties.getUploadPath(), post);
 
         InputStream in = null; // 파일을 읽어오자.
