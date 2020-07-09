@@ -2,6 +2,8 @@ package me.hjeong.mojji.domain;
 
 import lombok.*;
 import me.hjeong.mojji.account.UserAccount;
+import me.hjeong.mojji.post.event.PostCreatedEvent;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,7 +15,7 @@ import java.util.Set;
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Post {
+public class Post extends AbstractAggregateRoot<Post> {
 
     @Id @GeneratedValue
     private Long id;
@@ -60,4 +62,10 @@ public class Post {
     public boolean isCreatedBy(Account account) {
         return this.seller.equals(account);
     }
+
+    public Post publishCreatedEvent() {
+        this.registerEvent(new PostCreatedEvent(this));
+        return this;
+    }
+
 }
