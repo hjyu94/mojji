@@ -6,7 +6,6 @@ import me.hjeong.mojji.post.PostRepositoryExtensionImpl;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

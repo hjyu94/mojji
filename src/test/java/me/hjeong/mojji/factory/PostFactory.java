@@ -24,6 +24,7 @@ public class PostFactory {
                 .category(categoryFactory.getOne())
                 .createdDateTime(LocalDateTime.now())
                 .build();
+        post.publishCreatedEvent();
         return postRepository.save(post);
     }
 
