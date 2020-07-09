@@ -1,9 +1,13 @@
-package me.hjeong.mojji.account;
+package me.hjeong.mojji.factory;
 
 import lombok.RequiredArgsConstructor;
+import me.hjeong.mojji.account.AccountRepository;
 import me.hjeong.mojji.domain.Account;
+import me.hjeong.mojji.domain.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -18,6 +22,15 @@ public class AccountFactory {
         account.setEmail(nickname + "@email.com");
         account.setPassword("1234");
         return accountRepository.save(account);
+    }
+
+    public Account getOne() {
+        List<Account> accounts = accountRepository.findAll();
+        if(accounts.isEmpty()) {
+            return createAccount("유저1");
+        } else {
+            return accounts.get(0);
+        }
     }
 
 }

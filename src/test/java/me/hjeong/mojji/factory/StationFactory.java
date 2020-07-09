@@ -1,7 +1,8 @@
-package me.hjeong.mojji.station;
+package me.hjeong.mojji.factory;
 
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.domain.Station;
+import me.hjeong.mojji.station.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StationFactory {
 
-    @Autowired StationRepository stationRepository;
+    @Autowired
+    StationRepository stationRepository;
 
     public Station createStation(String strStation) {
         String pattern = "[()-]";
