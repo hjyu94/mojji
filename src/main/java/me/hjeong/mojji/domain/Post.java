@@ -6,6 +6,8 @@ import me.hjeong.mojji.post.event.PostCreatedEvent;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,13 +28,14 @@ public class Post extends AbstractAggregateRoot<Post> {
 
     private Integer price;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Account seller;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @Builder.Default
     private Account buyer = null;
 
+    @Column(nullable = false)
     private String title;
 
     private String body;
@@ -43,6 +46,7 @@ public class Post extends AbstractAggregateRoot<Post> {
     @Builder.Default
     private Integer letterCount = 0;
 
+    @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
     @Builder.Default
@@ -52,7 +56,7 @@ public class Post extends AbstractAggregateRoot<Post> {
     @Builder.Default
     private Set<Station> stations = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Category category;
 
     public boolean isCreatedBy(UserAccount userAccount) {
@@ -68,4 +72,7 @@ public class Post extends AbstractAggregateRoot<Post> {
         return this;
     }
 
+    public String getEncodedURL() {
+        return URLEncoder.encode(this.id.toString(), StandardCharsets.UTF_8);
+    }
 }

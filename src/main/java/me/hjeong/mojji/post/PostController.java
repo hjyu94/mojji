@@ -69,7 +69,7 @@ public class PostController {
             return "post/form";
         }
         Post savedPost = postService.createNewPost(postForm, account);
-        return "redirect:/post/" + getEncodedURL(savedPost.getId());
+        return "redirect:/post/" + savedPost.getEncodedURL();
     }
 
     @GetMapping("/post/{post-id}")
@@ -162,7 +162,7 @@ public class PostController {
             return "post/edit";
         }
         postService.updatePost(post, postForm);
-        return "redirect:/post/" + getEncodedURL(post.getId());
+        return "redirect:/post/" + post.getEncodedURL();
     }
 
     @DeleteMapping("/post/{post-id}")
@@ -190,10 +190,6 @@ public class PostController {
             return true;
         }
         return false;
-    }
-
-    private String getEncodedURL(Long id) {
-        return URLEncoder.encode(id.toString(), StandardCharsets.UTF_8);
     }
 
     private void putCategoryAndStationData(Model model) throws JsonProcessingException {
