@@ -3,12 +3,10 @@ package me.hjeong.mojji;
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.account.AccountRepository;
 import me.hjeong.mojji.category.CategoryRepository;
-import me.hjeong.mojji.config.AppProperties;
 import me.hjeong.mojji.domain.Account;
 import me.hjeong.mojji.domain.Post;
 import me.hjeong.mojji.post.PostRepository;
 import me.hjeong.mojji.station.StationRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 

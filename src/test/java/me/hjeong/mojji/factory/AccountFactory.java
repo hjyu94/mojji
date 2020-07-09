@@ -3,7 +3,6 @@ package me.hjeong.mojji.factory;
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.account.AccountRepository;
 import me.hjeong.mojji.domain.Account;
-import me.hjeong.mojji.domain.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

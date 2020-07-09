@@ -23,17 +23,12 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-
-import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
-import static org.hamcrest.number.OrderingComparison.lessThan;
 
 @DataJpaTest
 @Import({DataJpaConfig.class, EventHandlerConfig.class})
@@ -47,9 +42,7 @@ class PostRepositoryTest {
     @Autowired NotificationFactory notificationFactory;
     @Autowired NotificationRepository notificationRepository;
 
-    @MockBean
-    EmailService emailService;
-
+    @MockBean EmailService emailService;
 
     @Test
     void findAllOrderByCreatedDateTimeDesc() {

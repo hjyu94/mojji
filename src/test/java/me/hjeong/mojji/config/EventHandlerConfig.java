@@ -1,7 +1,6 @@
 package me.hjeong.mojji.config;
 
 import me.hjeong.mojji.account.AccountRepository;
-import me.hjeong.mojji.factory.NotificationFactory;
 import me.hjeong.mojji.mail.ConsoleEmailService;
 import me.hjeong.mojji.mail.EmailService;
 import me.hjeong.mojji.notification.NotificationRepository;
