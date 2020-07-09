@@ -28,6 +28,7 @@ public class PostService {
         Post post = modelMapper.map(form, Post.class);
         post.setSeller(account);
         post.setCreatedDateTime(LocalDateTime.now());
+        post.publishCreatedEvent();
         Post savedPost = postRepository.save(post);
 
         // upload image files
