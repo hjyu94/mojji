@@ -2,6 +2,7 @@ package me.hjeong.mojji.station;
 
 import lombok.RequiredArgsConstructor;
 import me.hjeong.mojji.domain.Station;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,9 +25,13 @@ public class StationService {
 
     private final StationRepository stationRepository;
     private final ResourceLoader resourceLoader;
+    private final Environment env;
 
     @PostConstruct
     public void initZoneData() throws IOException {
+        if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
+            return;
+        }
         if (stationRepository.count() == 0) {
             try (InputStream resource = resourceLoader.getResource("classpath:station.csv").getInputStream()) {
                 List<String> strings = new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8))

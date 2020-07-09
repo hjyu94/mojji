@@ -36,4 +36,4 @@ src/main/resources/static/node_modules
 
 **/favicon_io_emoji/**
 **/upload/**
-**/application-secret.properties
+**/*secret*.properties

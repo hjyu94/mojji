@@ -38,10 +38,10 @@ public class Account {
 
     private boolean notiByEmail = false;
 
-    @OneToMany
+    @ManyToMany
     private Set<Station> stations = new HashSet<>();
 
-    @OneToMany
+    @ManyToMany
     private Set<Category> categories = new HashSet<>();
 
     @Lob
