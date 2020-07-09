@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -50,7 +50,7 @@ public class PostService {
         uploadFiles(form.getImages(), post);
     }
 
-    private void deleteFiles(List<String> fileNames, Post post) {
+    private void deleteFiles(Set<String> fileNames, Post post) {
         if (null != fileNames) {
             String dirName = FileUtils.getPostUploadPath(appProperties.getUploadPath(), post);
             FileUtils.deleteFiles(fileNames, dirName);
@@ -60,7 +60,7 @@ public class PostService {
         }
     }
 
-    private void uploadFiles(List<MultipartFile> fileNames, Post post) throws IOException {
+    private void uploadFiles(Set<MultipartFile> fileNames, Post post) throws IOException {
         if (null != fileNames) {
             String dirName = FileUtils.getPostUploadPath(appProperties.getUploadPath(), post);
             List<String> imageFileNameList = FileUtils.storeFiles(fileNames, dirName);

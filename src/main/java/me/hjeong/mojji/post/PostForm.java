@@ -6,6 +6,7 @@ import me.hjeong.mojji.domain.Station;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class PostForm {
@@ -14,8 +15,8 @@ public class PostForm {
     private Integer price;
     private String body;
     private Category category;
-    private List<Station> stations;
-    private List<MultipartFile> images;
-    private List<String> deleteFileNames; // can be null
+    private Set<Station> stations;
+    private Set<MultipartFile> images;
+    private Set<String> deleteFileNames; // can be null
 
 }

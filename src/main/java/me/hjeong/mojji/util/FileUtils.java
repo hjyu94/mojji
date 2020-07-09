@@ -37,7 +37,7 @@ public class FileUtils {
         return fileName;
     }
 
-    public static List<String> storeFiles(List<MultipartFile> files, String uploadPath) throws IOException {
+    public static List<String> storeFiles(Set<MultipartFile> files, String uploadPath) throws IOException {
         List<String> fileNameList = new ArrayList<>();
         for(MultipartFile file : files) {
             if(file != null && !file.isEmpty() && file.getSize() != 0 && isImageFile(file.getOriginalFilename())) {
@@ -80,7 +80,7 @@ public class FileUtils {
         return postUploadPath;
     }
 
-    public static void deleteFiles(List<String> fileNames, String dirName) {
+    public static void deleteFiles(Set<String> fileNames, String dirName) {
         for (String fileName : fileNames) {
             deleteFile(fileName, dirName);
         }

@@ -6,7 +6,9 @@ import me.hjeong.mojji.account.UserAccount;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
@@ -46,7 +48,7 @@ public class Post {
 
     @ManyToMany
     @Builder.Default
-    private List<Station> stations = new ArrayList<>();
+    private Set<Station> stations = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
