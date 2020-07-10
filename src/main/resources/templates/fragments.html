@@ -315,8 +315,8 @@
     <li class="page-item" th:classappend="${!page.hasPrevious()}? disabled">
         <a th:href="@{${url} + '?page=' + ${page.getNumber() - 1}}" class="page-link" tabindex="-1" aria-disabled="true"><</a>
     </li>
-    <th:block th:with="expectedEnd=${(page.getNumber() / indexCnt) * indexCnt + indexCnt - 1}, actualEnd=${page.getTotalPages()-1}">
-        <th:block th:with="startIdx=${(page.getNumber() / indexCnt) * indexCnt}, endIdx=${expectedEnd < actualEnd ? expectedEnd : actualEnd}">
+    <th:block th:with="expectedEnd=${(page.getNumber() / indexCnt) * indexCnt + indexCnt - 1}, actualEnd=${page.getTotalPages()-1}, minEnd=${expectedEnd < actualEnd ? expectedEnd : actualEnd}">
+        <th:block th:with="startIdx=${(page.getNumber() / indexCnt) * indexCnt}, endIdx=${minEnd < 0 ? 0 : minEnd}">
             <li class="page-item" th:classappend="${i == page.getNumber()}? active" th:each="i: ${#numbers.sequence(startIdx, endIdx)}">
                 <a th:href="@{${url} + '?page=' + ${i}}" class="page-link" th:text="${i + 1}">1</a>
             </li>
