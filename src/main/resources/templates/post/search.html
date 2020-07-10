@@ -27,24 +27,7 @@
                 </div>
             </div>
             <div th:if="${posts != null}" class="row justify-content-center mt-3">
-                <ul class="pagination">
-                    <li class="page-item" th:classappend="${posts.isFirst()}? disabled">
-                        <a href="/posts?page=0" class="page-link" tabindex="-1" aria-disabled="true"><<</a>
-                    </li>
-                    <li class="page-item" th:classappend="${!posts.hasPrevious()}? disabled">
-                        <a th:href="@{'/posts?page=' + ${posts.getNumber() - 1}}" class="page-link" tabindex="-1" aria-disabled="true"><</a>
-                    </li>
-                    <li class="page-item" th:classappend="${i == posts.getNumber()}? active"
-                        th:each="i: ${#numbers.sequence((posts.getNumber()/10)*10, (posts.getTotalPages()-1<((posts.getNumber()/10)*10+9)? posts.getTotalPages()-1 : ((posts.getNumber()/10)*10+9)))}">
-                        <a th:href="@{'/posts?page=' + ${i}}" class="page-link" href="#" th:text="${i + 1}">1</a>
-                    </li>
-                    <li class="page-item" th:classappend="${!posts.hasNext()}? disabled">
-                        <a th:href="@{'/posts?page=' + ${posts.getNumber() + 1}}" class="page-link" tabindex="-1" aria-disabled="true">></a>
-                    </li>
-                    <li class="page-item" th:classappend="${posts.isLast()}? disabled">
-                        <a th:href="@{'/posts?page=' + ${posts.getTotalPages() - 1}}" class="page-link" tabindex="-1" aria-disabled="true">>></a>
-                    </li>
-                </ul>
+                <ul th:replace="fragments.html :: pagination(url = 'posts', page=${posts}, indexCnt=10)"></ul>
             </div>
         </div>
     </div>

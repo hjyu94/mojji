@@ -307,6 +307,29 @@
         <small th:text="${post.letterCount}"></small>
     </div>
 </div>
+
+<ul th:fragment="pagination(url, page, indexCnt)" class="pagination">
+    <li class="page-item" th:classappend="${page.isFirst()}? disabled">
+        <a th:href="@{${url} + '?page=0'}" class="page-link" tabindex="-1" aria-disabled="true"><<</a>
+    </li>
+    <li class="page-item" th:classappend="${!page.hasPrevious()}? disabled">
+        <a th:href="@{${url} + '?page=' + ${page.getNumber() - 1}}" class="page-link" tabindex="-1" aria-disabled="true"><</a>
+    </li>
+    <th:block th:with="expectedEnd=${(page.getNumber() / indexCnt) * indexCnt + indexCnt - 1}, actualEnd=${page.getTotalPages()-1}">
+        <th:block th:with="startIdx=${(page.getNumber() / indexCnt) * indexCnt}, endIdx=${expectedEnd < actualEnd ? expectedEnd : actualEnd}">
+            <li class="page-item" th:classappend="${i == page.getNumber()}? active" th:each="i: ${#numbers.sequence(startIdx, endIdx)}">
+                <a th:href="@{${url} + '?page=' + ${i}}" class="page-link" th:text="${i + 1}">1</a>
+            </li>
+        </th:block>
+    </th:block>
+    <li class="page-item" th:classappend="${!page.hasNext()}? disabled">
+        <a th:href="@{${url} + '?page=' + ${page.getNumber() + 1}}" class="page-link" tabindex="-1" aria-disabled="true">></a>
+    </li>
+    <li class="page-item" th:classappend="${page.isLast()}? disabled">
+        <a th:href="@{${url} + '?page=' + ${page.getTotalPages() - 1}}" class="page-link" tabindex="-1" aria-disabled="true">>></a>
+    </li>
+</ul>
+
 <!--################################### script ###################################-->
 
 <script th:fragment="tooltip-script" type="application/javascript">
