@@ -81,9 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     WEB_JARS(new String[]{"/webjars/**"}),
                     FAVICON(new String[]{"/**\/favicon.ico"});
                 */
-                .mvcMatchers("/node_modules/**", "/upload/**")
+                .mvcMatchers("/node_modules/**", "/upload/**", "/favicon_io/**")
                 // 프론트엔드 라이브러리 파일 요청에도 필터를 적용하지 말자
-                // upload img
+                // upload img, favicon
         ;
     }
 }
