@@ -38,7 +38,7 @@ class MainControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(authenticated())
-                .andExpect(model().attribute("notiCount", (long) 1));
+                .andExpect(model().attribute("newNotiCount", (long) 1));
     }
 
 }

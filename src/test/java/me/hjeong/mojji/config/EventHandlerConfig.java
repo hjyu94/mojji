@@ -4,6 +4,7 @@ import me.hjeong.mojji.account.AccountRepository;
 import me.hjeong.mojji.mail.ConsoleEmailService;
 import me.hjeong.mojji.mail.EmailService;
 import me.hjeong.mojji.notification.NotificationRepository;
+import me.hjeong.mojji.notification.NotificationService;
 import me.hjeong.mojji.post.PostRepository;
 import me.hjeong.mojji.post.event.PostEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 @ComponentScan(basePackages = "me.hjeong.mojji.factory")
 public class EventHandlerConfig {
 
+    @Autowired NotificationService notificationService;
     @Autowired AccountRepository accountRepository;
     @Autowired PostRepository postRepository;
     @Autowired NotificationRepository notificationRepository;
@@ -38,7 +40,6 @@ public class EventHandlerConfig {
 
     @Bean
     PostEventListener postEventListener() {
-        return new PostEventListener(accountRepository, postRepository, notificationRepository
-                , appProperties(), templateEngine(), emailService());
+        return new PostEventListener(notificationService, accountRepository, postRepository);
     }
 }
