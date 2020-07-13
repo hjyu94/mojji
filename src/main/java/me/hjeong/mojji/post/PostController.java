@@ -34,8 +34,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -180,7 +178,7 @@ public class PostController {
                             , @PageableDefault(size = 9, sort = "createdDateTime", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
         model.addAttribute("posts", posts);
-        return "post/posts";
+        return "post/list";
     }
 
     private boolean isNotPostWriter(Post post, Account account, RedirectAttributes attributes) {
