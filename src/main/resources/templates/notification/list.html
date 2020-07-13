@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:include="fragments.html :: basic-head"></th:block>
+    <th:block th:include="fragments.html :: navbar-head"></th:block>
+</head>
+<body>
+<nav th:replace="fragments.html :: main-nav"></nav>
+<section class="container">
+    <div class="row justify-content-center">
+        <th:block th:include="fragments.html :: content-menu(currentMenu='notifications')"></th:block>
+        <div class="col-lg-8 col">
+            <div class="mb-4">
+                <h2 class="mb-4">새 알림</h2>
+                <p th:if="${newNotiCount == 0}">새 알림이 없습니다.</p>
+                <th:block th:if="${newNotiCount != 0}">
+                    <span>읽지 않은 알림이 <span class="text-primary" th:text="${newNotiCount+'개'}"></span> 있습니다.</span>
+                    <th:block th:replace='fragments.html :: noti-table(notiList=${newNotifications})'></th:block>
+                    <div th:if="${newNotiCount > 3}" class="row justify-content-end">
+                        <a th:href="@{/notification/new}">► 더 보기</a>
+                    </div>
+                </th:block>
+            </div>
+            <hr/>
+            <div>
+                <h2 class="mb-4">읽은 알림</h2>
+                <span th:if="${oldNotiCount == 0}">읽은 알림이 없습니다.</span>
+                <th:block th:if="${oldNotiCount != 0}">
+                    <th:block th:replace='fragments.html :: noti-table(notiList=${oldNotifications})'></th:block>
+                    <div class="row justify-content-end">
+                        <a th:href="@{/notification/old}">► 더 보기</a>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</section>
+<footer th:replace="fragments.html :: footer"></footer>
+<th:block th:replace="fragments.html :: basic-script"></th:block>
+<th:block th:replace="fragments.html :: moment-script"></th:block>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:include="fragments.html :: basic-head"></th:block>
+    <th:block th:include="fragments.html :: navbar-head"></th:block>
+</head>
+<body>
+<nav th:replace="fragments.html :: main-nav"></nav>
+<section class="container">
+    <div class="row justify-content-center">
+        <th:block th:include="fragments.html :: content-menu(currentMenu='notifications')"></th:block>
+        <div class="col-lg-8 col">
+            <h2 class="mb-4">새 알림</h2>
+            <span th:if="${#lists.isEmpty(newNotifications)}">새 알림이 없습니다.</span>
+            <th:block th:if="${!#lists.isEmpty(newNotifications)}">
+                <p>읽지 않은 알림이 <span class="text-primary" th:text="${newNotiCount+'개'}"></span> 있습니다.</p>
+                <th:block th:replace='fragments.html :: noti-table(notiList=${newNotifications})'></th:block>
+            </th:block>
+        </div>
+    </div>
+</section>
+<footer th:replace="fragments.html :: footer"></footer>
+<th:block th:replace="fragments.html :: basic-script"></th:block>
+<th:block th:replace="fragments.html :: moment-script"></th:block>
+</body>
+</html>

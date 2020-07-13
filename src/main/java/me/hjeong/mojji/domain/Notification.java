@@ -22,7 +22,7 @@ public class Notification {
 
     private String link;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
 
     private LocalDateTime createdDateTime;

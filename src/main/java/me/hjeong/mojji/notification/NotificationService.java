@@ -59,4 +59,11 @@ public class NotificationService {
             notification.setChecked(isCheck);
         });
     }
+
+    public void deleteNotifications(List<String> notificationIdList) {
+        notificationIdList.forEach(strId -> {
+            long id = Long.parseLong(strId);
+            notificationRepository.deleteById(id);
+        });
+    }
 }
