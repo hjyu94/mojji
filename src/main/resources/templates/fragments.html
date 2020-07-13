@@ -247,28 +247,35 @@
     </div>
 </div>
 
-<div th:fragment="post-menu">
+<div th:fragment="content-menu">
     <div class="col-lg-2 col-3 d-none d-md-block list-group" sec:authorize="!isAuthenticated()">
-        <a th:href="@{/login}" class="list-group-item d-flex justify-content-between align-items-center">
+        <a th:href="@{/login}" class="list-group-item">
             로그인
         </a>
-        <a th:href="@{/new-account}" class="list-group-item d-flex justify-content-between align-items-center">
+        <a th:href="@{/new-account}" class="list-group-item">
             회원 가입
         </a>
-        <a th:href="@{/posts}" class="list-group-item d-flex justify-content-between align-items-center">
+        <a th:href="@{/posts}" class="list-group-item" th:classappend="${currentMenu=='post-list'}? active">
             전체 글 보기
         </a>
     </div>
     <div class="col-lg-2 col-3 d-none d-md-block list-group" sec:authorize="isAuthenticated()">
-        <a th:href="@{/new-post}" class="list-group-item d-flex justify-content-between align-items-center">
+        <a th:href="@{/new-post}" class="list-group-item" th:classappend="${currentMenu=='post-form'}? active">
             판매 글 쓰기
         </a>
-        <a th:href="@{/posts}" class="list-group-item d-flex justify-content-between align-items-center">
+        <a th:href="@{/posts}" class="list-group-item" th:classappend="${currentMenu=='post-list'}? active">
             전체 글 보기
         </a>
-        <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
+        <a th:href="@{/notifications}" class="list-group-item d-flex justify-content-between align-items-center"
+           th:classappend="${currentMenu=='notifications'}? active">
             알림
-            <span class="badge badge-primary badge-pill">99</span>
+            <span th:if="${newNotiCount > 0}" th:text="${newNotiCount}" class="badge badge-primary badge-pill">99</span>
+        </a>
+        <a th:href="@{/notification/new}" class="list-group-item list-group-item-light">
+            새 알림
+        </a>
+        <a th:href="@{/notification/old}" class="list-group-item list-group-item-light">
+            읽은 알림
         </a>
         <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
             쪽지

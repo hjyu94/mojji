@@ -15,7 +15,7 @@
 <nav th:replace="fragments.html :: main-nav"></nav>
 <section class="container">
     <div class="row justify-content-center">
-        <th:block th:include="fragments.html :: post-menu"></th:block>
+        <th:block th:include="fragments.html :: content-menu(currentMenu='post-form')"></th:block>
         <div class="col-lg-8 col">
             <h2 class="mb-4 text-center">판매글 작성</h2>
             <div class="row justify-content-center mt-3">

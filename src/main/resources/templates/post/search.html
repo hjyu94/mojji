@@ -11,7 +11,7 @@
 <nav th:replace="fragments.html :: main-nav(keywords = ${keywords})"></nav>
 <section class="container">
     <div class="row justify-content-center">
-        <th:block th:include="fragments.html :: post-menu"></th:block>
+        <th:block th:include="fragments.html :: content-menu"></th:block>
         <div class="col-lg-8 col">
             <h5 class="row justify-content-center mb-5">
                 <th:block th:each="keyword : ${keywords}">
