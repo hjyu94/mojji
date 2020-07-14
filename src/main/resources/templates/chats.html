@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:include="fragments.html :: basic-head"></th:block>
+    <th:block th:include="fragments.html :: navbar-head"></th:block>
+    <style>
+        #chatbox {
+            width: 100%;
+            height: 530px;
+        }
+        .member-list {
+            width: 80px;
+            height: 100%;
+            overflow: auto;
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        .member-list::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        .member {
+            position: relative;
+            text-align: center;
+        }
+        .member-profile {
+            width: 100%;
+            height: 60px;
+        }
+        .msg-count {
+            position: absolute;
+            top: -8px;
+            right: -5px;
+        }
+        #message-box {
+            height:350px;
+            overflow: auto;
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        #message-box::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+        #send-box {
+            position: absolute;
+            bottom: 5px;
+            left: 3px;
+            right: 3px;
+        }
+        /* message style */
+        ul{
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        ul li{
+            display:inline-block;
+            clear: both;
+            border-radius: 15px;
+        }
+        .him{
+            background: #eee;
+            float: left;
+        }
+        .me{
+            float: right;
+            background: #0084ff;
+            color: #fff;
+        }
+        .him + .me{
+            border-bottom-right-radius: 5px;
+        }
+        .me + .me{
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="fragments.html :: main-nav"></nav>
+<section class="container">
+    <div class="row justify-content-center">
+        <th:block th:include="fragments.html :: content-menu(currentMenu='chat')"></th:block>
+        <div class="col-lg-8 col">
+            <h2 class="mb-4">메세지</h2>
+            <div id="chatbox" class="card">
+                <div class="card-body row">
+                    <div class="member-list px-2">
+                        <div class="member mt-4">
+                            <img alt="profile image" src="/images/logo.png" class="member-profile rounded border bg-light"/>
+                            <span class="msg-count badge badge-pill badge-primary">7</span>
+                            <small>mojji</small>
+                        </div>
+                        <th:block th:each="i : ${#numbers.sequence(1, 30)}">
+                            <div class="member mt-4">
+                                <svg class="member-profile rounded border bg-light" th:data-jdenticon-value="${'name' + i}"></svg>
+                                <span class="msg-count badge badge-pill badge-primary">7</span>
+                                <small th:text="${'name'+i}"></small>
+                            </div>
+                        </th:block>
+                    </div>
+                    <div class="col">
+                        <div id="receiver-box">
+                            <h3>name 1</h3>
+                            <hr/>
+                        </div>
+                        <div id="message-box">
+                            <ul>
+                                <th:block th:each="i : ${#numbers.sequence(1, 6)}">
+                                    <li class="mb-2 py-1 px-md-2 px-1 him">123456789012345678901234567890</li>
+                                    <li class="mb-2 py-1 px-md-2 px-1 him">123456789012345678901234567890</li>
+                                    <li class="mb-2 py-1 px-md-2 px-1 me">123456789012345678901234567890</li>
+                                    <li class="mb-2 py-1 px-md-2 px-1 me">123456789012345678901234567890</li>
+                                    <li class="mb-2 py-1 px-md-2 px-1 me">123456789012345678901234567890</li>
+                                    <li class="mb-2 py-1 px-md-2 px-1 me">123456789012345678901234567890</li>
+                                </th:block>
+                            </ul>
+                        </div>
+                        <div id="send-box">
+                            <form id="send-form" class="form-inline d-flex align-items-stretch">
+                                <textarea class="col form-control" maxlength=30 name="Text1" cols="40" rows="1" style="resize: none;"></textarea>
+                                <button type="submit" class="btn btn-primary">전송</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer th:replace="fragments.html :: footer"></footer>
+<th:block th:replace="fragments.html :: basic-script"></th:block>
+<th:block th:replace="fragments.html :: tooltip-script"></th:block>
+<script>
+$(function() {
+    $('.member').click(function(e) {
+        // send ajax
+    })
+})
+</script>
+</body>
+</html>

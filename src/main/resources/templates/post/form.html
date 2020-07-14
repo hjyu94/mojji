@@ -17,7 +17,7 @@
     <div class="row justify-content-center">
         <th:block th:include="fragments.html :: content-menu(currentMenu='post-form')"></th:block>
         <div class="col-lg-8 col">
-            <h2 class="mb-4 text-center">판매글 작성</h2>
+            <h2 class="mb-4">판매글 작성</h2>
             <div class="row justify-content-center mt-3">
                 <form id="postUploadForm" enctype="multipart/form-data" class="form col needs-validation needs-validation" th:action="@{/new-post}" th:object="${form}" method="post" onsubmit="return checkFormData()" novalidate>
                     <div class="form-group row justify-content-center mx-0">

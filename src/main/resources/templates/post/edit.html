@@ -17,9 +17,7 @@
     <div class="row justify-content-center">
         <th:block th:include="fragments.html :: content-menu"></th:block>
         <div class="col-lg-8 col">
-            <div class="py-5 text-center">
-                <h2>판매글 수정</h2>
-            </div>
+            <h2 class="mb-4">판매글 수정</h2>
             <form enctype="multipart/form-data" class="form needs-validation needs-validation" th:action="@{'/post/' + ${post.getId()} + '/edit'}" th:object="${form}" method="post" novalidate>
                 <div class="form-group row justify-content-center mx-0">
                     <select class="form-control col-3 no-validate" th:field="*{category}">
