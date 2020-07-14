@@ -23,11 +23,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -130,12 +130,11 @@ public class PostController {
     }
 
     @GetMapping("/post/{post-id}/edit")
-    public String updatePost(@CurrentAccount Account account, @PathVariable("post-id") Long id
-                             , Model model, RedirectAttributes attributes) throws IOException {
+    public String updatePost(@CurrentAccount Account account, @PathVariable("post-id") Long id, Model model) throws IOException {
         Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
 
-        if(isNotPostWriter(post, account, attributes)) {
-            return "redirect:/account/message";
+        if(!post.isCreatedBy(account)) {
+            throw new AccessDeniedException("수정 권한이 없습니다");
         }
 
         model.addAttribute(account);
@@ -149,11 +148,10 @@ public class PostController {
 
     @PostMapping("/post/{post-id}/edit")
     public String updatePostSubmit(@CurrentAccount Account account, @PathVariable("post-id") Long id
-                                , @Valid PostForm postForm, Errors errors
-                                , Model model, RedirectAttributes attributes) throws IOException {
+                                , @Valid PostForm postForm, Errors errors, Model model) throws IOException {
         Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
-        if(isNotPostWriter(post, account, attributes)) {
-            return "redirect:/account/message";
+        if(!post.isCreatedBy(account)) {
+            throw new AccessDeniedException("수정 권한이 없습니다");
         }
         if(errors.hasErrors()) {
             model.addAttribute(account);
@@ -164,10 +162,10 @@ public class PostController {
     }
 
     @DeleteMapping("/post/{post-id}")
-    public String deletePost(@CurrentAccount Account account, @PathVariable("post-id") Long id, RedirectAttributes attributes) {
+    public String deletePost(@CurrentAccount Account account, @PathVariable("post-id") Long id) {
         Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
-        if(isNotPostWriter(post, account, attributes)) {
-            return "redirect:/account/message";
+        if(!post.isCreatedBy(account)) {
+            throw new AccessDeniedException("수정 권한이 없습니다");
         }
         postService.deletePost(post);
         return "index";
@@ -179,15 +177,6 @@ public class PostController {
         Page<Post> posts = postRepository.findAll(pageable);
         model.addAttribute("posts", posts);
         return "post/list";
-    }
-
-    private boolean isNotPostWriter(Post post, Account account, RedirectAttributes attributes) {
-        if(!post.isCreatedBy(account)) {
-            attributes.addFlashAttribute("title", "Error");
-            attributes.addFlashAttribute("message", "수정 권한이 없습니다.");
-            return true;
-        }
-        return false;
     }
 
     private void putCategoryAndStationData(Model model) throws JsonProcessingException {
