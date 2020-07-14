@@ -36,7 +36,7 @@
                     </span>
                     <div class="dropdown-menu mt-2">
                         <a class="dropdown-item" th:href="@{'/account/profile/' + ${post.seller.nickname}}">프로필 보기</a>
-                        <a class="dropdown-item" href="#">쪽지 보내기</a>
+                        <a class="dropdown-item" th:href="@{'/chat/' + ${post.seller.id}}">메세지 보내기</a>
                     </div>
                 </div>
             </div>
