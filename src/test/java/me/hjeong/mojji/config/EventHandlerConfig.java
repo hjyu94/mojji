@@ -18,10 +18,9 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 @ComponentScan(basePackages = "me.hjeong.mojji.factory")
 public class EventHandlerConfig {
 
-    @Autowired NotificationService notificationService;
+    @Autowired NotificationRepository notificationRepository;
     @Autowired AccountRepository accountRepository;
     @Autowired PostRepository postRepository;
-    @Autowired NotificationRepository notificationRepository;
 
     @Bean
     AppProperties appProperties() {
@@ -39,7 +38,12 @@ public class EventHandlerConfig {
     }
 
     @Bean
+    NotificationService notificationService() {
+        return new NotificationService(notificationRepository, appProperties(), templateEngine(), emailService());
+    }
+
+    @Bean
     PostEventListener postEventListener() {
-        return new PostEventListener(notificationService, accountRepository, postRepository);
+        return new PostEventListener(notificationService(), accountRepository, postRepository);
     }
 }

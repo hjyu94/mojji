@@ -1,6 +1,5 @@
 package me.hjeong.mojji.post;
 
-import me.hjeong.mojji.config.DataJpaConfig;
 import me.hjeong.mojji.config.EventHandlerConfig;
 import me.hjeong.mojji.domain.Account;
 import me.hjeong.mojji.domain.Category;
@@ -10,13 +9,13 @@ import me.hjeong.mojji.factory.AccountFactory;
 import me.hjeong.mojji.factory.CategoryFactory;
 import me.hjeong.mojji.factory.NotificationFactory;
 import me.hjeong.mojji.factory.PostFactory;
+import me.hjeong.mojji.infra.MyDataJpaTest;
 import me.hjeong.mojji.mail.EmailMessage;
 import me.hjeong.mojji.mail.EmailService;
 import me.hjeong.mojji.notification.NotificationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
@@ -30,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 
-@DataJpaTest
-@Import({DataJpaConfig.class, EventHandlerConfig.class})
+@MyDataJpaTest
+@Import(EventHandlerConfig.class)
 class PostRepositoryTest {
 
     @Autowired PostRepository postRepository;
