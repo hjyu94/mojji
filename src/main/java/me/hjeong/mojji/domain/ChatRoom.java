@@ -4,10 +4,7 @@ import lombok.*;
 import me.hjeong.mojji.chat.ChatMessage;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
@@ -35,4 +32,14 @@ public class ChatRoom {
         return receiver;
     }
 
+    public List<ChatMessage> getMessagesSortByCreatedTime(boolean isDesc) {
+        Collections.sort(this.messages, new Comparator<ChatMessage>() {
+            @Override
+            public int compare(ChatMessage msg1, ChatMessage msg2) {
+                int compare = msg1.getCreatedDateTime().compareTo(msg2.getCreatedDateTime());
+                return isDesc? compare : compare * (-1);
+            }
+        });
+        return this.messages;
+    }
 }

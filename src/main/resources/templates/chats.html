@@ -111,22 +111,19 @@
                                 <hr/>
                             </div>
                             <div id="message-box" th:if="${!#lists.isEmpty(curChatRoom.messages)}">
-                                <ul >
-                                    <th:block th:each="i : ${#numbers.sequence(1, 6)}">
-                                        <li class="mb-2 py-1 px-md-2 px-1 him">123456789012345678901234567890</li>
-                                        <li class="mb-2 py-1 px-md-2 px-1 him">123456789012345678901234567890</li>
-                                        <li class="mb-2 py-1 px-md-2 px-1 me">123456789012345678901234567890</li>
-                                        <li class="mb-2 py-1 px-md-2 px-1 me">123456789012345678901234567890</li>
-                                        <li class="mb-2 py-1 px-md-2 px-1 me">123456789012345678901234567890</li>
-                                        <li class="mb-2 py-1 px-md-2 px-1 me">123456789012345678901234567890</li>
+                                <ul>
+                                    <th:block th:each="chatMsg : ${curChatRoom.getMessagesSortByCreatedTime(true)}">
+                                        <li class="col small py-1 my-2 bg-light text-center msg-time" th:text="${chatMsg.createdDateTime}"></li>
+                                        <li class="mb-2 py-1 px-md-2 px-1" th:classappend="${chatMsg.sender==account}? me : him " th:text="${chatMsg.message}"></li>
                                     </th:block>
                                 </ul>
                             </div>
-                            <div id="send-box" class="px-3">
-                                <form id="send-form" class="form-inline d-flex align-items-stretch">
-                                    <textarea class="col form-control" maxlength=30 name="Text1" cols="40" rows="1" style="resize: none;"></textarea>
-                                    <button type="submit" class="btn btn-primary">전송</button>
+                            <div id="send-box" class="px-3 form-inline d-flex align-items-stretch">
+                                <form id="send-form" class="col px-1">
+                                    <input hidden name="chatRoomId" th:value="${curChatRoom.id}"/>
+                                    <input type="text" name="message" class="col form-control" style="width:100%;" onkeydown="checkSubmitKeyDown(event)"></input>
                                 </form>
+                                <button id="sendBtn" class="btn btn-primary" onclick="sendMessage()">전송</button>
                             </div>
                         </th:block>
                     </div>
@@ -138,24 +135,84 @@
 <footer th:replace="fragments.html :: footer"></footer>
 <th:block th:replace="fragments.html :: basic-script"></th:block>
 <th:block th:replace="fragments.html :: tooltip-script"></th:block>
+<th:block th:replace="fragments.html :: moment-script"></th:block>
+<script th:replace="fragments.html :: ajax-csrf-header"></script>
 <script>
 $(function() {
+    // 채팅 멤버 선택시 채팅 메세지 표시하기
     $('.member').click(function(e) {
-        // send ajax
         let id = $(this).find('.member-id')[0].innerHTML;
         $.ajax({
             url: "/chat/messages",
             type: "GET",
-            data: {"nickname" : id},
-            success: function(fragment){
+            data: {"nickname": id},
+            success: function (fragment) {
                 $("#chatroom").replaceWith(fragment);
+                formatDateTime();
+                scrollToLastMsg();
             },
-            error: function(){
+            error: function () {
                 alert("get chat messages err");
             }
         });
-    })
+    });
 })
+</script>
+<script>
+    // 전송버튼 클릭시 메세지 전송하기
+    function sendMessage() {
+        let strMsg = $("#send-form>input[name=message]")[0].value;
+        if(strMsg.trim() === "") {
+            return;
+        }
+        let params = $("#send-form").serialize();
+        $.ajax({
+            url: "/chat/message/add",
+            type: "POST",
+            data: params,
+            success: function (fragment) {
+                $("#message-box").replaceWith(fragment);
+                formatDateTime();
+                scrollToLastMsg();
+                $("#send-form>input[name=message]")[0].value = ""; // 보낸 뒤 입력칸 비우기
+            },
+            error: function () {
+                alert("add message err");
+                $("#send-form>input[name=message]")[0].value = ""; // 보낸 뒤 입력칸 비우기
+            }
+        });
+    }
+    // 날짜 포맷팅
+    function formatDateTime() {
+        moment.locale('ko');
+        $(".msg-time").text(function(index, dateTime) {
+            return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LL');
+        });
+        showDistinctDate();
+    }
+    // 같은 날짜가 있을 시 하나만 표시하기
+    function showDistinctDate() {
+        let datetime = "";
+        $(".msg-time").each(function(index, item) {
+            if(datetime == item.innerHTML) {
+                $(item).remove();
+            } else {
+                datetime = item.innerHTML;
+            }
+        });
+    }
+    // 메세지가 여러개 있을 때 메세지 박스를 최하단으로 이동
+    function scrollToLastMsg() {
+        let messagebox = document.querySelector('#message-box');
+        messagebox.scrollTo(0, messagebox.scrollHeight);
+    }
+    // 메세지 입력칸 포커싱 중 엔터 클릭시 메세지 전송하기
+    function checkSubmitKeyDown(event) {
+        var key = event.which || event.keyCode;
+        if(key == 13) {
+            sendMessage();
+        }
+    }
 </script>
 </body>
 </html>

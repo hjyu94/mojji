@@ -1,19 +1,20 @@
 package me.hjeong.mojji.chat;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import me.hjeong.mojji.domain.Account;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Embeddable
 @Getter @Setter
-@NoArgsConstructor
+@Builder @NoArgsConstructor @AllArgsConstructor
 public class ChatMessage {
 
+    @NotBlank // null, "", " "
     private String message;
 
     @ManyToOne
@@ -22,6 +23,7 @@ public class ChatMessage {
     @ManyToOne
     private Account receiver;
 
+    @NotNull // null
     private LocalDateTime createdDateTime;
 
 }

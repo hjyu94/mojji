@@ -7,6 +7,7 @@ import me.hjeong.mojji.domain.ChatRoom;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,5 +29,16 @@ public class ChatService {
         } else {
             return chatRoomOptional.get();
         }
+    }
+
+    public ChatRoom addMessage(ChatRoom chatRoom, String message, Account sender, Account receiver) {
+        ChatMessage chatMessage = ChatMessage.builder()
+                .message(message)
+                .createdDateTime(LocalDateTime.now())
+                .sender(sender)
+                .receiver(receiver)
+                .build();
+        chatRoom.getMessages().add(chatMessage);
+        return chatRepository.save(chatRoom);
     }
 }
