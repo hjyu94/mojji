@@ -14,9 +14,9 @@
         <th:block th:include="fragments.html :: content-menu(currentMenu='post-list')"></th:block>
         <div class="col-lg-8 col">
             <div class="row">
-                <div class="col-4" th:each="post : ${posts.getContent()}">
-                    <div th:replace="fragments.html :: post-card"></div>
-                </div>
+                <th:block th:each="post : ${posts.getContent()}">
+                    <div class="col-4" th:include="fragments.html :: post-card"></div>
+                </th:block>
             </div>
             <div class="row justify-content-center mt-3">
                 <ul th:replace="fragments.html :: pagination(url = 'posts', page=${posts}, indexCnt=10)"></ul>

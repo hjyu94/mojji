@@ -53,19 +53,31 @@
         <div sec:authorize="!isAuthenticated()">
             <h2 class="text-center">최신글</h2>
             <hr class="text-center col-1 my-5 text-success"/>
-            <div class="row">
-                <div class="col-lg-3 col-4" th:each="post : ${posts}">
-                    <div th:replace="fragments.html :: post-card"></div>
-                </div>
+            <div class="row p-5">
+                <th:block th:each="post, i : ${posts}">
+                    <div class="col-lg-3 col-md-4 col-6" th:include="fragments.html :: post-card" th:classappend="${i.count >= 9}? 'extra-card'"></div>
+                </th:block>
             </div>
         </div>
         <div sec:authorize="isAuthenticated()">
-            <h2 class="text-center">'평촌' '범계' 에 올라온 글</h2>
-            ...
+            <h2 class="text-center"><a th:href="@{/setting/station}">내 동네</a>에 올라온 글</h2>
+            <div class="small text-center" th:text="${account.getStationsString()}"></div>
+            <hr/>
+            <div class="row py-5">
+                <th:block th:each="post, i : ${stationPosts}">
+                    <div class="col-lg-3 col-md-4 col-6" th:include="fragments.html :: post-card" th:classappend="${'card-' + i.count}"></div>
+                </th:block>
+            </div>
         </div>
-        <div sec:authorize="isAuthenticated()">
-            <h2 class="text-center">'전자제품' '도서' 에 올라온 글</h2>
-            ...
+        <div class="mt-5" sec:authorize="isAuthenticated()">
+            <h2 class="text-center"><a th:href="@{/setting/category}">내 관심 카테고리</a>에 올라온 글</h2>
+            <div class="small text-center" th:text="${account.getCategoriesString()}"></div>
+            <hr/>
+            <div class="row py-5">
+                <th:block th:each="post, i : ${categoryPosts}">
+                    <div class="col-lg-3 col-md-4 col-6" th:include="fragments.html :: post-card" th:classappend="${'card-' + i.count}"></div>
+                </th:block>
+            </div>
         </div>
     </div>
 </main>
@@ -87,7 +99,25 @@
 
         ele_alert.css('padding-top', bottom_y_nav + padding_y_alert);
         ele_main.css('padding-top', bottom_y_alert);
-    }
+    };
+
+    $(window).on("load resize", function(e){
+        var width = $(window).width();
+        if(width >= 992) { // large
+            $('.card-7').show();
+            $('.card-8').show();
+            $('.card-9').hide();
+        } else if(width >= 768) { // medium
+            $('.card-7').show();
+            $('.card-8').show();
+            $('.card-9').show();
+        } else {
+            $('.card-7').hide();
+            $('.card-8').hide();
+            $('.card-9').hide();
+        }
+    });
+
 </script>
 </body>
 </html>

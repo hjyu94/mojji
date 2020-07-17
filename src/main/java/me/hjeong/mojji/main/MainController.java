@@ -2,6 +2,7 @@ package me.hjeong.mojji.main;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.hjeong.mojji.account.AccountRepository;
 import me.hjeong.mojji.account.CurrentAccount;
 import me.hjeong.mojji.domain.Account;
 import me.hjeong.mojji.domain.Post;
@@ -27,6 +28,7 @@ public class MainController {
 
     private final PostRepository postRepository;
     private final KeywordsFormatter keywordsFormatter;
+    private final AccountRepository accountRepository;
 
     @InitBinder("keywords")
     public void keywordInitBinder(WebDataBinder webDataBinder) {
@@ -35,9 +37,17 @@ public class MainController {
 
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
+        if (account != null) {
+            account = accountRepository.findAccountWithStationsAndCategoriesById(account.getId());
+            List<Post> categoryPosts = postRepository.findFirst9ByCategoriesOrderByCreatedDateTimeDesc(account.getCategories());
+            List<Post> stationPosts = postRepository.findFirst9ByStationsOrderByCreatedDateTimeDesc(account.getStations());
+            model.addAttribute("stationPosts", stationPosts);
+            model.addAttribute("categoryPosts", categoryPosts);
+        } else {
+            List<Post> posts = postRepository.findFirst9ByOrderByCreatedDateTimeDesc();
+            model.addAttribute("posts", posts);
+        }
         model.addAttribute("account", account);
-        List<Post> posts = postRepository.findFirst6ByOrderByCreatedDateTimeDesc();
-        model.addAttribute("posts", posts);
         return "index";
     }
 

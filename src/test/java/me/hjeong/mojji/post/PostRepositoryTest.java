@@ -48,8 +48,8 @@ class PostRepositoryTest {
         for(int i=0; i<30; ++i) {
             postFactory.createPost("게시물-" + i);
         }
-        List<Post> posts = postRepository.findFirst6ByOrderByCreatedDateTimeDesc();
-        assertThat(posts, hasSize(6));
+        List<Post> posts = postRepository.findFirst9ByOrderByCreatedDateTimeDesc();
+        assertThat(posts, hasSize(9));
     }
 
     @Test

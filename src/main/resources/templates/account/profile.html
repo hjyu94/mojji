@@ -25,16 +25,16 @@
                 <div class="tab-pane fade show active" id="nav-selling" role="tabpanel"
                      aria-labelledby="nav-selling-tab">
                     <div class="row">
-                        <div class="col-4" th:each="post : ${sellingPosts}">
-                            <div th:replace="fragments.html :: post-card"></div>
-                        </div>
+                        <th:block th:each="post : ${sellingPosts}">
+                            <div class="col-4" th:include="fragments.html :: post-card"></div>
+                        </th:block>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="nav-sold" role="tabpanel" aria-labelledby="nav-sold-tab">
                     <div class="row">
-                        <div class="col-4" th:each="post : ${soldPosts}">
-                            <div th:replace="fragments.html :: post-card"></div>
-                        </div>
+                        <th:block th:each="post : ${soldPosts}">
+                            <div class="col-4" th:include="fragments.html :: post-card"></div>
+                        </th:block>
                     </div>
                 </div>
             </div>

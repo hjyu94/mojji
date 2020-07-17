@@ -22,9 +22,9 @@
             </h5>
             <div class="text-center" th:if="${posts == null}">검색 결과가 없습니다.</div>
             <div class="row" th:if="${posts != null}" >
-                <div class="col-4" th:each="post : ${posts.getContent()}">
-                    <div th:replace="fragments.html :: post-card"></div>
-                </div>
+                <th:block th:each="post : ${posts.getContent()}">
+                    <div class="col-4" th:include="fragments.html :: post-card"></div>
+                </th:block>
             </div>
             <div th:if="${posts != null}" class="row justify-content-center mt-3">
                 <ul th:replace="fragments.html :: pagination(url = 'posts', page=${posts}, indexCnt=10)"></ul>

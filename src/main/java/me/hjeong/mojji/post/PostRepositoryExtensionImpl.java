@@ -2,6 +2,7 @@ package me.hjeong.mojji.post;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import me.hjeong.mojji.domain.*;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
+import java.util.Set;
 
 import static me.hjeong.mojji.domain.QPost.post;
 
@@ -25,16 +27,14 @@ public class PostRepositoryExtensionImpl extends QuerydslRepositorySupport imple
 
     @Override
     public Page<Post> findByKeywords(Pageable pageable, List<String> keywords) {
-        Predicate[] predicates = new Predicate[keywords.size()];
-        for(int i=0; i<keywords.size(); ++i) {
-            String keyword = keywords.get(i);
-            predicates[i] = post.category.title.containsIgnoreCase(keyword)
-                .or(post.stations.any().region.containsIgnoreCase(keyword))
-                .or(post.stations.any().line.containsIgnoreCase(keyword))
-                .or(post.stations.any().name.containsIgnoreCase(keyword))
-                .or(post.title.containsIgnoreCase(keyword))
-                .or(post.body.containsIgnoreCase(keyword));
-        }
+        BooleanExpression predicates = keywords.stream()
+                .map(keyword -> post.category.title.containsIgnoreCase(keyword)
+                        .or(post.stations.any().region.containsIgnoreCase(keyword))
+                        .or(post.stations.any().line.containsIgnoreCase(keyword))
+                        .or(post.stations.any().name.containsIgnoreCase(keyword))
+                        .or(post.title.containsIgnoreCase(keyword))
+                        .or(post.body.containsIgnoreCase(keyword)))
+                .reduce(BooleanExpression::and).orElseThrow();
 
         JPQLQuery<Post> postJPQLQuery = from(post)
                 .where(predicates)
@@ -52,4 +52,23 @@ public class PostRepositoryExtensionImpl extends QuerydslRepositorySupport imple
                 .where(post.seller.eq(account).and(post.isSold.eq(isSold)))
                 .fetch();
     }
+
+    @Override
+    public List<Post> findFirst9ByCategoriesOrderByCreatedDateTimeDesc(Set<Category> categories) {
+        return queryFactory.selectFrom(post)
+                .where(post.category.in(categories))
+                .orderBy(post.createdDateTime.desc())
+                .limit(9)
+                .fetch();
+    }
+
+    @Override
+    public List<Post> findFirst9ByStationsOrderByCreatedDateTimeDesc(Set<Station> stations) {
+        return queryFactory.selectFrom(post)
+                .where(post.stations.any().in(stations))
+                .orderBy(post.createdDateTime.desc())
+                .limit(9)
+                .fetch();
+    }
+
 }
