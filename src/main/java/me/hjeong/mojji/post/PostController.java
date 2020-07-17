@@ -73,6 +73,9 @@ public class PostController {
     @GetMapping("/post/{post-id}")
     public String getPost(@CurrentAccount Account account, @PathVariable("post-id") Long id, Model model) {
         Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
+        if(!post.getSeller().equals(account)) {
+            postService.lookCountUp(post);
+        }
         model.addAttribute("account", account); // including null
         model.addAttribute(post);
         return "post/view";

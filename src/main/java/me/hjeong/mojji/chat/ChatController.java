@@ -6,6 +6,9 @@ import me.hjeong.mojji.account.AccountRepository;
 import me.hjeong.mojji.account.CurrentAccount;
 import me.hjeong.mojji.domain.Account;
 import me.hjeong.mojji.domain.ChatRoom;
+import me.hjeong.mojji.domain.Post;
+import me.hjeong.mojji.post.PostRepository;
+import me.hjeong.mojji.post.PostService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +32,8 @@ public class ChatController {
     private final ChatRepository chatRepository;
     private final ChatService chatService;
     private final AccountRepository accountRepository;
+    private final PostRepository postRepository;
+    private final PostService postService;
 
     @GetMapping("/chats")
     public String getChatRooms(@CurrentAccount Account sender, Model model) {
@@ -50,10 +55,16 @@ public class ChatController {
 
     // 글 뷰 -> 메세지 보내기
     @GetMapping("/chat/{nickname}")
-    public String getAChatRoom(@CurrentAccount Account sender, @PathVariable("nickname") String receiverNickname, RedirectAttributes attributes) {
+    public String getAChatRoom(@CurrentAccount Account sender, @PathVariable("nickname") String receiverNickname
+                            , @RequestParam(required = false) Long postId, RedirectAttributes attributes)
+    {
         Account receiver = accountRepository.findByNickname(receiverNickname);
         if(receiver == null) {
             throw new NoSuchElementException("유저를 찾을 수 없습니다");
+        }
+        if(postId != null) {
+            Post post = postRepository.findById(postId).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
+            postService.sendingLetterCountUp(post);
         }
         // 내가 나 자신에게 메세지를 보내려고 하는 경우 예외처리
         if(sender.equals(receiver)) {

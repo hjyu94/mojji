@@ -77,4 +77,12 @@ public class PostService {
 
         postRepository.delete(post);
     }
+
+    public void lookCountUp(Post post) {
+        post.setLookCount(post.getLookCount() + 1);
+    }
+
+    public void sendingLetterCountUp(Post post) {
+        post.setLetterCount(post.getLetterCount() + 1);
+    }
 }
