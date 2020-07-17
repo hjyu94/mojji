@@ -72,7 +72,7 @@ public class Post extends AbstractAggregateRoot<Post> {
         return this;
     }
 
-    public String getEncodedURL() {
-        return URLEncoder.encode(this.id.toString(), StandardCharsets.UTF_8);
+    public String getEncodedViewURL() {
+        return "/post/" + URLEncoder.encode(this.id.toString(), StandardCharsets.UTF_8);
     }
 }

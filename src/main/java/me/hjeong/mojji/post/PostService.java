@@ -85,4 +85,8 @@ public class PostService {
     public void sendingLetterCountUp(Post post) {
         post.setLetterCount(post.getLetterCount() + 1);
     }
+
+    public void updateToSold(Post post) {
+        post.setSold(true);
+    }
 }

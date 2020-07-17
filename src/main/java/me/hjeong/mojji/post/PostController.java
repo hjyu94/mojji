@@ -67,7 +67,7 @@ public class PostController {
             return "post/form";
         }
         Post savedPost = postService.createNewPost(postForm, account);
-        return "redirect:/post/" + savedPost.getEncodedURL();
+        return "redirect:" + savedPost.getEncodedViewURL();
     }
 
     @GetMapping("/post/{post-id}")
@@ -161,7 +161,14 @@ public class PostController {
             return "post/edit";
         }
         postService.updatePost(post, postForm);
-        return "redirect:/post/" + post.getEncodedURL();
+        return "redirect:" + post.getEncodedViewURL();
+    }
+
+    @PostMapping("/post/{post-id}/sold")
+    public String updateToSold(@CurrentAccount Account account, @PathVariable("post-id") Long id, Model model) {
+        Post post = postRepository.findById(id).orElseThrow(()-> new NoSuchElementException("해당하는 게시물을 찾을 수 없습니다."));
+        postService.updateToSold(post);
+        return "redirect:" + post.getEncodedViewURL();
     }
 
     @DeleteMapping("/post/{post-id}")

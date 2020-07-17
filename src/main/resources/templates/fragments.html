@@ -297,34 +297,37 @@
     </div>
 </div>
 
-<div th:fragment="post-card" class="card mb-4 shadow-sm" th:if="${post!=null}">
-    <a class="thumbnail" th:href="@{'/post/' + ${post.getId()}}">
-        <img class="thumbnail card-img-top"
-             th:if="${#sets.isEmpty(post.getImgFileNames())}"
-             src="/images/no-image-icon.PNG"
-             alt="Deafult Image">
-        <img class="thumbnail card-img-top"
-             th:if="${!#sets.isEmpty(post.getImgFileNames())}"
-             th:src='${"/displayFile?post-id=" + post.getId() + "&fileName=s_" + post.getImgFileNames().get(0)}'
-             th:alt="${'s_' + post.getImgFileNames().get(0)}">
-    </a>
-    <div class="card-body">
-        <a class="card-title font-weight-bold long-text mb-0" th:text="${post.title}" th:href="@{'/post/' + ${post.getId()}}" style="display:block;">이동식 에어컨</a>
-        <p class="card-text long-text">
-            <th:block th:each="station : ${post.stations}">
-                <span data-toggle="tooltip" data-placement="bottom" th:title='${station.region + "-" + station.line}'>
-                    <span th:text="${station.getName() + '역 '}">평촌역</span>
-                </span>
-            </th:block>
-            <span th:if="${#sets.isEmpty(post.stations)}">_</span>
-        </p>
-        <p class="card-text font-weight-bolder long-text" th:text="${post.price + '원'}">999원</p>
-    </div>
-    <div class="card-footer text-right">
-        <i class="fa fa-mouse-pointer" aria-hidden="true"></i>
-        <small th:text="${post.lookCount}"></small>
-        ∙ <i class="fa fa-envelope-o" aria-hidden="true"></i>
-        <small th:text="${post.letterCount}"></small>
+<div th:fragment="post-card" th:if="${post!=null}">
+    <span th:if="${post.isSold()}" class="badge badge-primary mx-3" style="position:absolute; left:0; top:0; right:0; z-index:1;">판매완료</span>
+    <div class="card mb-4 shadow-sm" th:styleappend="${post.isSold()}? 'background-color: #ff000000; opacity: 0.5; border: 1px;'">
+        <a class="thumbnail" th:href="@{'/post/' + ${post.getId()}}">
+            <img class="thumbnail card-img-top"
+                 th:if="${#sets.isEmpty(post.getImgFileNames())}"
+                 src="/images/no-image-icon.PNG"
+                 alt="Deafult Image">
+            <img class="thumbnail card-img-top"
+                 th:if="${!#sets.isEmpty(post.getImgFileNames())}"
+                 th:src='${"/displayFile?post-id=" + post.getId() + "&fileName=s_" + post.getImgFileNames().get(0)}'
+                 th:alt="${'s_' + post.getImgFileNames().get(0)}">
+        </a>
+        <div class="card-body">
+            <a class="card-title font-weight-bold long-text mb-0" th:text="${post.title}" th:href="@{'/post/' + ${post.getId()}}" style="display:block;">이동식 에어컨</a>
+            <p class="card-text long-text">
+                <th:block th:each="station : ${post.stations}">
+                    <span data-toggle="tooltip" data-placement="bottom" th:title='${station.region + "-" + station.line}'>
+                        <span th:text="${station.getName() + '역 '}">평촌역</span>
+                    </span>
+                </th:block>
+                <span th:if="${#sets.isEmpty(post.stations)}">_</span>
+            </p>
+            <p class="card-text font-weight-bolder long-text" th:text="${post.price + '원'}">999원</p>
+        </div>
+        <div class="card-footer text-right">
+            <i class="fa fa-mouse-pointer" aria-hidden="true"></i>
+            <small th:text="${post.lookCount}"></small>
+            ∙ <i class="fa fa-envelope-o" aria-hidden="true"></i>
+            <small th:text="${post.letterCount}"></small>
+        </div>
     </div>
 </div>
 

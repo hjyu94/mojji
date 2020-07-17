@@ -12,7 +12,7 @@
     모찌 가입을 완료하려면&nbsp;<a href="#" th:href="@{/account/confirm-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
 </div>
 <nav th:replace="fragments.html :: main-nav"></nav>
-<main role="main">
+<main role="main my-3">
     <div class="jumbotron">
         <div class="container">
             <div class="row justify-content-center">
@@ -49,12 +49,12 @@
             </div>
         </div>
     </div>
-    <div class="container mt-5">
+    <div class="container my-5">
         <div sec:authorize="!isAuthenticated()">
             <h2 class="text-center">최신글</h2>
             <hr class="text-center col-1 my-5 text-success"/>
             <div class="row">
-                <div class="col-4" th:each="post : ${posts}">
+                <div class="col-lg-3 col-4" th:each="post : ${posts}">
                     <div th:replace="fragments.html :: post-card"></div>
                 </div>
             </div>

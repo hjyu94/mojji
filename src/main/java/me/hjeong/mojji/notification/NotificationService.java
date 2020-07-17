@@ -30,7 +30,7 @@ public class NotificationService {
         context.setVariable("nickname", account.getNickname());
         context.setVariable("message", "내 동네, 내 관심 카테고리에 해당하는 새 판매글이 등록되었습니다.");
         context.setVariable("host", appProperties.getHost());
-        context.setVariable("link", "/post/" + post.getEncodedURL());
+        context.setVariable("link", post.getEncodedViewURL());
         context.setVariable("linkName", "판매글 바로가기");
         String message = templateEngine.process("email", context);
 
@@ -49,7 +49,7 @@ public class NotificationService {
                 .createdDateTime(LocalDateTime.now())
                 .message("내 동네, 내 관심 카테고리에 해당하는 새 판매글이 등록되었습니다.")
                 .type(NotificationType.POST_CREATED)
-                .link("/post/" + post.getEncodedURL())
+                .link(post.getEncodedViewURL())
                 .build();
         notificationRepository.save(notification);
     }
