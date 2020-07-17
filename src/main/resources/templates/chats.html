@@ -5,6 +5,10 @@
 <head>
     <th:block th:include="fragments.html :: basic-head"></th:block>
     <th:block th:include="fragments.html :: navbar-head"></th:block>
+    <!--socket start-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <!--socket end-->
     <style>
         #chatbox {
             width: 100%;
@@ -107,11 +111,11 @@
                         <th:block th:if="${curChatRoom == null}">채팅방을 선택해주세요</th:block>
                         <th:block th:if="${curChatRoom != null}">
                             <div id="receiver-box" th:with="receiver=${curChatRoom.getReceiver(account)}">
-                                <h3 th:text="${receiver.nickname}">name 1</h3>
+                                <h3 id="receiver-nickname" th:text="${receiver.nickname}">name 1</h3>
                                 <hr/>
                             </div>
-                            <div id="message-box" th:if="${!#lists.isEmpty(curChatRoom.messages)}">
-                                <ul>
+                            <div id="message-box">
+                                <ul th:if="${!#lists.isEmpty(curChatRoom.messages)}">
                                     <th:block th:each="chatMsg : ${curChatRoom.getMessagesSortByCreatedTime(true)}">
                                         <li class="col small py-1 my-2 bg-light text-center msg-time" th:text="${chatMsg.createdDateTime}"></li>
                                         <li class="mb-2 py-1 px-md-2 px-1" th:classappend="${chatMsg.sender==account}? me : him " th:text="${chatMsg.message}"></li>
@@ -120,7 +124,7 @@
                             </div>
                             <div id="send-box" class="px-3 form-inline d-flex align-items-stretch">
                                 <form id="send-form" class="col px-1">
-                                    <input hidden name="chatRoomId" th:value="${curChatRoom.id}"/>
+                                    <input hidden id="chatroom-id" name="chatRoomId" th:value="${curChatRoom.id}"/>
                                     <input type="text" name="message" class="col form-control" style="width:100%;" onkeydown="checkSubmitKeyDown(event)"></input>
                                 </form>
                                 <button id="sendBtn" class="btn btn-primary" onclick="sendMessage()">전송</button>
@@ -137,15 +141,13 @@
 <th:block th:replace="fragments.html :: tooltip-script"></th:block>
 <th:block th:replace="fragments.html :: moment-script"></th:block>
 <script th:replace="fragments.html :: ajax-csrf-header"></script>
-<script>
-$(function() {
-    // 채팅 멤버 선택시 채팅 메세지 표시하기
-    $('.member').click(function(e) {
-        let id = $(this).find('.member-id')[0].innerHTML;
+<script th:inline="javascript">
+    // 채팅 메세지 박스 채우기
+    function getChatMessages(receiver) {
         $.ajax({
             url: "/chat/messages",
             type: "GET",
-            data: {"nickname": id},
+            data: {"nickname": receiver},
             success: function (fragment) {
                 $("#chatroom").replaceWith(fragment);
                 formatDateTime();
@@ -155,10 +157,7 @@ $(function() {
                 alert("get chat messages err");
             }
         });
-    });
-})
-</script>
-<script>
+    }
     // 전송버튼 클릭시 메세지 전송하기
     function sendMessage() {
         let strMsg = $("#send-form>input[name=message]")[0].value;
@@ -174,6 +173,8 @@ $(function() {
                 $("#message-box").replaceWith(fragment);
                 formatDateTime();
                 scrollToLastMsg();
+                let msg = $("#send-form>input[name=message]")[0].value;
+                sendSocketMessage(msg);
                 $("#send-form>input[name=message]")[0].value = ""; // 보낸 뒤 입력칸 비우기
             },
             error: function () {
@@ -213,6 +214,61 @@ $(function() {
             sendMessage();
         }
     }
+    // web socket send
+    function sendSocketMessage(message) {
+        var room_id = $('#chatroom-id')[0].value;
+        var receiver_name = $('#receiver-nickname').text();
+        let data = JSON.stringify({
+            chatRoomId: room_id,
+            senderNickname: receiver_name,
+            receiverNickname: username,
+            message: message
+        });
+        stompClient.send("/app/chat/" + receiver_name, {}, data);
+    }
+
+    // stomp connect
+    const url = 'http://localhost:8080';
+    var socket = null;
+    var stompClient = null;
+/*<![CDATA[*/
+    var username = /*[[ ${#authentication.name} ]]*/;
+/*]]>*/
+
+    function connect() {
+        console.log("connecting to chat...")
+        var socket = new SockJS(url + '/chat');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected to: ' + frame);
+            stompClient.subscribe('/topic/messages/' + username, function (response) {
+                // 채팅방에 뿌리기
+                let parse = JSON.parse(response.body);
+                var room_id = $('#chatroom-id')[0].value; // 현재 채팅방 아이디
+                if(parse.chatRoomId == room_id) {
+                    getChatMessages(parse.receiverNickname);
+                }
+            });
+        });
+    }
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+        }
+        console.log("Disconnected");
+    }
+    $(function() {
+        // socket stomp connect
+        connect();
+
+        // 채팅 멤버 선택시 채팅 메세지 표시하기
+        $('.member').click(function() {
+            let receiver = $(this).find('.member-id')[0].innerHTML;
+            if(receiver != undefined) {
+                getChatMessages(receiver);
+            }
+        });
+    })
 </script>
 </body>
 </html>

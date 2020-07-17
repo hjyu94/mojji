@@ -64,7 +64,7 @@ public class ChatController {
         return "redirect:/chats";
     }
 
-    // 채팅 멤버 클릭시
+    // 채팅 멤버 클릭시 (방 입장시), 채팅 메세지 수신 시 메세지함 채우기
     @GetMapping("/chat/messages")
     public String getChatMessages(@CurrentAccount Account sender, @RequestParam String nickname, Model model) {
         Account receiver = accountRepository.findByNickname(nickname);

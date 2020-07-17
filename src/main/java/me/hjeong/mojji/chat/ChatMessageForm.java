@@ -1,7 +1,6 @@
 package me.hjeong.mojji.chat;
 
 import lombok.Data;
-import me.hjeong.mojji.domain.Account;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -10,8 +9,8 @@ import javax.validation.constraints.NotNull;
 public class ChatMessageForm {
 
     @NotNull private Long chatRoomId;
-    private Account sender;
-    private Account receiver;
+    private String senderNickname;
+    private String receiverNickname;
     @NotBlank private String message;
 
 }
