@@ -41,4 +41,13 @@ public class ChatService {
         chatRoom.getMessages().add(chatMessage);
         return chatRepository.save(chatRoom);
     }
+
+    public void markAsRead(Account account, ChatRoom chatRoom) {
+        chatRoom.getMessages()
+                .stream()
+                .filter(chatMessage -> chatMessage.getReceiver().equals(account))
+                .forEach(chatMessage -> {
+                    chatMessage.setIsRead(true);
+                });
+    }
 }

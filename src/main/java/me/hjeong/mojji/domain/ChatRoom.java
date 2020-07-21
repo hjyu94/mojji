@@ -42,4 +42,11 @@ public class ChatRoom {
         });
         return this.messages;
     }
+
+    public long getNotReadMessage(Account account) {
+        return this.messages.stream()
+                .filter(chatMessage -> chatMessage.getReceiver().equals(account))
+                .filter(chatMessage -> chatMessage.getIsRead().equals(false))
+                .count();
+    }
 }

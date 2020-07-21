@@ -26,4 +26,7 @@ public class ChatMessage {
     @NotNull // null
     private LocalDateTime createdDateTime;
 
+    @Builder.Default
+    private Boolean isRead = false;
+
 }

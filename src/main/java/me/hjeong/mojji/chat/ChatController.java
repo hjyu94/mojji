@@ -13,13 +13,11 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -71,6 +69,7 @@ public class ChatController {
             throw new AccessDeniedException("나 자신에게는 메세지를 보낼 수 없습니다.");
         }
         ChatRoom foundChatRoom = chatService.getChatRoomByParticipants(Set.of(sender, receiver));
+        chatService.markAsRead(sender, foundChatRoom);
         attributes.addFlashAttribute(CUR_CHAT_ROOM, foundChatRoom);
         return "redirect:/chats";
     }
@@ -80,6 +79,7 @@ public class ChatController {
     public String getChatMessages(@CurrentAccount Account sender, @RequestParam String nickname, Model model) {
         Account receiver = accountRepository.findByNickname(nickname);
         ChatRoom chatRoom = chatService.getChatRoomByParticipants(Set.of(sender, receiver));
+        chatService.markAsRead(sender, chatRoom);
         model.addAttribute("account", sender);
         model.addAttribute(CUR_CHAT_ROOM, chatRoom);
         return "chats :: #chatroom";
@@ -99,4 +99,21 @@ public class ChatController {
         model.addAttribute(CUR_CHAT_ROOM, chatRoom);
         return "chats :: #message-box";
     }
+
+    @GetMapping("/chat/messages/count")
+    @ResponseBody
+    public Object getMessageCount(@CurrentAccount Account account) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        long totalMsgCnt = 0;
+        Iterable<ChatRoom> chatRoomIterable = chatRepository.findAll(ChatPredicates.findIncludingAccount(account));
+        for(ChatRoom chatRoom : chatRoomIterable) {
+            String receiver = chatRoom.getReceiver(account).getNickname();
+            long count = chatRoom.getNotReadMessage(account);
+            map.put(receiver, count);
+            totalMsgCnt += count;
+        }
+        map.put("totalMsgCnt", totalMsgCnt);
+        return map;
+    }
+
 }

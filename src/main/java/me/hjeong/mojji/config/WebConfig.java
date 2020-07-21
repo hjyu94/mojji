@@ -1,6 +1,7 @@
 package me.hjeong.mojji.config;
 
 import lombok.RequiredArgsConstructor;
+import me.hjeong.mojji.chat.ChatMessageInterceptor;
 import me.hjeong.mojji.notification.NotificationInterceptor;
 import org.springframework.boot.autoconfigure.security.StaticResourceLocation;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class WebConfig implements WebMvcConfigurer {
 
     private final NotificationInterceptor notificationInterceptor;
+    private final ChatMessageInterceptor chatMessageInterceptor;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -26,8 +28,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(notificationInterceptor);
-
         List<String> excludePaths = Arrays.stream(StaticResourceLocation.values())
                 .flatMap(StaticResourceLocation::getPatterns)
                 .collect(Collectors.toList());
@@ -35,6 +35,9 @@ public class WebConfig implements WebMvcConfigurer {
         excludePaths.add("/upload/**");
 
         registry.addInterceptor(notificationInterceptor)
+                .excludePathPatterns(excludePaths);
+
+        registry.addInterceptor(chatMessageInterceptor)
                 .excludePathPatterns(excludePaths);
     }
 

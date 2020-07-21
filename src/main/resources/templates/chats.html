@@ -5,16 +5,12 @@
 <head>
     <th:block th:include="fragments.html :: basic-head"></th:block>
     <th:block th:include="fragments.html :: navbar-head"></th:block>
-    <!--socket start-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-    <!--socket end-->
     <style>
         #chatbox {
             width: 100%;
             height: 530px;
         }
-        .member-list {
+        #member-list {
             width: 80px;
             height: 100%;
             border-right: 1px solid #e9e9e9;
@@ -22,7 +18,7 @@
             -ms-overflow-style: none; /* IE and Edge */
             scrollbar-width: none; /* Firefox */
         }
-        .member-list::-webkit-scrollbar {
+        #member-list::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Opera*/
         }
         .member {
@@ -95,20 +91,22 @@
             </p>
             <div th:if="${!#lists.isEmpty(chatRooms)}" id="chatbox" class="card">
                 <div class="card-body row">
-                    <div class="member-list pr-2">
+                    <div id="member-list" class="pr-2">
                         <th:block th:each="chatRoom : ${chatRooms}">
                             <div class="member mt-4" th:with="receiver=${chatRoom.getReceiver(account)}">
                                 <img th:if="${!#strings.isEmpty(receiver?.profileImage)}" th:src="${receiver.profileImage}"
                                      alt="profile image" class="member-profile rounded border bg-light"/>
                                 <svg th:if="${#strings.isEmpty(receiver?.profileImage)}" th:data-jdenticon-value="${receiver.nickname}"
                                      class="member-profile rounded border bg-light"></svg>
-                                <span class="msg-count badge badge-pill badge-primary">7</span>
+                                <span th:text="${(chatRoom.getNotReadMessage(account) > 0)? chatRoom.getNotReadMessage(account) : ''}" th:id="${'msgcount-' + receiver.nickname}" class="msg-count badge badge-pill badge-primary">7</span>
                                 <small class="member-id" th:text="${receiver.nickname}"></small>
                             </div>
                         </th:block>
                     </div>
                     <div id="chatroom" class="col">
-                        <th:block th:if="${curChatRoom == null}">채팅방을 선택해주세요</th:block>
+                        <th:block th:if="${curChatRoom == null}">
+                            <div class="mt-4">채팅방을 선택해주세요</div>
+                        </th:block>
                         <th:block th:if="${curChatRoom != null}">
                             <div id="receiver-box" th:with="receiver=${curChatRoom.getReceiver(account)}">
                                 <h3 id="receiver-nickname" th:text="${receiver.nickname}">name 1</h3>
@@ -149,9 +147,11 @@
             type: "GET",
             data: {"nickname": receiver},
             success: function (fragment) {
+                console.debug("getChatMessages() from /chat/messages with fragment");
                 $("#chatroom").replaceWith(fragment);
                 formatDateTime();
                 scrollToLastMsg();
+                resetMsgCount();
             },
             error: function () {
                 alert("get chat messages err");
@@ -227,40 +227,7 @@
         stompClient.send("/app/chat/" + receiver_name, {}, data);
     }
 
-    // stomp connect
-    const url = 'http://localhost:8080';
-    var socket = null;
-    var stompClient = null;
-/*<![CDATA[*/
-    var username = /*[[ ${#authentication.name} ]]*/;
-/*]]>*/
-
-    function connect() {
-        console.log("connecting to chat...")
-        var socket = new SockJS(url + '/chat');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('Connected to: ' + frame);
-            stompClient.subscribe('/topic/messages/' + username, function (response) {
-                // 채팅방에 뿌리기
-                let parse = JSON.parse(response.body);
-                var room_id = $('#chatroom-id')[0].value; // 현재 채팅방 아이디
-                if(parse.chatRoomId == room_id) {
-                    getChatMessages(parse.receiverNickname);
-                }
-            });
-        });
-    }
-    function disconnect() {
-        if (stompClient !== null) {
-            stompClient.disconnect();
-        }
-        console.log("Disconnected");
-    }
     $(function() {
-        // socket stomp connect
-        connect();
-
         // 채팅 멤버 선택시 채팅 메세지 표시하기
         $('.member').click(function() {
             let receiver = $(this).find('.member-id')[0].innerHTML;
@@ -268,7 +235,10 @@
                 getChatMessages(receiver);
             }
         });
-    })
+        formatDateTime();
+        scrollToLastMsg();
+    });
 </script>
+<script th:replace="fragments.html :: web-socket-script(chatPage=true)"></script>
 </body>
 </html>

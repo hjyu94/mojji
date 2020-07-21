@@ -29,6 +29,54 @@
         body {
             font-family: 'Nanum Gothic', sans-serif;
         }
+
+        /* SNACKBAR - TO NEW MESSAGE ALERT - START */
+        /* The snackbar - position it at the bottom and in the middle of the screen */
+        #snackbar {
+            visibility: hidden; /* Hidden by default. Visible on click */
+            min-width: 250px; /* Set a default minimum width */
+            margin-left: -125px; /* Divide value of min-width by 2 */
+            background-color: #333; /* Black background color */
+            color: #fff; /* White text color */
+            text-align: center; /* Centered text */
+            border-radius: 2px; /* Rounded borders */
+            padding: 16px; /* Padding */
+            position: fixed; /* Sit on top of the screen */
+            z-index: 1; /* Add a z-index if needed */
+            left: 50%; /* Center the snackbar */
+            bottom: 30px; /* 30px from the bottom */
+        }
+
+        /* Show the snackbar when clicking on a button (class added with JavaScript) */
+        #snackbar.show {
+            visibility: visible; /* Show the snackbar */
+            /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+            However, delay the fade out process for 2.5 seconds */
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        /* Animations to fade the snackbar in and out */
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+        /* SNACKBAR - TO NEW MESSAGE ALERT - END */
     </style>
 </th:block>
 
@@ -175,8 +223,11 @@
                         </a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" th:href="@{/letters}">
-                            <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                        <a class="nav-link" th:href="@{/chats}">
+                            <i id="nav-noMsgIcon" th:style="${newMsgCount > 0}? 'display: none;'" class="fa fa-envelope-o" aria-hidden="true"></i>
+                            <span id="nav-hasMsgIcon" th:style="${newMsgCount == 0}? 'display: none;'" class="text-warning">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                            </span>
                         </a>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
@@ -203,6 +254,8 @@
             </div>
         </div>
     </div>
+    <!-- The actual snackbar -->
+    <div id="snackbar">Some text some message..</div>
 </nav>
 
 <!--################################### body ###################################-->
@@ -292,7 +345,8 @@
         </div>
         <a th:href="@{/chats}" class="list-group-item d-flex justify-content-between align-items-center" th:classappend="${currentMenu=='chat'}? active">
             메세지
-            <span class="badge badge-primary badge-pill">99</span>
+            <span th:if="${newMsgCount == 0}" id="msgcount-all" class="badge badge-primary badge-pill"></span>
+            <span th:if="${newMsgCount > 0}" th:text="${newMsgCount}" id="msgcount-all" class="badge badge-primary badge-pill">99</span>
         </a>
     </div>
 </div>
@@ -399,12 +453,13 @@
 </script>
 
 <th:block th:fragment="basic-script">
-<script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
-<script>
-    window.onload = function(){
-        jdenticon(); // Jdenticon doesn't render my icons - solution
-    };
-</script>
+    <script src="/node_modules/jquery.easing/jquery.easing.min.js"></script>
+    <script th:replace="fragments.html :: web-socket-script"></script>
+    <script>
+        window.onload = function(){
+            jdenticon(); // Jdenticon doesn't render my icons - solution
+        };
+    </script>
 </th:block>
 
 <th:block th:fragment="auth-script">
@@ -549,5 +604,112 @@ $(function() { // wait for page to load
     });
 });
 </script>
+
+<th:block th:fragment="web-socket-script" sec:authorize="isAuthenticated()">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script th:inline="javascript">
+        // stomp connect
+        const url = 'http://localhost:8080';
+        var socket = null;
+        var stompClient = null;
+        /*<![CDATA[*/
+        var username = /*[[ ${#authentication.name} ]]*/;
+        /*]]>*/
+
+        $(function() {
+            function connect() {
+                console.log("connecting to chat...")
+                var socket = new SockJS(url + '/chat');
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function (frame) {
+                    console.log('Connected to: ' + frame);
+                    stompClient.subscribe('/topic/messages/' + username, function(response) {
+                        onReceiveSocketMessage(response);
+                    });
+                });
+            }
+
+            function disconnect() {
+                if (stompClient !== null) {
+                    stompClient.disconnect();
+                }
+                console.log("Disconnected");
+            }
+
+            connect();
+        });
+
+        // 채팅 멤버를 선택했을 때나, 새 메세지를 수신했을 때
+        function resetMsgCount() {
+            $.ajax({
+                url: "/chat/messages/count",
+                type: "GET",
+                contentType: "application/json; charset=utf-8;",
+                success: function(data){
+                    for(key in data) {
+                        setMessageCount(document.querySelector('#msgcount-'+key), data[key]);
+                    }
+                    setMessageCount(document.querySelector('#msgcount-all'), data['totalMsgCnt']);
+                    toggleNavmessageIcon(data['totalMsgCnt']);
+                },
+                error: function(){
+                    alert("resetMsgCount() err");
+                }
+            });
+            function setMessageCount(element, count) {
+                if(element == undefined) return;
+                if(count == 0) count = '';
+                element.innerText = count;
+                console.debug('setMessageCount() element: ' + element.id + ', count: ' + count);
+            }
+            function toggleNavmessageIcon(count) {
+                let elementToShow, elementToHide;
+                if(count == 0) {
+                    elementToShow = $('#nav-noMsgIcon');
+                    elementToHide = $('#nav-hasMsgIcon');
+                    console.debug("toggleNavIcon - No Message State")
+                } else {
+                    elementToShow = $('#nav-hasMsgIcon');
+                    elementToHide = $('#nav-noMsgIcon');
+                    console.debug("toggleNavIcon - Has Message State")
+                }
+                elementToShow.css("display", "");
+                elementToHide.css("display", "none");
+            }
+        }
+    </script>
+    <script th:if="${chatPage == null}">
+        function showSnackBar(message, showingTime) {
+            console.debug(message);
+            // Get the snackbar DIV
+            var x = document.getElementById("snackbar");
+            // fill messsage context
+            x.innerHTML = message;
+            // Add the "show" class to DIV
+            x.className = "show";
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, showingTime);
+        }
+        // callback function when received
+        function onReceiveSocketMessage(response) {
+            let parse = JSON.parse(response.body);
+            showSnackBar(parse.receiverNickname + '님으로부터 ' + '<a href="/chat/' + parse.receiverNickname + '">' + '새 메세지</a>가 도착했습니다', 2000);
+            resetMsgCount();
+        }
+    </script>
+    <script th:if="${chatPage == true}">
+        // callback function when received
+        function onReceiveSocketMessage(response) {
+            // 채팅방에 뿌리기
+            let parse = JSON.parse(response.body);
+            let curChatRoom = $('#chatroom-id')[0];
+            if(curChatRoom != undefined && parse.chatRoomId == curChatRoom.value) {
+                getChatMessages(parse.receiverNickname);
+            }
+            resetMsgCount();
+        }
+    </script>
+</th:block>
 
 </html>
