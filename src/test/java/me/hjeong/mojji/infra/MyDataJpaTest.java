@@ -1,6 +1,6 @@
 package me.hjeong.mojji.infra;
 
-import me.hjeong.mojji.config.DataJpaConfig;
+import me.hjeong.mojji.infra.config.DataJpaConfig;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
