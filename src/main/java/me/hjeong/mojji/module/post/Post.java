@@ -31,7 +31,7 @@ public class Post extends AbstractAggregateRoot<Post> {
 
     private Integer price;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Account seller;
 
     @Column(nullable = false)
@@ -45,7 +45,7 @@ public class Post extends AbstractAggregateRoot<Post> {
     @Builder.Default
     private Integer letterCount = 0;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime createdDateTime;
 
     @Builder.Default

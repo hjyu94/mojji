@@ -18,7 +18,7 @@
 
 							<form method="POST" class="my-login-validation" th:action="@{/new-account}" th:object="${registerForm}" novalidate="">
 								<div class="form-group">
-									<label for="name">이름</label>
+									<label for="name">닉네임</label>
 									<input id="name" type="text" class="form-control" th:field="*{nickname}" required autofocus>
 									<div class="invalid-feedback">
 										이름을 입력해주세요.

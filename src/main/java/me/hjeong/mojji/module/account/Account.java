@@ -39,10 +39,10 @@ public class Account {
 
     private boolean notiByEmail = false;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private Set<Station> stations = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private Set<Category> categories = new HashSet<>();
 
     @Lob
