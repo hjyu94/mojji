@@ -9,30 +9,30 @@
 <body class="my-login-page">
 	<section class="h-100">
 		<div class="container h-100">
-			<div class="row justify-content-md-center h-100">
+			<div class="row justify-content-md-center h-100 align-items-center">
 				<div class="card-wrapper">
 					<div th:replace="fragments.html :: auth-banner"></div>
 					<div class="card fat">
 						<div class="card-body">
-							<h4 class="card-title">Login</h4>
+							<h4 class="card-title">로그인</h4>
 							<form class="my-login-validation" novalidate="" th:action="@{/login}" method="POST" >
 								<div class="form-group">
-									<label for="username">Nickname Or Email</label>
+									<label for="username">닉네임 or 이메일</label>
 									<input id="username" type="text" class="form-control" name="username" value="" required autofocus>
 									<div class="invalid-feedback">
-										Nickname or Email is required
+										닉네임이나 이메일을 정확히 입력하세요.
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label for="password">Password
+									<label for="password">패쓰워드
 										<a th:href="@{/account/password}" class="float-right">
-											Forgot Password?
+											패쓰워드를 잊으셨나요?
 										</a>
 									</label>
 									<input id="password" type="password" class="form-control" name="password" required data-eye>
 								    <div class="invalid-feedback">
-								    	Password is required
+								    	패쓰워드를 입력하세요.
 							    	</div>
 								</div>
 
@@ -45,11 +45,11 @@
 
 								<div class="form-group m-0">
 									<button type="submit" class="btn btn-primary btn-block">
-										Login
+										로그인
 									</button>
 								</div>
 								<div class="mt-4 text-center">
-									Don't have an account? <a th:href="@{/new-account}">Create One</a>
+									아직 계정이 없으신가요? <a th:href="@{/new-account}">회원가입</a>
 								</div>
 							</form>
 						</div>

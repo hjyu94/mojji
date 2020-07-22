@@ -14,9 +14,6 @@ public class ProfileForm {
     @Length(min = 2, max = 8)
     private String nickname;
 
-    @AssertTrue
-    private boolean nicknameConfirm;
-
     private String profileImage;
 
     private boolean notiByWeb;

@@ -16,8 +16,8 @@
         <div class="row justify-content-center mt-3">
             <form class="form col-md-8 col-12 needs-validation" id="profile-form" action="#" onsubmit="return validateForm()" th:action="@{/setting/profile}" th:object="${profileForm}" method="post" enctype="multipart/form-data" novalidate>
                 <div class="form-group row">
-                    <label class="col-lg-2 col-2 col-form-label">이메일</label>
-                    <div class="col">
+                    <label class="col-3 col-form-label">이메일</label>
+                    <div class="col mr-3">
                         <div class="row">
                             <p class="text-justify my-2" th:text="${account.email}">mojji@email.com</p>
                             <p class="text-justify my-2 text-muted" th:if="!${account.isEmailVerified()}">(이메일 인증 전입니다. 받은 메세지함을 확인해주세요)</p>
@@ -28,13 +28,13 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nickname" class="col-form-label col-2">닉네임</label>
-                    <div class="col">
+                    <label for="nickname" class="col-form-label col-3">닉네임</label>
+                    <div class="col mr-3">
                         <div class="row">
                             <p style="display:none;" id="origin-nickname" th:text="${#authorization.getAuthentication().getPrincipal().getAccount().getNickname()}">원래 닉네임</p>
-                            <input type="text" class="col form-control" id="nickname" th:field="*{nickname}" required minlength="2" maxlength="8">
-                            <div class="ml-2 col-3 custom-control custom-checkbox" id="nickname-check-div">
-                                <input type="checkbox" class="custom-control-input" id="customCheck" th:field="*{nicknameConfirm}">
+                            <input type="text" class="col form-control" id="nickname" th:field="*{nickname}">
+                            <div class="ml-2 col-4 custom-control custom-checkbox" id="nickname-check-div">
+                                <input type="checkbox" class="custom-control-input" id="customCheck">
                                 <label class="custom-control-label" for="customCheck">중복체크</label>
                             </div>
                         </div>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-2 col-form-label">프로필 사진</label>
+                    <label class="col-3 col-form-label">사진</label>
                     <div class="col">
                         <div class="row custom-file">
                             <input type="file" class="col custom-file-input" id="customFile" accept="image/*">
@@ -73,10 +73,10 @@
                     <input id="profileImage" type="hidden" th:field="*{profileImage}" class="form-control"/>
                 </div>
                 <div class="form-group row">
-                    <div class="col-2">
+                    <div class="col-3">
                         알림
                     </div>
-                    <div class="col">
+                    <div class="col px-0">
                         <div class="custom-control custom-switch custom-control-inline">
                             <input type="checkbox" th:field="*{notiByWeb}" class="custom-control-input" id="notiByWeb">
                             <label class="custom-control-label" for="notiByWeb">웹으로 받기</label>
@@ -105,13 +105,13 @@
             $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
         }
     });
-</script>
-<script>
     var origin_nickname = $("#origin-nickname");
     var nickname = $('#nickname');
     var nickname_alert  = $('#txt-nickname-check');
     var safe = $('#txt-nickname-safe');
+    var nickname_check_wrap = $('#nickname-check-div');
     var nickname_check = $('#customCheck');
+    nickname_check_wrap.hide();
 
     if(nickname.val() == origin_nickname.text()) {
         nickname_check.prop("checked", false);
@@ -120,6 +120,7 @@
     nickname.on("change keyup paste", function() {
         // 중복확인 사용 가능, 체크 해제
         nickname_check.prop("checked", false);
+        nickname_check_wrap.hide();
         safe.hide();
 
         // 만약 빈칸이었다면
@@ -135,6 +136,7 @@
         // 기존 닉네임과 다르다면
         else if(nickname.val() != origin_nickname.text()) {
             nickname_alert.text("중복되는 닉네임이 있는지 확인해주세요.");
+            nickname_check_wrap.show();
             nickname_alert.show();
         }
         // 위에 해당사항 없다면
@@ -143,7 +145,7 @@
         }
     });
 
-    nickname_check.click(function(){
+    nickname_check_wrap.click(function(){
         $.ajax({
             url : "/setting/profile/idcheck",
             type : "get",
@@ -152,14 +154,14 @@
                 if(data == 1) {
                     nickname_alert.text("중복되는 닉네임이 있습니다. 다른 닉네임을 사용해주세요.")
                 } else {
+                    nickname_check_wrap.hide();
                     nickname_alert.hide();
                     safe.show();
                 }
             }
         });
     });
-</script>
-<script> // 프로필 이미지 지정하기
+    // 프로필 이미지 지정하기
     var file = document.querySelector('#customFile');
     var image_alert  = $('#profile-image-client-msg');
 
@@ -211,15 +213,17 @@
             image_alert.show();
         }
     }
-</script>
-<script>
+    function isDoneNicknameCheck() {
+        return nickname_alert.css('display') == 'none'
+    }
     function validateForm() {
-        // 중복확인을 안 했는데 기존 닉네임과 다르다면
-        if(!nickname_check.prop("checked") && nickname.val() != origin_nickname.text()) {
+        // 중복확인이 안 된 경우
+        if(!isDoneNicknameCheck()) {
             alert("닉네임 중복확인이 필요합니다.");
             return false;
         }
     }
+
 </script>
 </body>
 </html>

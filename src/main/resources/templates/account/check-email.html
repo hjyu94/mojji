@@ -9,12 +9,12 @@
 <body class="my-login-page">
 <section class="h-100">
     <div class="container h-100">
-        <div class="row justify-content-md-center h-100">
+        <div class="row justify-content-md-center align-items-center h-100">
             <div class="w-50 card-wrapper">
                 <div th:replace="fragments.html :: auth-banner"></div>
                 <div class="card fat">
                     <div class="card-body">
-                        <h4 class="card-title">Check Email</h4>
+                        <h4 class="card-title">이메일 확인</h4>
                         <div class="py-5 text-center" th:if="${error != null}">
                             <div class="alert alert-danger" role="alert" th:text="${error}"></div>
                             <p th:text="${email}">XXX@email.com</p>

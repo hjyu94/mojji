@@ -5,7 +5,17 @@
 <head>
     <th:block th:include="fragments.html :: basic-head"></th:block>
     <th:block th:include="fragments.html :: navbar-head"></th:block>
-<!--    <th:block th:include="fragments.html :: tagify-head"></th:block>-->
+    <style>
+        #select_region, #select_line, #select_name {
+            height: 300px;
+            overflow: auto;
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+        #select_line::-webkit-scrollbar, #select_name::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+    </style>
 </head>
 <body>
 <nav th:replace="fragments.html :: main-nav"></nav>
@@ -32,19 +42,22 @@
         <div class="row justify-content-center">
             <div class="col-md-2 col-3 list-group">
                 <label for="select_region">지역</label>
-                <select multiple="" class="form-control" id="select_region" style="height: 300px">
-                    <option class="option_region" th:if="${regions}" th:each="region : ${regions}" th:text="${region}"></option>
-                </select>
+                <ul class="list-group" id="select_region">
+                    <li class="list-group-item list-region" th:if="${regions}" th:each="region : ${regions}" th:text="${region}"></li>
+                </ul>
+                <input hidden id="selected_region"></input>
             </div>
             <div class="col-md-2 col-4 list-group">
                 <label for="select_line">호선</label>
-                <select multiple="" class="form-control" id="select_line" style="height: 300px">
-                </select>
+                <ul class="list-group" id="select_line">
+                </ul>
+                <input hidden id="selected_line"></input>
             </div>
             <div class="col-md-3 col-4 list-group">
                 <label for="select_name">역 이름</label>
-                <select multiple="" class="form-control" id="select_name" style="height: 300px">
-                </select>
+                <ul class="list-group" id="select_name">
+                </ul>
+                <input hidden id="selected_name"></input>
             </div>
         </div>
     </div>
@@ -55,32 +68,57 @@
 <script>
 $(function(){
 
-    function onDblClickRegion() {
-        var form = {region: $("#select_region option:selected").val()};
+    function onClickRegion() {
+        var region = this.innerHTML;
         $.ajax({
             url: "/setting/station/requestRegion",
             type: "POST",
-            data: form,
+            data: {region: region},
             success: function(data) {
+                $('#selected_line').text = "";
+                $('#selected_name').text = "";
                 $('.option_line').remove();
                 $('.option_name').remove();
-
                 for(var i=0; i<data.length; i++){
-                    var element = "<option class=\"option_line\">" + data[i] + "</option>";
+                    var element = "<li class=\"list-group-item option_line\">" + data[i] + "</li>";
                     $('#select_line').append(element);
                 }
-
-                $('.option_line').on('dblclick', onDblClickStationLine);
+                document.getElementById("selected_region").value = region;
+                $('.option_line').on('click', onClickStationLine);
             }
         });
     }
 
-    function onDblClickStationName() {
-        var form = {
-            region: $("#select_region option:selected").val(),
-            line: $("#select_line option:selected").val(),
-            name: $("#select_name option:selected").val(),
+    function onClickStationLine() {
+        let region = document.getElementById("selected_region").value;
+        let line = this.innerHTML;
+        $.ajax({
+            url: "/setting/station/requestName",
+            type: "POST",
+            data: {region: region, line: line},
+            success: function (data) {
+                $('#selected_name').text = "";
+                $('.option_name').remove();
+                for(var i=0; i<data.length; i++){
+                    var element = "<li class=\"list-group-item option_name\">" + data[i] + "</li>";
+                    $('#select_name').append(element);
+                }
+                document.getElementById("selected_line").value = line;
+                $('.option_name').on('click', onClickStationName);
+            }
+        });
+    }
+
+    function onClickStationName() {
+        let region = document.getElementById("selected_region").value;
+        let line = document.getElementById("selected_line").value;
+        let name = this.innerHTML;
+        let form = {
+            region: region,
+            line: line,
+            name: name
         };
+        console.log(region, line, name);
         $.ajax({
             url: "/setting/station/add",
             type: "POST",
@@ -94,27 +132,8 @@ $(function(){
                         "<span id=\"" + data[i] + "\" class=\"remove-station badge\">x</span></span>";
                     $('#user-stations').append(element);
                 }
+                document.getElementById("selected_name").value = name;
                 $('.remove-station').on('click', onClickRemove);
-            }
-        });
-    }
-
-    function onDblClickStationLine() {
-        var form = {
-            region: $("#select_region option:selected").val(),
-            line: $("#select_line option:selected").val()
-        };
-        $.ajax({
-            url: "/setting/station/requestName",
-            type: "POST",
-            data: form,
-            success: function (data) {
-                $('.option_name').remove();
-                for(var i=0; i<data.length; i++){
-                    var element = "<option class=\"option_name\">" + data[i] + "</option>";
-                    $('#select_name').append(element);
-                }
-                $('.option_name').on('dblclick', onDblClickStationName);
             }
         });
     }
@@ -141,7 +160,7 @@ $(function(){
     }
 
     $('.remove-station').on('click', onClickRemove);
-    $('.option_region').on('dblclick', onDblClickRegion);
+    $('.list-region').on('click', onClickRegion);
 });
 </script>
 </body>

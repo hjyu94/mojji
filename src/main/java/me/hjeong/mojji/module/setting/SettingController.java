@@ -3,17 +3,16 @@ package me.hjeong.mojji.module.setting;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import me.hjeong.mojji.module.account.Account;
+import me.hjeong.mojji.module.account.CurrentAccount;
 import me.hjeong.mojji.module.account.repository.AccountRepository;
 import me.hjeong.mojji.module.account.service.AccountService;
-import me.hjeong.mojji.module.account.CurrentAccount;
-import me.hjeong.mojji.module.category.CategoryRepository;
-import me.hjeong.mojji.module.account.Account;
 import me.hjeong.mojji.module.category.Category;
+import me.hjeong.mojji.module.category.CategoryRepository;
 import me.hjeong.mojji.module.setting.form.PasswordForm;
 import me.hjeong.mojji.module.setting.form.ProfileForm;
 import me.hjeong.mojji.module.setting.form.QuitForm;
 import me.hjeong.mojji.module.setting.validator.PasswordFormValidator;
-import me.hjeong.mojji.module.setting.validator.ProfileFormValidator;
 import me.hjeong.mojji.module.setting.validator.QuitFormValidator;
 import me.hjeong.mojji.module.station.Station;
 import me.hjeong.mojji.module.station.StationRepository;
@@ -29,9 +28,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -46,14 +45,8 @@ public class SettingController {
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper; // 스프링 부트는 fastXml이 제공하는 objectMapper가 기본적으로 의존성이 들어와 있고 빈으로 등록되어 있다. (object<->json)
-    private final ProfileFormValidator profileFormValidator;
     private final PasswordFormValidator passwordFormValidator;
     private final QuitFormValidator quitFormValidator;
-
-    @InitBinder("profileForm")
-    public void initBinderForProfileForm(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(profileFormValidator);
-    }
 
     @InitBinder("passwordForm")
     public void initBinderForPasswordForm(WebDataBinder webDataBinder) {
@@ -107,7 +100,8 @@ public class SettingController {
     @PostMapping("/setting/password")
     public String updatePassword(@CurrentAccount Account account, @Valid PasswordForm passwordForm, Errors errors, Model model, RedirectAttributes attributes) {
         if(errors.hasErrors()) {
-            model.addAttribute(account);
+            Account foundAccount = accountRepository.findAccountWithStationsAndCategoriesById(account.getId());
+            model.addAttribute(foundAccount);
             return "setting/password";
         }
         accountService.updatePassword(passwordForm, account);
@@ -157,7 +151,7 @@ public class SettingController {
         List<String> collect = foundAccount.getStations().stream().map(Station::toString).collect(Collectors.toList());
         model.addAttribute("stations", collect);
 
-        Set<String> regions = stationRepository.findAll().stream().map(Station::getRegion).collect(Collectors.toSet());
+        List<String> regions = Arrays.asList("수도권", "부산", "대구", "광주", "대전");
         model.addAttribute("regions", regions);
 
         return "setting/station";
@@ -219,8 +213,9 @@ public class SettingController {
     @PostMapping("/setting/quit")
     public String quit(@CurrentAccount Account account, @Valid QuitForm quitForm, Errors errors, Model model, HttpServletRequest request) {
         if(errors.hasErrors()) {
-            model.addAttribute(account);
-            return "setting/password";
+            Account foundAccount = accountRepository.findAccountWithStationsAndCategoriesById(account.getId());
+            model.addAttribute(foundAccount);
+            return "setting/quit";
         }
         accountService.delete(account);
         request.getSession().invalidate();

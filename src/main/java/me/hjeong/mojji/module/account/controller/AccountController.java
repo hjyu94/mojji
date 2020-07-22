@@ -130,12 +130,11 @@ public class AccountController {
         String title = "", message = "";
         Account account = accountRepository.findByEmail(email);
         if(null == account) {
-            title = "Error";
-            message = "No that email account";
+            throw new NoSuchElementException("해당하는 이메일 주소가 없습니다.");
         } else {
             accountService.sendResetPasswordEmail(account);
-            title = "Reset Password";
-            message = "we send reset password to your email.";
+            title = "패쓰워드 갱신";
+            message = "이메일로 새로운 패쓰워드를 전송했습니다.";
         }
         attributes.addFlashAttribute("title", title);
         attributes.addFlashAttribute("message", message);

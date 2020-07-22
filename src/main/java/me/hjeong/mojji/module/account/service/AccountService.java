@@ -110,10 +110,19 @@ public class AccountService implements UserDetailsService {
     public void sendResetPasswordEmail(Account account) {
         String temp_password = UUID.randomUUID().toString();
         account.setPassword(passwordEncoder.encode(temp_password));
+
+        Context context = new Context();
+        context.setVariable("nickname", account.getNickname());
+        context.setVariable("message", "패쓰워드를 변경하였습니다. 다음 비밀번호로 로그인 후 패쓰워드를 꼭 변경해주세요 : " + temp_password);
+        context.setVariable("host", appProperties.getHost());
+        context.setVariable("link", "/login");
+        context.setVariable("linkName", "로그인하기");
+        String message = templateEngine.process("email", context);
+
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
                 .subject("[모찌마켓] 패스워드 갱신")
-                .message(temp_password)
+                .message(message)
                 .build();
         emailService.sendEmail(emailMessage);
     }
