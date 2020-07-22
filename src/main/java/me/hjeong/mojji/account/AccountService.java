@@ -109,7 +109,7 @@ public class AccountService implements UserDetailsService {
         account.setPassword(passwordEncoder.encode(temp_password));
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(account.getEmail())
-                .subject("[모찌마켓] 회원 가입 인증")
+                .subject("[모찌마켓] 패스워드 갱신")
                 .message(temp_password)
                 .build();
         emailService.sendEmail(emailMessage);
