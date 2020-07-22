@@ -14,7 +14,7 @@ public class ChatRoom {
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToMany // OneToMany: 한 Account 는 하나의 ChatRoom 만을 가져야 한다.
+    @ManyToMany(cascade = CascadeType.ALL) // OneToMany: 한 Account 는 하나의 ChatRoom 만을 가져야 한다.
     @Builder.Default
     private Set<Account> participants = new HashSet<>();
 

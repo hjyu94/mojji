@@ -3,6 +3,7 @@ package me.hjeong.mojji.module.chat;
 import lombok.*;
 import me.hjeong.mojji.module.account.Account;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
@@ -17,10 +18,10 @@ public class ChatMessage {
     @NotBlank // null, "", " "
     private String message;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
     private Account sender;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
     private Account receiver;
 
     @NotNull // null

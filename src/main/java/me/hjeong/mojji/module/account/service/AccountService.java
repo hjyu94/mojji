@@ -7,6 +7,8 @@ import me.hjeong.mojji.module.account.form.RegisterForm;
 import me.hjeong.mojji.module.account.repository.AccountRepository;
 import me.hjeong.mojji.infra.config.AppProperties;
 import me.hjeong.mojji.module.category.Category;
+import me.hjeong.mojji.module.post.Post;
+import me.hjeong.mojji.module.post.repository.PostRepository;
 import me.hjeong.mojji.module.setting.form.PasswordForm;
 import me.hjeong.mojji.module.setting.form.ProfileForm;
 import me.hjeong.mojji.module.station.Station;
@@ -40,6 +42,7 @@ public class AccountService implements UserDetailsService {
     private final EmailService emailService;
     private final AppProperties appProperties;
     private final TemplateEngine templateEngine;
+    private final PostRepository postRepository;
 
     public Account createNewAccount(RegisterForm registerForm) {
         String password = passwordEncoder.encode(registerForm.getPassword());
@@ -153,6 +156,8 @@ public class AccountService implements UserDetailsService {
     }
 
     public void delete(Account account) {
+        List<Post> posts = postRepository.findBySeller(account);
+        posts.forEach(post -> postRepository.delete(post));
         accountRepository.delete(account);
     }
 

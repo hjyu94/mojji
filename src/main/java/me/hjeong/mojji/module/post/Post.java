@@ -31,12 +31,8 @@ public class Post extends AbstractAggregateRoot<Post> {
 
     private Integer price;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = CascadeType.ALL)
     private Account seller;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @Builder.Default
-    private Account buyer = null;
 
     @Column(nullable = false)
     private String title;
@@ -55,7 +51,7 @@ public class Post extends AbstractAggregateRoot<Post> {
     @Builder.Default
     private boolean isSold = false;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @Builder.Default
     private Set<Station> stations = new HashSet<>();
 
