@@ -1,11 +1,10 @@
 package me.hjeong.mojji.infra.config;
 
-import me.hjeong.mojji.module.account.repository.AccountRepository;
 import me.hjeong.mojji.infra.mail.ConsoleEmailService;
 import me.hjeong.mojji.infra.mail.EmailService;
+import me.hjeong.mojji.module.account.repository.AccountRepository;
 import me.hjeong.mojji.module.notification.NotificationRepository;
 import me.hjeong.mojji.module.notification.NotificationService;
-import me.hjeong.mojji.module.post.repository.PostRepository;
 import me.hjeong.mojji.module.post.event.PostEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -20,7 +19,6 @@ public class EventHandlerConfig {
 
     @Autowired NotificationRepository notificationRepository;
     @Autowired AccountRepository accountRepository;
-    @Autowired PostRepository postRepository;
 
     @Bean
     AppProperties appProperties() {
@@ -44,6 +42,6 @@ public class EventHandlerConfig {
 
     @Bean
     PostEventListener postEventListener() {
-        return new PostEventListener(notificationService(), accountRepository, postRepository);
+        return new PostEventListener(notificationService(), accountRepository);
     }
 }
