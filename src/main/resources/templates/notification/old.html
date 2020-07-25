@@ -16,7 +16,7 @@
             <p th:if="${oldNotiPage.isEmpty()}">읽은 알림이 없습니다.</p>
             <th:block th:if="${!oldNotiPage.isEmpty()}">
                 <div class="row justify-content-between px-3 mb-3">
-                    <span>읽은 알림이 <span class="text-primary" th:text="${oldNotiCount+'개'}"></span> 있습니다.</span>
+                    <p>읽은 알림이 <span class="text-primary" th:text="${oldNotiCount+'개'}"></span> 있습니다.</p>
                     <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#delete">선택 삭제</button>
                 </div>
                 <th:block th:replace='fragments.html :: noti-table(notiList=${oldNotiPage.getContent()}, hasCheck=true)'></th:block>

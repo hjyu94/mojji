@@ -1,20 +1,24 @@
 package me.hjeong.mojji.module.account.service;
 
 import lombok.RequiredArgsConstructor;
+import me.hjeong.mojji.infra.config.AppProperties;
+import me.hjeong.mojji.infra.mail.EmailMessage;
+import me.hjeong.mojji.infra.mail.EmailService;
 import me.hjeong.mojji.module.account.Account;
 import me.hjeong.mojji.module.account.UserAccount;
+import me.hjeong.mojji.module.account.event.AccountCreatedEvent;
 import me.hjeong.mojji.module.account.form.RegisterForm;
 import me.hjeong.mojji.module.account.repository.AccountRepository;
-import me.hjeong.mojji.infra.config.AppProperties;
 import me.hjeong.mojji.module.category.Category;
+import me.hjeong.mojji.module.notification.Notification;
+import me.hjeong.mojji.module.notification.NotificationRepository;
 import me.hjeong.mojji.module.post.Post;
 import me.hjeong.mojji.module.post.repository.PostRepository;
 import me.hjeong.mojji.module.setting.form.PasswordForm;
 import me.hjeong.mojji.module.setting.form.ProfileForm;
 import me.hjeong.mojji.module.station.Station;
-import me.hjeong.mojji.infra.mail.EmailMessage;
-import me.hjeong.mojji.infra.mail.EmailService;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -43,6 +47,8 @@ public class AccountService implements UserDetailsService {
     private final AppProperties appProperties;
     private final TemplateEngine templateEngine;
     private final PostRepository postRepository;
+    private final NotificationRepository notificationRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public Account createNewAccount(RegisterForm registerForm) {
         String password = passwordEncoder.encode(registerForm.getPassword());
@@ -50,6 +56,7 @@ public class AccountService implements UserDetailsService {
         Account account = modelMapper.map(registerForm, Account.class);
         Account newAccount = accountRepository.save(account);
         this.sendRegisterEmail(newAccount);
+        applicationEventPublisher.publishEvent(new AccountCreatedEvent(account));
 
         return newAccount;
     }
@@ -158,6 +165,8 @@ public class AccountService implements UserDetailsService {
     public void delete(Account account) {
         List<Post> posts = postRepository.findBySeller(account);
         posts.forEach(post -> postRepository.delete(post));
+        List<Notification> notis = notificationRepository.findAllByAccount(account);
+        notis.forEach(noti -> notificationRepository.delete(noti));
         accountRepository.delete(account);
     }
 

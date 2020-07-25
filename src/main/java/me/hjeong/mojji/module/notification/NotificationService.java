@@ -41,14 +41,14 @@ public class NotificationService {
         emailService.sendEmail(emailMessage);
     }
 
-    public void createNotification(Account account, Post post) {
+    public void createNotification(Account account, String title, String message, NotificationType type, String link) {
         Notification notification = Notification.builder()
-                .title(post.getTitle())
                 .account(account)
                 .createdDateTime(LocalDateTime.now())
-                .message("내 동네, 내 관심 카테고리에 해당하는 새 판매글이 등록되었습니다.")
-                .type(NotificationType.POST_CREATED)
-                .link(post.getEncodedViewURL())
+                .title(title)
+                .message(message)
+                .type(type)
+                .link(link)
                 .build();
         notificationRepository.save(notification);
     }

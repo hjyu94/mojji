@@ -16,7 +16,7 @@
                 <h2 class="mb-4">새 알림</h2>
                 <p th:if="${newNotiCount == 0}">새 알림이 없습니다.</p>
                 <th:block th:if="${newNotiCount != 0}">
-                    <span>읽지 않은 알림이 <span class="text-primary" th:text="${newNotiCount+'개'}"></span> 있습니다.</span>
+                    <p class="mb-3">읽지 않은 알림이 <span class="text-primary" th:text="${newNotiCount+'개'}"></span> 있습니다.</p>
                     <th:block th:replace='fragments.html :: noti-table(notiList=${newNotifications})'></th:block>
                     <div th:if="${newNotiCount > 3}" class="row justify-content-end">
                         <a th:href="@{/notification/new}">► 더 보기</a>
@@ -26,7 +26,7 @@
             <hr/>
             <div>
                 <h2 class="mb-4">읽은 알림</h2>
-                <span th:if="${oldNotiCount == 0}">읽은 알림이 없습니다.</span>
+                <p th:if="${oldNotiCount == 0}">읽은 알림이 없습니다.</p>
                 <th:block th:if="${oldNotiCount != 0}">
                     <th:block th:replace='fragments.html :: noti-table(notiList=${oldNotifications})'></th:block>
                     <div class="row justify-content-end">

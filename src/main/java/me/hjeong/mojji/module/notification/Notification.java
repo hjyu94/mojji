@@ -20,6 +20,7 @@ public class Notification {
 
     private boolean checked;
 
+    @Column(nullable = true)
     private String link;
 
     @ManyToOne(fetch = FetchType.LAZY)

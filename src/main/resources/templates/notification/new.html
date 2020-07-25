@@ -13,7 +13,7 @@
         <th:block th:include="fragments.html :: content-menu(currentMenu='notifications')"></th:block>
         <div class="col-lg-8 col">
             <h2 class="mb-4">새 알림</h2>
-            <span th:if="${#lists.isEmpty(newNotifications)}">새 알림이 없습니다.</span>
+            <p th:if="${#lists.isEmpty(newNotifications)}">새 알림이 없습니다.</p>
             <th:block th:if="${!#lists.isEmpty(newNotifications)}">
                 <p>읽지 않은 알림이 <span class="text-primary" th:text="${newNotiCount+'개'}"></span> 있습니다.</p>
                 <th:block th:replace='fragments.html :: noti-table(notiList=${newNotifications})'></th:block>

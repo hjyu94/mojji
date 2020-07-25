@@ -428,8 +428,11 @@
                 <input type="checkbox" th:id="${noti.id}" class="checkbox">
             </td>
             <th:block th:switch="${noti.type}">
-                <td th:case="${T(me.hjeong.mojji.notification.NotificationType).POST_CREATED}">
+                <td th:case="${T(me.hjeong.mojji.module.notification.NotificationType).POST_CREATED}">
                     글 <a th:href="@{${noti.link}}" th:text="${'[' + noti.title + ']'}"></a>이 등록되었습니다.
+                </td>
+                <td th:case="${T(me.hjeong.mojji.module.notification.NotificationType).ACCOUNT_CREATED}">
+                    <th:block th:text="${noti.message}"></th:block>
                 </td>
             </th:block>
             <td class="fromNow" th:text="${noti.createdDateTime}"></td>

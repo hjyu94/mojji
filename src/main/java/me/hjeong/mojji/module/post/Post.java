@@ -2,10 +2,9 @@ package me.hjeong.mojji.module.post;
 
 import lombok.*;
 import me.hjeong.mojji.module.account.Account;
-import me.hjeong.mojji.module.account.UserAccount;
 import me.hjeong.mojji.module.category.Category;
-import me.hjeong.mojji.module.station.Station;
 import me.hjeong.mojji.module.post.event.PostCreatedEvent;
+import me.hjeong.mojji.module.station.Station;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
@@ -57,10 +56,6 @@ public class Post extends AbstractAggregateRoot<Post> {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Category category;
-
-    public boolean isCreatedBy(UserAccount userAccount) {
-        return this.seller.equals(userAccount.getAccount());
-    }
 
     public boolean isCreatedBy(Account account) {
         return this.seller.equals(account);
