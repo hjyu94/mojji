@@ -1,6 +1,7 @@
 package me.hjeong.mojji.module.account;
 
 import me.hjeong.mojji.module.account.repository.AccountRepository;
+import me.hjeong.mojji.module.account.service.AccountService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -23,10 +24,13 @@ class AccountControllerTest {
 
     @Autowired public MockMvc mockMvc;
     @Autowired public AccountRepository accountRepository;
+    @Autowired public AccountService accountService;
 
     @AfterEach
     public void afterEach() {
-        accountRepository.deleteAll();
+        accountRepository.findAll().forEach(account -> {
+            accountService.delete(account);
+        });
     }
 
     @Description("회원 가입 - 성공")
