@@ -1,9 +1,9 @@
 package me.hjeong.mojji.infra.factory;
 
 import lombok.RequiredArgsConstructor;
-import me.hjeong.mojji.module.chat.repository.ChatRepository;
 import me.hjeong.mojji.module.account.Account;
 import me.hjeong.mojji.module.chat.ChatRoom;
+import me.hjeong.mojji.module.chat.repository.ChatRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

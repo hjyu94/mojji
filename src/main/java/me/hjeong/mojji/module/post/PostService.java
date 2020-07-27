@@ -89,4 +89,10 @@ public class PostService {
     public void updateToSold(Post post) {
         post.setSold(true);
     }
+
+    public void deleteAllByWriter(Account writer) {
+        List<Post> posts = postRepository.findBySeller(writer);
+        posts.forEach(post -> postRepository.delete(post));
+        postRepository.flush();
+    }
 }

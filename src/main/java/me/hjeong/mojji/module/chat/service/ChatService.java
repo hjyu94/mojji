@@ -53,4 +53,10 @@ public class ChatService {
                     chatMessage.setIsRead(true);
                 });
     }
+
+    public void deleteAllIncludingAccount(Account account) {
+        Iterable<ChatRoom> chatRooms = chatRepository.findAll(ChatPredicates.findIncludingAccount(account));
+        chatRooms.forEach(chatRepository::delete);
+        chatRepository.flush();
+    }
 }

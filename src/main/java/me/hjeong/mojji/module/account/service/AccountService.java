@@ -10,10 +10,9 @@ import me.hjeong.mojji.module.account.event.AccountCreatedEvent;
 import me.hjeong.mojji.module.account.form.RegisterForm;
 import me.hjeong.mojji.module.account.repository.AccountRepository;
 import me.hjeong.mojji.module.category.Category;
-import me.hjeong.mojji.module.notification.Notification;
-import me.hjeong.mojji.module.notification.NotificationRepository;
-import me.hjeong.mojji.module.post.Post;
-import me.hjeong.mojji.module.post.repository.PostRepository;
+import me.hjeong.mojji.module.chat.service.ChatService;
+import me.hjeong.mojji.module.notification.NotificationService;
+import me.hjeong.mojji.module.post.PostService;
 import me.hjeong.mojji.module.setting.form.PasswordForm;
 import me.hjeong.mojji.module.setting.form.ProfileForm;
 import me.hjeong.mojji.module.station.Station;
@@ -46,8 +45,9 @@ public class AccountService implements UserDetailsService {
     private final EmailService emailService;
     private final AppProperties appProperties;
     private final TemplateEngine templateEngine;
-    private final PostRepository postRepository;
-    private final NotificationRepository notificationRepository;
+    private final PostService postService;
+    private final NotificationService notificationService;
+    private final ChatService chatService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public Account createNewAccount(RegisterForm registerForm) {
@@ -56,7 +56,7 @@ public class AccountService implements UserDetailsService {
         Account account = modelMapper.map(registerForm, Account.class);
         Account newAccount = accountRepository.save(account);
         this.sendRegisterEmail(newAccount);
-        applicationEventPublisher.publishEvent(new AccountCreatedEvent(account));
+        applicationEventPublisher.publishEvent(new AccountCreatedEvent(newAccount));
 
         return newAccount;
     }
@@ -163,11 +163,14 @@ public class AccountService implements UserDetailsService {
     }
 
     public void delete(Account account) {
-        List<Post> posts = postRepository.findBySeller(account);
-        posts.forEach(post -> postRepository.delete(post));
-        List<Notification> notis = notificationRepository.findAllByAccount(account);
-        notis.forEach(noti -> notificationRepository.delete(noti));
+        postService.deleteAllByWriter(account);
+        notificationService.deleteAllByAccount(account);
+        chatService.deleteAllIncludingAccount(account);
+
+        account.setCategories(null);
+        account.setStations(null);
         accountRepository.delete(account);
+        accountRepository.flush();
     }
 
     public void addStation(Station station, Account account) {

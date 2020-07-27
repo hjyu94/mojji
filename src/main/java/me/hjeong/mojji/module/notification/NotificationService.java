@@ -65,4 +65,9 @@ public class NotificationService {
             notificationRepository.deleteById(id);
         });
     }
+
+    public void deleteAllByAccount(Account account) {
+        List<Notification> notis = notificationRepository.findAllByAccount(account);
+        notis.forEach(noti -> notificationRepository.delete(noti));
+    }
 }

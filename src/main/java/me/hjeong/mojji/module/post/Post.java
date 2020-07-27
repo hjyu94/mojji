@@ -50,7 +50,7 @@ public class Post extends AbstractAggregateRoot<Post> {
     @Builder.Default
     private boolean isSold = false;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @Builder.Default
     private Set<Station> stations = new HashSet<>();
 
