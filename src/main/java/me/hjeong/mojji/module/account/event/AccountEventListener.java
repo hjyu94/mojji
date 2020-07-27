@@ -6,11 +6,9 @@ import me.hjeong.mojji.module.account.Account;
 import me.hjeong.mojji.module.notification.NotificationService;
 import me.hjeong.mojji.module.notification.NotificationType;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Async
 @Slf4j
 @Component
 @RequiredArgsConstructor
