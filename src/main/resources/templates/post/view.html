@@ -14,7 +14,7 @@
         }
     </style>
 </head>
-<body>
+<body th:with="isWriter=${#authentication.principal!='anonymousUser' && post.isCreatedBy(#authentication.principal)}">
 <nav th:replace="fragments.html :: main-nav"></nav>
 <section class="container">
     <div class="row justify-content-center">
@@ -91,7 +91,7 @@
             </div>
             <div class="mt-3" th:utext="${post.body}"></div>
             <hr/>
-            <div class="d-flex justify-content-end" th:if="${#authentication.principal != 'anonymousUser' && post.isCreatedBy(#authentication.principal)}">
+            <div class="d-flex justify-content-end" th:if="${isWriter == true}">
                 <a th:if="${!post.isSold()}" th:href="@{'/post/' + ${post.id} + '/edit'}" class="btn btn-outline-primary p-2 mr-2">수정</a>
                 <a href="#" class="btn btn-outline-danger p-2 mr-2" data-toggle="modal" data-target="#delete">삭제</a>
                 <a href="#soldBtn" th:if="${!post.isSold()}" data-toggle="modal" data-target="#soldModal" class="btn btn-outline-success p-2 mr-2">★ 판매 완료 ★</a>
@@ -100,7 +100,7 @@
     </div>
 </section>
 <!--modal-->
-<div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="deleteTitle" aria-hidden="true">
+<div th:if="${isWriter == true}" class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="deleteTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -123,7 +123,7 @@
     </div>
 </div>
 <!--modal-->
-<div class="modal fade" id="soldModal" tabindex="-1" role="dialog" aria-labelledby="soldTitle" aria-hidden="true">
+<div th:if="${isWriter == true}" class="modal fade" id="soldModal" tabindex="-1" role="dialog" aria-labelledby="soldTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">

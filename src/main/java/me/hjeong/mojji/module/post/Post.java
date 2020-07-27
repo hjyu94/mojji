@@ -2,6 +2,7 @@ package me.hjeong.mojji.module.post;
 
 import lombok.*;
 import me.hjeong.mojji.module.account.Account;
+import me.hjeong.mojji.module.account.UserAccount;
 import me.hjeong.mojji.module.category.Category;
 import me.hjeong.mojji.module.post.event.PostCreatedEvent;
 import me.hjeong.mojji.module.station.Station;
@@ -59,6 +60,11 @@ public class Post extends AbstractAggregateRoot<Post> {
 
     public boolean isCreatedBy(Account account) {
         return this.seller.equals(account);
+    }
+
+    // post/view.html 에서 수정, 삭제, 판매완료 버튼 보여줄지 말지 결정시에 사용
+    public boolean isCreatedBy(UserAccount userAccount) {
+        return this.seller.equals(userAccount.getAccount());
     }
 
     public Post publishCreatedEvent() {

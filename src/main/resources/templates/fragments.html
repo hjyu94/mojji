@@ -449,7 +449,7 @@
     });
 </script>
 
-<script th:fragment="ajax-csrf-header" type="application/javascript" th:inline="javascript">
+<script sec:authorize="isAuthenticated()" th:fragment="ajax-csrf-header" type="application/javascript" th:inline="javascript">
     $(function() {
         var csrfToken = /*[[${_csrf.token}]]*/ null;
         var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
