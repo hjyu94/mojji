@@ -27,14 +27,17 @@ public class NotificationController {
         long newNotiCount = repository.countByAccountAndChecked(account, false);
         model.addAttribute("newNotiCount", newNotiCount);
 
-        if(newNotiCount > 0) {
-            List<Notification> newNotifications = repository.findTop3ByAccountAndCheckedOrderByCreatedDateTimeDesc(account, false);
-            model.addAttribute("newNotifications", newNotifications);
-        }
-
         // 읽은 알림 미리보기 용도 3개 표시
         long oldNotiCount = repository.countByAccountAndChecked(account, true);
         model.addAttribute("oldNotiCount", oldNotiCount);
+
+        if(newNotiCount > 0) {
+            List<Notification> newNotifications = repository.findTop3ByAccountAndCheckedOrderByCreatedDateTimeDesc(account, false);
+            model.addAttribute("newNotifications", newNotifications);
+            service.markAsRead(newNotifications, true);
+            newNotiCount = newNotiCount - newNotifications.size();
+            model.addAttribute("newNotiCount", newNotiCount);
+        }
 
         if(oldNotiCount > 0) {
             List<Notification> oldNotifications = repository.findTop3ByAccountAndCheckedOrderByCreatedDateTimeDesc(account, true);

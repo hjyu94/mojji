@@ -61,20 +61,21 @@ class PostRepositoryTest {
 
         // when
         Category category = categoryFactory.getOne();
-        Account account = accountFactory.getOne();
-        account.setNotiByWeb(true);
-        account.setNotiByEmail(true);
-        account.getCategories().add(category);
+        Account account1 = accountFactory.createAccount("hjeong");
+        account1.setNotiByWeb(true);
+        account1.setNotiByEmail(true);
+        account1.getCategories().add(category);
 
-        Post post = postFactory.getOne();
+        Account seller = accountFactory.createAccount("seller");
+        Post post = postFactory.createPost("xxx", seller);
         post.setCategory(category);
         postRepository.save(post);
 
         // then
         assertEquals(initSize + 1, notificationFactory.getTotalSize());
-        List<Notification> notifications = notificationRepository.findAllByAccount(account);
+        List<Notification> notifications = notificationRepository.findAllByAccount(account1);
         List<Account> accounts = notifications.stream().map(Notification::getAccount).collect(Collectors.toList());
-        assertThat(accounts, hasItems(account));
+        assertThat(accounts, hasItems(account1));
         then(emailService).should().sendEmail(any(EmailMessage.class));
     }
 }

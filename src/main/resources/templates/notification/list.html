@@ -14,9 +14,9 @@
         <div class="col-lg-8 col">
             <div class="mb-4">
                 <h2 class="mb-4">새 알림</h2>
-                <p th:if="${newNotiCount == 0}">새 알림이 없습니다.</p>
-                <th:block th:if="${newNotiCount != 0}">
-                    <p class="mb-3">읽지 않은 알림이 <span class="text-primary" th:text="${newNotiCount+'개'}"></span> 있습니다.</p>
+                <p th:if="${#lists.isEmpty(newNotifications)}">새 알림이 없습니다.</p>
+                <th:block th:if="${!#lists.isEmpty(newNotifications)}">
+                    <p class="mb-3">읽지 않은 알림이 <span class="text-primary" th:text="${newNotifications.size()+'개'}"></span> 있습니다.</p>
                     <th:block th:replace='fragments.html :: noti-table(notiList=${newNotifications})'></th:block>
                     <div th:if="${newNotiCount > 3}" class="row justify-content-end">
                         <a th:href="@{/notification/new}">► 더 보기</a>

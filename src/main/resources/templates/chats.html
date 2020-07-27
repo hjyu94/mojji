@@ -205,7 +205,9 @@
     // 메세지가 여러개 있을 때 메세지 박스를 최하단으로 이동
     function scrollToLastMsg() {
         let messagebox = document.querySelector('#message-box');
-        messagebox.scrollTo(0, messagebox.scrollHeight);
+        if(messagebox != null) {
+            messagebox.scrollTo(0, messagebox.scrollHeight);
+        }
     }
     // 메세지 입력칸 포커싱 중 엔터 클릭시 메세지 전송하기
     function checkSubmitKeyDown(event) {

@@ -1,6 +1,7 @@
 package me.hjeong.mojji.infra.factory;
 
 import lombok.RequiredArgsConstructor;
+import me.hjeong.mojji.module.account.Account;
 import me.hjeong.mojji.module.post.Post;
 import me.hjeong.mojji.module.post.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,13 @@ public class PostFactory {
     @Autowired AccountFactory accountFactory;
 
     public Post createPost(String title) {
+        return createPost(title, accountFactory.getOne());
+    }
+
+    public Post createPost(String title, Account seller) {
         Post post = Post.builder()
                 .title(title)
-                .seller(accountFactory.getOne())
+                .seller(seller)
                 .category(categoryFactory.getOne())
                 .createdDateTime(LocalDateTime.now())
                 .build();

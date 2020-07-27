@@ -34,15 +34,17 @@ public class PostEventListener {
 
         List<Account> accounts = accountRepository.findAnyAccountsByCategoriesAndStations(Set.of(post.getCategory()), post.getStations());
         accounts.forEach(account -> {
-            if (account.isNotiByEmail()) {
-                log.info("noti by email to {}: {}", account.getNickname(), account.getEmail());
-                notificationService.sendNotificationEmail(account, post);
-            }
-            if (account.isNotiByWeb()) {
-                log.info("noti by web to {}: {}", account.getNickname(), account.getEmail());
-                notificationService.createNotification(account, post.getTitle()
-                        , "내 동네, 내 관심 카테고리에 해당하는 새 판매글이 등록되었습니다."
-                        , NotificationType.POST_CREATED, post.getEncodedViewURL());
+            if(!post.getSeller().equals(account)) { // 내가 쓴 글에 대한 알림을 받을 필요가 없다.
+                if (account.isNotiByEmail()) {
+                    log.info("noti by email to {}: {}", account.getNickname(), account.getEmail());
+                    notificationService.sendNotificationEmail(account, post);
+                }
+                if (account.isNotiByWeb()) {
+                    log.info("noti by web to {}: {}", account.getNickname(), account.getEmail());
+                    notificationService.createNotification(account, post.getTitle()
+                            , "내 동네, 내 관심 카테고리에 해당하는 새 판매글이 등록되었습니다."
+                            , NotificationType.POST_CREATED, post.getEncodedViewURL());
+                }
             }
         });
     }
